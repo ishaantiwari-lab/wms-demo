@@ -29,6 +29,8 @@ export interface ExpectedReturnItem {
   color?: string;
   size?: string;
   weight?: string;
+  lot?: string;
+  expiry?: string;
 }
 
 export interface ReturnAwbProfile {
@@ -81,6 +83,8 @@ export const HARDCODED_RETURN_AWBS: Record<string, ReturnAwbProfile> = {
         mrp: "₹899",
         size: "30 ml",
         weight: "45 g",
+        lot: "LOT-2024-089",
+        expiry: "30 Jun 2026",
       },
       {
         sku: "VB-CRM-50",
@@ -90,6 +94,8 @@ export const HARDCODED_RETURN_AWBS: Record<string, ReturnAwbProfile> = {
         mrp: "₹1,299",
         size: "50 ml",
         weight: "80 g",
+        lot: "LOT-2024-091",
+        expiry: "31 Dec 2026",
       },
       {
         sku: "VB-SUN-50",
@@ -99,6 +105,8 @@ export const HARDCODED_RETURN_AWBS: Record<string, ReturnAwbProfile> = {
         mrp: "₹699",
         size: "50 ml",
         weight: "75 g",
+        lot: "LOT-2024-095",
+        expiry: "28 Feb 2027",
       },
     ],
   },
@@ -129,13 +137,33 @@ export const HARDCODED_RETURN_RANS: Record<string, ReturnAwbProfile> = {
   "RAN-UNK-002": { type: "unidentified" },
 };
 
+const FALLBACK_CHANNELS = ["Amazon", "Flipkart", "Shopify", "Myntra"];
+const FALLBACK_SELLERS = [
+  "Acme Electronics",
+  "Verde Beauty",
+  "Northwind Apparel",
+  "Loom & Linen",
+];
+const FALLBACK_EXPECTED_SETS: ExpectedReturnItem[][] = [
+  HARDCODED_RETURN_RANS["RAN-AMZ-7723"].expectedItems!,
+  HARDCODED_RETURN_RANS["RAN-FK-9981"].expectedItems!,
+];
+
 export const getReturnRanProfile = (ran: string): ReturnAwbProfile => {
   const key = ran.trim().toUpperCase();
   if (HARDCODED_RETURN_RANS[key]) return HARDCODED_RETURN_RANS[key];
-  // Fallback — hash-based, no expected items list for unmapped RANs
-  return hash(key) % 10 < 7
-    ? { type: "identified" }
-    : { type: "unidentified" };
+  // Fallback — hash-based. Every RAN still gets a deterministic channel and
+  // seller so the operator always sees a marketplace name on screen.
+  const h = hash(key);
+  const channel = FALLBACK_CHANNELS[h % FALLBACK_CHANNELS.length];
+  const seller = FALLBACK_SELLERS[(h >> 3) % FALLBACK_SELLERS.length];
+  const isIdentified = h % 10 < 7;
+  if (isIdentified) {
+    const items =
+      FALLBACK_EXPECTED_SETS[(h >> 5) % FALLBACK_EXPECTED_SETS.length];
+    return { type: "identified", channel, seller, expectedItems: items };
+  }
+  return { type: "unidentified", channel, seller };
 };
 
 // Roughly 70% of returns scanned at the gate are "identified" — i.e. a return
