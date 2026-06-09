@@ -20,11 +20,13 @@ import { Route as WmsPutawayRouteImport } from './routes/_wms.putaway'
 import { Route as WmsPackRouteImport } from './routes/_wms.pack'
 import { Route as WmsManifestRouteImport } from './routes/_wms.manifest'
 import { Route as WmsItemMovementRouteImport } from './routes/_wms.item-movement'
+import { Route as WmsItemInfoUpdateRouteImport } from './routes/_wms.item-info-update'
 import { Route as WmsGrnRouteImport } from './routes/_wms.grn'
 import { Route as WmsGateEntryRouteImport } from './routes/_wms.gate-entry'
 import { Route as WmsDockManagementRouteImport } from './routes/_wms.dock-management'
 import { Route as WmsDispatchRouteImport } from './routes/_wms.dispatch'
 import { Route as WmsDetailedInventoryViewRouteImport } from './routes/_wms.detailed-inventory-view'
+import { Route as WmsApprovalsRouteImport } from './routes/_wms.approvals'
 import { Route as WmsSortIndexRouteImport } from './routes/_wms.sort.index'
 import { Route as WmsPickIndexRouteImport } from './routes/_wms.pick.index'
 import { Route as WmsOrdersIndexRouteImport } from './routes/_wms.orders.index'
@@ -86,6 +88,11 @@ const WmsItemMovementRoute = WmsItemMovementRouteImport.update({
   path: '/item-movement',
   getParentRoute: () => WmsRoute,
 } as any)
+const WmsItemInfoUpdateRoute = WmsItemInfoUpdateRouteImport.update({
+  id: '/item-info-update',
+  path: '/item-info-update',
+  getParentRoute: () => WmsRoute,
+} as any)
 const WmsGrnRoute = WmsGrnRouteImport.update({
   id: '/grn',
   path: '/grn',
@@ -112,6 +119,11 @@ const WmsDetailedInventoryViewRoute =
     path: '/detailed-inventory-view',
     getParentRoute: () => WmsRoute,
   } as any)
+const WmsApprovalsRoute = WmsApprovalsRouteImport.update({
+  id: '/approvals',
+  path: '/approvals',
+  getParentRoute: () => WmsRoute,
+} as any)
 const WmsSortIndexRoute = WmsSortIndexRouteImport.update({
   id: '/sort/',
   path: '/sort/',
@@ -145,11 +157,13 @@ const WmsOrdersOrderNoRoute = WmsOrdersOrderNoRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/approvals': typeof WmsApprovalsRoute
   '/detailed-inventory-view': typeof WmsDetailedInventoryViewRoute
   '/dispatch': typeof WmsDispatchRoute
   '/dock-management': typeof WmsDockManagementRoute
   '/gate-entry': typeof WmsGateEntryRoute
   '/grn': typeof WmsGrnRoute
+  '/item-info-update': typeof WmsItemInfoUpdateRoute
   '/item-movement': typeof WmsItemMovementRoute
   '/manifest': typeof WmsManifestRoute
   '/pack': typeof WmsPackRoute
@@ -168,11 +182,13 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/approvals': typeof WmsApprovalsRoute
   '/detailed-inventory-view': typeof WmsDetailedInventoryViewRoute
   '/dispatch': typeof WmsDispatchRoute
   '/dock-management': typeof WmsDockManagementRoute
   '/gate-entry': typeof WmsGateEntryRoute
   '/grn': typeof WmsGrnRoute
+  '/item-info-update': typeof WmsItemInfoUpdateRoute
   '/item-movement': typeof WmsItemMovementRoute
   '/manifest': typeof WmsManifestRoute
   '/pack': typeof WmsPackRoute
@@ -193,11 +209,13 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_wms': typeof WmsRouteWithChildren
+  '/_wms/approvals': typeof WmsApprovalsRoute
   '/_wms/detailed-inventory-view': typeof WmsDetailedInventoryViewRoute
   '/_wms/dispatch': typeof WmsDispatchRoute
   '/_wms/dock-management': typeof WmsDockManagementRoute
   '/_wms/gate-entry': typeof WmsGateEntryRoute
   '/_wms/grn': typeof WmsGrnRoute
+  '/_wms/item-info-update': typeof WmsItemInfoUpdateRoute
   '/_wms/item-movement': typeof WmsItemMovementRoute
   '/_wms/manifest': typeof WmsManifestRoute
   '/_wms/pack': typeof WmsPackRoute
@@ -218,11 +236,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/approvals'
     | '/detailed-inventory-view'
     | '/dispatch'
     | '/dock-management'
     | '/gate-entry'
     | '/grn'
+    | '/item-info-update'
     | '/item-movement'
     | '/manifest'
     | '/pack'
@@ -241,11 +261,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/approvals'
     | '/detailed-inventory-view'
     | '/dispatch'
     | '/dock-management'
     | '/gate-entry'
     | '/grn'
+    | '/item-info-update'
     | '/item-movement'
     | '/manifest'
     | '/pack'
@@ -265,11 +287,13 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_wms'
+    | '/_wms/approvals'
     | '/_wms/detailed-inventory-view'
     | '/_wms/dispatch'
     | '/_wms/dock-management'
     | '/_wms/gate-entry'
     | '/_wms/grn'
+    | '/_wms/item-info-update'
     | '/_wms/item-movement'
     | '/_wms/manifest'
     | '/_wms/pack'
@@ -371,6 +395,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WmsItemMovementRouteImport
       parentRoute: typeof WmsRoute
     }
+    '/_wms/item-info-update': {
+      id: '/_wms/item-info-update'
+      path: '/item-info-update'
+      fullPath: '/item-info-update'
+      preLoaderRoute: typeof WmsItemInfoUpdateRouteImport
+      parentRoute: typeof WmsRoute
+    }
     '/_wms/grn': {
       id: '/_wms/grn'
       path: '/grn'
@@ -404,6 +435,13 @@ declare module '@tanstack/react-router' {
       path: '/detailed-inventory-view'
       fullPath: '/detailed-inventory-view'
       preLoaderRoute: typeof WmsDetailedInventoryViewRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/approvals': {
+      id: '/_wms/approvals'
+      path: '/approvals'
+      fullPath: '/approvals'
+      preLoaderRoute: typeof WmsApprovalsRouteImport
       parentRoute: typeof WmsRoute
     }
     '/_wms/sort/': {
@@ -452,11 +490,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface WmsRouteChildren {
+  WmsApprovalsRoute: typeof WmsApprovalsRoute
   WmsDetailedInventoryViewRoute: typeof WmsDetailedInventoryViewRoute
   WmsDispatchRoute: typeof WmsDispatchRoute
   WmsDockManagementRoute: typeof WmsDockManagementRoute
   WmsGateEntryRoute: typeof WmsGateEntryRoute
   WmsGrnRoute: typeof WmsGrnRoute
+  WmsItemInfoUpdateRoute: typeof WmsItemInfoUpdateRoute
   WmsItemMovementRoute: typeof WmsItemMovementRoute
   WmsManifestRoute: typeof WmsManifestRoute
   WmsPackRoute: typeof WmsPackRoute
@@ -475,11 +515,13 @@ interface WmsRouteChildren {
 }
 
 const WmsRouteChildren: WmsRouteChildren = {
+  WmsApprovalsRoute: WmsApprovalsRoute,
   WmsDetailedInventoryViewRoute: WmsDetailedInventoryViewRoute,
   WmsDispatchRoute: WmsDispatchRoute,
   WmsDockManagementRoute: WmsDockManagementRoute,
   WmsGateEntryRoute: WmsGateEntryRoute,
   WmsGrnRoute: WmsGrnRoute,
+  WmsItemInfoUpdateRoute: WmsItemInfoUpdateRoute,
   WmsItemMovementRoute: WmsItemMovementRoute,
   WmsManifestRoute: WmsManifestRoute,
   WmsPackRoute: WmsPackRoute,

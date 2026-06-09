@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   ArrowLeftRight,
+  BadgeCheck,
   Boxes,
   ChevronRight,
   ClipboardCheck,
@@ -15,6 +16,7 @@ import {
   PackageOpen,
   PackagePlus,
   ShuffleIcon,
+  SquarePen,
   Truck,
   Warehouse,
 } from "lucide-react";
@@ -83,6 +85,8 @@ const sections: NavSection[] = [
         icon: Boxes,
       },
       { title: "Item Movement", url: "/item-movement", icon: ArrowLeftRight },
+      { title: "Bin Inventory", url: "/item-info-update", icon: SquarePen },
+      { title: "Approvals", url: "/approvals", icon: BadgeCheck },
       { title: "Replenishment", url: "/replenishment", icon: PackagePlus },
     ],
   },
