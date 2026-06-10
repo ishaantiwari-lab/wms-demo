@@ -342,6 +342,7 @@ function Approvals() {
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
                     <TableHead className="w-12 text-xs">S No</TableHead>
+                    <TableHead className="w-24 text-xs">Request ID</TableHead>
                     <TableHead className="w-16 text-xs">Action</TableHead>
                     <TableHead className="text-xs">Status</TableHead>
                     <TableHead className="text-xs">Bin No</TableHead>
@@ -357,6 +358,9 @@ function Approvals() {
                     <TableRow key={r.id}>
                       <TableCell className="text-sm text-muted-foreground">
                         {i + 1}
+                      </TableCell>
+                      <TableCell className="font-mono text-xs font-semibold">
+                        REQ-{r.id}
                       </TableCell>
                       <TableCell>
                         <button
@@ -387,7 +391,7 @@ function Approvals() {
                   {rows.length === 0 ? (
                     <TableRow>
                       <TableCell
-                        colSpan={9}
+                        colSpan={10}
                         className="py-10 text-center text-sm text-muted-foreground"
                       >
                         No requests match this view.

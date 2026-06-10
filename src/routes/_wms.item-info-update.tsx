@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   ChevronRight,
   Clock,
+  Camera,
   Hash,
   IndianRupee,
   Info,
@@ -14,6 +15,7 @@ import {
   PackageSearch,
   ScanBarcode,
   SquarePen,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -343,6 +345,8 @@ function EditForm({
   const [mrp, setMrp] = useState(item.mrp);
   const [expiryDate, setExpiryDate] = useState(item.expiryDate);
   const [mfgDate, setMfgDate] = useState(item.mfgDate);
+  const [photo, setPhoto] = useState<{ name: string; url: string } | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const changed = useMemo(
     () =>
@@ -353,9 +357,15 @@ function EditForm({
     [batchNo, mrp, expiryDate, mfgDate, item],
   );
 
+  const canSubmit = changed && !!photo;
+
   const submit = () => {
     if (!changed) {
       toast.error("No changes to submit");
+      return;
+    }
+    if (!photo) {
+      toast.error("A photo of the item is required");
       return;
     }
     toast.success("Update request submitted for approval");
@@ -433,20 +443,75 @@ function EditForm({
             />
           </EditField>
 
+          {/* Mandatory item photo */}
+          <EditField icon={Camera} label="Item Photo (Required)">
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                setPhoto({ name: file.name, url: URL.createObjectURL(file) });
+              }}
+            />
+            {photo ? (
+              <div className="relative overflow-hidden rounded-md border border-border">
+                <img
+                  src={photo.url}
+                  alt="Item photo"
+                  className="h-40 w-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPhoto(null);
+                    if (fileRef.current) fileRef.current.value = "";
+                  }}
+                  className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+                <div className="flex items-center gap-1.5 border-t border-border bg-muted/30 px-3 py-2 text-[11px] text-muted-foreground">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-status-picked" />
+                  <span className="truncate">{photo.name}</span>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                className="flex h-28 w-full flex-col items-center justify-center gap-1.5 rounded-md border border-dashed border-border bg-muted/20 text-muted-foreground hover:bg-muted/40"
+              >
+                <Camera className="h-6 w-6" />
+                <span className="text-xs font-medium">Take or upload a photo</span>
+                <span className="text-[10px]">Required before submitting</span>
+              </button>
+            )}
+          </EditField>
+
           {/* Approval note */}
           <div className="flex gap-2.5 rounded-md border border-border bg-muted/30 p-3">
             <Info className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
             <p className="text-[12px] leading-relaxed text-muted-foreground">
-              Modified batch information will be sent for approval. Please ensure
-              documentation matches physical labels.
+              Modified batch information will be sent for approval. A photo of the
+              physical item is mandatory. Please ensure documentation matches
+              physical labels.
             </p>
           </div>
 
-          <Button className="h-12 w-full gap-2" disabled={!changed} onClick={submit}>
+          <Button className="h-12 w-full gap-2" disabled={!canSubmit} onClick={submit}>
             <CheckCircle2 className="h-4 w-4" />
             Submit for approval
           </Button>
-          {changed ? (
+          {changed && !photo ? (
+            <p className="text-center text-[11px] text-muted-foreground">
+              <Camera className="mr-0.5 inline h-3 w-3" />
+              Add a photo of the item to enable submission.
+            </p>
+          ) : canSubmit ? (
             <p className="text-center text-[11px] text-muted-foreground">
               <ChevronRight className="mr-0.5 inline h-3 w-3" />
               Request goes to the approver — inventory updates only once approved.

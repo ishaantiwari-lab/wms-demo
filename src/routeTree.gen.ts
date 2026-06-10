@@ -18,6 +18,7 @@ import { Route as WmsReplenishmentRouteImport } from './routes/_wms.replenishmen
 import { Route as WmsPutwallRouteImport } from './routes/_wms.putwall'
 import { Route as WmsPutawayRouteImport } from './routes/_wms.putaway'
 import { Route as WmsPackRouteImport } from './routes/_wms.pack'
+import { Route as WmsMovementTaskCreateRouteImport } from './routes/_wms.movement-task-create'
 import { Route as WmsManifestRouteImport } from './routes/_wms.manifest'
 import { Route as WmsItemMovementRouteImport } from './routes/_wms.item-movement'
 import { Route as WmsItemInfoUpdateRouteImport } from './routes/_wms.item-info-update'
@@ -76,6 +77,11 @@ const WmsPutawayRoute = WmsPutawayRouteImport.update({
 const WmsPackRoute = WmsPackRouteImport.update({
   id: '/pack',
   path: '/pack',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsMovementTaskCreateRoute = WmsMovementTaskCreateRouteImport.update({
+  id: '/movement-task-create',
+  path: '/movement-task-create',
   getParentRoute: () => WmsRoute,
 } as any)
 const WmsManifestRoute = WmsManifestRouteImport.update({
@@ -166,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/item-info-update': typeof WmsItemInfoUpdateRoute
   '/item-movement': typeof WmsItemMovementRoute
   '/manifest': typeof WmsManifestRoute
+  '/movement-task-create': typeof WmsMovementTaskCreateRoute
   '/pack': typeof WmsPackRoute
   '/putaway': typeof WmsPutawayRoute
   '/putwall': typeof WmsPutwallRoute
@@ -191,6 +198,7 @@ export interface FileRoutesByTo {
   '/item-info-update': typeof WmsItemInfoUpdateRoute
   '/item-movement': typeof WmsItemMovementRoute
   '/manifest': typeof WmsManifestRoute
+  '/movement-task-create': typeof WmsMovementTaskCreateRoute
   '/pack': typeof WmsPackRoute
   '/putaway': typeof WmsPutawayRoute
   '/putwall': typeof WmsPutwallRoute
@@ -218,6 +226,7 @@ export interface FileRoutesById {
   '/_wms/item-info-update': typeof WmsItemInfoUpdateRoute
   '/_wms/item-movement': typeof WmsItemMovementRoute
   '/_wms/manifest': typeof WmsManifestRoute
+  '/_wms/movement-task-create': typeof WmsMovementTaskCreateRoute
   '/_wms/pack': typeof WmsPackRoute
   '/_wms/putaway': typeof WmsPutawayRoute
   '/_wms/putwall': typeof WmsPutwallRoute
@@ -245,6 +254,7 @@ export interface FileRouteTypes {
     | '/item-info-update'
     | '/item-movement'
     | '/manifest'
+    | '/movement-task-create'
     | '/pack'
     | '/putaway'
     | '/putwall'
@@ -270,6 +280,7 @@ export interface FileRouteTypes {
     | '/item-info-update'
     | '/item-movement'
     | '/manifest'
+    | '/movement-task-create'
     | '/pack'
     | '/putaway'
     | '/putwall'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/_wms/item-info-update'
     | '/_wms/item-movement'
     | '/_wms/manifest'
+    | '/_wms/movement-task-create'
     | '/_wms/pack'
     | '/_wms/putaway'
     | '/_wms/putwall'
@@ -379,6 +391,13 @@ declare module '@tanstack/react-router' {
       path: '/pack'
       fullPath: '/pack'
       preLoaderRoute: typeof WmsPackRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/movement-task-create': {
+      id: '/_wms/movement-task-create'
+      path: '/movement-task-create'
+      fullPath: '/movement-task-create'
+      preLoaderRoute: typeof WmsMovementTaskCreateRouteImport
       parentRoute: typeof WmsRoute
     }
     '/_wms/manifest': {
@@ -499,6 +518,7 @@ interface WmsRouteChildren {
   WmsItemInfoUpdateRoute: typeof WmsItemInfoUpdateRoute
   WmsItemMovementRoute: typeof WmsItemMovementRoute
   WmsManifestRoute: typeof WmsManifestRoute
+  WmsMovementTaskCreateRoute: typeof WmsMovementTaskCreateRoute
   WmsPackRoute: typeof WmsPackRoute
   WmsPutawayRoute: typeof WmsPutawayRoute
   WmsPutwallRoute: typeof WmsPutwallRoute
@@ -524,6 +544,7 @@ const WmsRouteChildren: WmsRouteChildren = {
   WmsItemInfoUpdateRoute: WmsItemInfoUpdateRoute,
   WmsItemMovementRoute: WmsItemMovementRoute,
   WmsManifestRoute: WmsManifestRoute,
+  WmsMovementTaskCreateRoute: WmsMovementTaskCreateRoute,
   WmsPackRoute: WmsPackRoute,
   WmsPutawayRoute: WmsPutawayRoute,
   WmsPutwallRoute: WmsPutwallRoute,
