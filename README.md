@@ -11,14 +11,39 @@ Its purpose is to act as a shared reference point:
 
 Think of it as a high-fidelity conversation starter: detailed enough to align everyone on scope, loose enough to change quickly.
 
-## How to run
+## Getting started
 
-```
-bun install
-bun dev
-```
+You'll need [Node.js](https://nodejs.org/) (v18 or newer) installed.
 
-Then open the local URL shown in the terminal.
+1. **Clone the repository**
+
+   ```
+   git clone https://github.com/ishaantiwari-lab/wms-demo.git
+   cd wms-demo
+   ```
+
+2. **Install dependencies**
+
+   ```
+   npm install
+   ```
+
+3. **Start the dev server**
+
+   ```
+   npm run dev
+   ```
+
+   Then open the local URL shown in the terminal (usually http://localhost:3000).
+
+### Other commands
+
+- `npm run build` — create a production build.
+- `npm run preview` — preview the production build locally.
+- `npm run lint` — run the linter.
+
+> Prefer [Bun](https://bun.sh/)? Swap `npm install` / `npm run dev` for
+> `bun install` / `bun dev` — the project works with either.
 
 ## Features
 
