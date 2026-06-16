@@ -12,6 +12,9 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Force Nitro to run with node-server preset for Docker/self-hosted deployments.
+  // Without this, the plugin is skipped outside of Lovable sandbox environments.
+  nitro: { preset: "node-server" },
   vite: {
     server: {
       // Allow ngrok / tunnels and any other external host to hit the dev server
