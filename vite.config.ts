@@ -12,8 +12,11 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
-  // Force Nitro to run with node-server preset for Docker/self-hosted deployments.
-  // Without this, the plugin is skipped outside of Lovable sandbox environments.
+  // Force Nitro to output a self-contained Node.js server (.output/server/index.mjs)
+  // for Docker/self-hosted deployments. Without this, @lovable.dev/vite-tanstack-config
+  // skips its Nitro plugin outside the Lovable sandbox and outputs to dist/ instead.
+  // The Cloudflare build path is unaffected: when isSandbox=true the plugin forcibly
+  // resets the preset to "cloudflare-module" regardless of what is set here.
   nitro: { preset: "node-server" },
   vite: {
     server: {
