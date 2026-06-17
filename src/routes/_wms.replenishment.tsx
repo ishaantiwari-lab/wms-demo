@@ -296,11 +296,16 @@ function Replenishment() {
   const setField = <K extends keyof Filters>(key: K, value: Filters[K]) =>
     setFilters((f) => ({ ...f, [key]: value }));
 
-  // Dropdown options derived from the data
-  const skuOptions = useMemo(
-    () => Array.from(new Set(ROWS.map((r) => r.sku))).sort(),
-    [],
-  );
+  // Dropdown options derived from the data. SKU options carry the item
+  // description so the dropdown is searchable by both code and name.
+  const skuOptions = useMemo(() => {
+    const seen = new Map<string, string>();
+    for (const r of ROWS) if (!seen.has(r.sku)) seen.set(r.sku, r.description);
+    return Array.from(seen, ([value, name]) => ({
+      value,
+      label: `${value} — ${name}`,
+    })).sort((a, b) => a.value.localeCompare(b.value));
+  }, []);
   const replenishmentBinOptions = useMemo(
     () => Array.from(new Set(ROWS.map((r) => r.replenishmentBin))).sort(),
     [],
@@ -967,13 +972,17 @@ function SearchableSelect({
   onChange,
 }: {
   value: string;
-  options: string[];
+  options: { value: string; label: string }[];
   placeholder: string;
   searchPlaceholder: string;
   emptyText: string;
   onChange: (v: string) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const selectedLabel =
+    value === ALL
+      ? placeholder
+      : (options.find((o) => o.value === value)?.label ?? value);
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -981,10 +990,10 @@ function SearchableSelect({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="h-9 w-full justify-between font-normal"
+          className="h-9 w-full justify-between gap-2 font-normal"
         >
-          {value === ALL ? placeholder : value}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <span className="truncate">{selectedLabel}</span>
+          <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -1013,20 +1022,20 @@ function SearchableSelect({
               </CommandItem>
               {options.map((o) => (
                 <CommandItem
-                  key={o}
-                  value={o}
+                  key={o.value}
+                  value={o.label}
                   onSelect={() => {
-                    onChange(o);
+                    onChange(o.value);
                     setOpen(false);
                   }}
                 >
                   <Check
                     className={cn(
-                      "mr-2 h-4 w-4",
-                      value === o ? "opacity-100" : "opacity-0",
+                      "mr-2 h-4 w-4 shrink-0",
+                      value === o.value ? "opacity-100" : "opacity-0",
                     )}
                   />
-                  {o}
+                  {o.label}
                 </CommandItem>
               ))}
             </CommandGroup>
