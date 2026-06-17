@@ -17,6 +17,7 @@ import {
   PackageCheck,
   PackageOpen,
   PackagePlus,
+  Settings2,
   ShuffleIcon,
   SquarePen,
   Truck,
@@ -150,6 +151,13 @@ const sections: NavSection[] = [
       },
       { title: "Approvals", url: "/approvals", icon: BadgeCheck },
       { title: "Replenishment", url: "/replenishment", icon: PackagePlus },
+      {
+        title: "Slotting",
+        icon: Settings2,
+        children: [
+          { title: "Slotting Config", url: "/slotting-config", icon: Settings2 },
+        ],
+      },
     ],
   },
   {
@@ -184,7 +192,9 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         {sections.map((section) => {
-          const sectionActive = section.items.some((i) => isActive(i.url));
+          const sectionActive = section.items.some((i) =>
+            isModule(i) ? i.children.some((c) => isActive(c.url)) : isActive(i.url),
+          );
           return (
             <Collapsible
               key={section.label}

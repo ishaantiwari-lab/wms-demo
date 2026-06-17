@@ -14,6 +14,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as WmsViewManifestRouteImport } from './routes/_wms.view-manifest'
 import { Route as WmsViewDispatchRouteImport } from './routes/_wms.view-dispatch'
 import { Route as WmsUnloadingRouteImport } from './routes/_wms.unloading'
+import { Route as WmsSlottingConfigRouteImport } from './routes/_wms.slotting-config'
 import { Route as WmsSalesReturnGrnRouteImport } from './routes/_wms.sales-return-grn'
 import { Route as WmsReportsRouteImport } from './routes/_wms.reports'
 import { Route as WmsReplenishmentSetupRouteImport } from './routes/_wms.replenishment-setup'
@@ -67,6 +68,11 @@ const WmsViewDispatchRoute = WmsViewDispatchRouteImport.update({
 const WmsUnloadingRoute = WmsUnloadingRouteImport.update({
   id: '/unloading',
   path: '/unloading',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsSlottingConfigRoute = WmsSlottingConfigRouteImport.update({
+  id: '/slotting-config',
+  path: '/slotting-config',
   getParentRoute: () => WmsRoute,
 } as any)
 const WmsSalesReturnGrnRoute = WmsSalesReturnGrnRouteImport.update({
@@ -244,6 +250,7 @@ export interface FileRoutesByFullPath {
   '/replenishment-setup': typeof WmsReplenishmentSetupRoute
   '/reports': typeof WmsReportsRoute
   '/sales-return-grn': typeof WmsSalesReturnGrnRoute
+  '/slotting-config': typeof WmsSlottingConfigRoute
   '/unloading': typeof WmsUnloadingRoute
   '/view-dispatch': typeof WmsViewDispatchRoute
   '/view-manifest': typeof WmsViewManifestRoute
@@ -280,6 +287,7 @@ export interface FileRoutesByTo {
   '/replenishment-setup': typeof WmsReplenishmentSetupRoute
   '/reports': typeof WmsReportsRoute
   '/sales-return-grn': typeof WmsSalesReturnGrnRoute
+  '/slotting-config': typeof WmsSlottingConfigRoute
   '/unloading': typeof WmsUnloadingRoute
   '/view-dispatch': typeof WmsViewDispatchRoute
   '/view-manifest': typeof WmsViewManifestRoute
@@ -318,6 +326,7 @@ export interface FileRoutesById {
   '/_wms/replenishment-setup': typeof WmsReplenishmentSetupRoute
   '/_wms/reports': typeof WmsReportsRoute
   '/_wms/sales-return-grn': typeof WmsSalesReturnGrnRoute
+  '/_wms/slotting-config': typeof WmsSlottingConfigRoute
   '/_wms/unloading': typeof WmsUnloadingRoute
   '/_wms/view-dispatch': typeof WmsViewDispatchRoute
   '/_wms/view-manifest': typeof WmsViewManifestRoute
@@ -356,6 +365,7 @@ export interface FileRouteTypes {
     | '/replenishment-setup'
     | '/reports'
     | '/sales-return-grn'
+    | '/slotting-config'
     | '/unloading'
     | '/view-dispatch'
     | '/view-manifest'
@@ -392,6 +402,7 @@ export interface FileRouteTypes {
     | '/replenishment-setup'
     | '/reports'
     | '/sales-return-grn'
+    | '/slotting-config'
     | '/unloading'
     | '/view-dispatch'
     | '/view-manifest'
@@ -429,6 +440,7 @@ export interface FileRouteTypes {
     | '/_wms/replenishment-setup'
     | '/_wms/reports'
     | '/_wms/sales-return-grn'
+    | '/_wms/slotting-config'
     | '/_wms/unloading'
     | '/_wms/view-dispatch'
     | '/_wms/view-manifest'
@@ -484,6 +496,13 @@ declare module '@tanstack/react-router' {
       path: '/unloading'
       fullPath: '/unloading'
       preLoaderRoute: typeof WmsUnloadingRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/slotting-config': {
+      id: '/_wms/slotting-config'
+      path: '/slotting-config'
+      fullPath: '/slotting-config'
+      preLoaderRoute: typeof WmsSlottingConfigRouteImport
       parentRoute: typeof WmsRoute
     }
     '/_wms/sales-return-grn': {
@@ -720,6 +739,7 @@ interface WmsRouteChildren {
   WmsReplenishmentSetupRoute: typeof WmsReplenishmentSetupRoute
   WmsReportsRoute: typeof WmsReportsRoute
   WmsSalesReturnGrnRoute: typeof WmsSalesReturnGrnRoute
+  WmsSlottingConfigRoute: typeof WmsSlottingConfigRoute
   WmsUnloadingRoute: typeof WmsUnloadingRoute
   WmsViewDispatchRoute: typeof WmsViewDispatchRoute
   WmsViewManifestRoute: typeof WmsViewManifestRoute
@@ -756,6 +776,7 @@ const WmsRouteChildren: WmsRouteChildren = {
   WmsReplenishmentSetupRoute: WmsReplenishmentSetupRoute,
   WmsReportsRoute: WmsReportsRoute,
   WmsSalesReturnGrnRoute: WmsSalesReturnGrnRoute,
+  WmsSlottingConfigRoute: WmsSlottingConfigRoute,
   WmsUnloadingRoute: WmsUnloadingRoute,
   WmsViewDispatchRoute: WmsViewDispatchRoute,
   WmsViewManifestRoute: WmsViewManifestRoute,
