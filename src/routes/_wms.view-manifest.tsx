@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Eye, Printer, Truck } from "lucide-react";
+import { Eye, Filter, Printer, Search, Truck, X } from "lucide-react";
 import { PageHeader } from "@/components/wms/page-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +11,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -112,12 +125,67 @@ const STATE_BADGE: Record<ManifestState, string> = {
   shipped: "bg-emerald-500/15 text-emerald-600 ring-emerald-500/30",
 };
 
+// ─── Filters ──────────────────────────────────────────────────────────────────
+
+const ALL = "all";
+
+interface ManifestFilters {
+  search: string;
+  courier: string;
+  createdBy: string;
+}
+
+const emptyFilters: ManifestFilters = {
+  search: "",
+  courier: ALL,
+  createdBy: ALL,
+};
+
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
 function ViewManifestPage() {
   const [rows] = useState<ManifestRow[]>(INITIAL_MANIFESTS);
   const [tab, setTab] = useState<ManifestState>("created");
   const [viewRow, setViewRow] = useState<ManifestRow | null>(null);
+  const [filters, setFilters] = useState<ManifestFilters>(emptyFilters);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+
+  const setField = <K extends keyof ManifestFilters>(
+    key: K,
+    value: ManifestFilters[K],
+  ) => setFilters((f) => ({ ...f, [key]: value }));
+
+  const resetFilters = () => setFilters(emptyFilters);
+
+  const courierOptions = useMemo(
+    () => Array.from(new Set(rows.map((r) => r.courier))).sort(),
+    [rows],
+  );
+  const createdByOptions = useMemo(
+    () => Array.from(new Set(rows.map((r) => r.createdBy))).sort(),
+    [rows],
+  );
+
+  const activeFilterCount = useMemo(() => {
+    let n = 0;
+    if (filters.courier !== ALL) n++;
+    if (filters.createdBy !== ALL) n++;
+    return n;
+  }, [filters]);
+
+  const baseFiltered = useMemo(() => {
+    const q = filters.search.trim().toLowerCase();
+    return rows.filter((r) => {
+      if (q) {
+        const hay = `${r.id} ${r.courier} ${r.createdBy}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      if (filters.courier !== ALL && r.courier !== filters.courier) return false;
+      if (filters.createdBy !== ALL && r.createdBy !== filters.createdBy)
+        return false;
+      return true;
+    });
+  }, [rows, filters]);
 
   const counts = useMemo(() => {
     const c: Record<ManifestState, number> = {
@@ -125,17 +193,114 @@ function ViewManifestPage() {
       part_shipped: 0,
       shipped: 0,
     };
-    rows.forEach((r) => c[r.state]++);
+    baseFiltered.forEach((r) => c[r.state]++);
     return c;
-  }, [rows]);
+  }, [baseFiltered]);
 
-  const visible = rows.filter((r) => r.state === tab);
+  const visible = baseFiltered.filter((r) => r.state === tab);
 
   return (
     <div>
       <PageHeader
         title="View Manifests"
         subtitle="Review created manifests and track their shipping status."
+        actions={
+          <>
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={filters.search}
+                onChange={(e) => setField("search", e.target.value)}
+                placeholder="Search manifest, courier, creator…"
+                className="h-9 w-60 pl-8"
+              />
+              {filters.search && (
+                <button
+                  type="button"
+                  onClick={() => setField("search", "")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+            <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className="h-9 gap-2">
+                  <Filter className="h-3.5 w-3.5" />
+                  Filters
+                  {activeFilterCount > 0 && (
+                    <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium leading-none text-primary-foreground">
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[320px] p-0" align="end" sideOffset={8}>
+                <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
+                  <div className="text-sm font-semibold">Filter manifests</div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                    onClick={resetFilters}
+                    disabled={activeFilterCount === 0}
+                  >
+                    Reset
+                  </Button>
+                </div>
+                <div className="max-h-[60vh] space-y-3 overflow-y-auto p-4">
+                  <FilterField label="Courier">
+                    <Select
+                      value={filters.courier}
+                      onValueChange={(v) => setField("courier", v)}
+                    >
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={ALL}>All</SelectItem>
+                        {courierOptions.map((c) => (
+                          <SelectItem key={c} value={c}>
+                            {c}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FilterField>
+
+                  <FilterField label="Created By">
+                    <Select
+                      value={filters.createdBy}
+                      onValueChange={(v) => setField("createdBy", v)}
+                    >
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={ALL}>All</SelectItem>
+                        {createdByOptions.map((c) => (
+                          <SelectItem key={c} value={c}>
+                            {c}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FilterField>
+                </div>
+                <div className="border-t border-border px-4 py-2.5">
+                  <Button
+                    size="sm"
+                    className="w-full"
+                    onClick={() => setPopoverOpen(false)}
+                  >
+                    Apply
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </>
+        }
       />
 
       <div className="space-y-4 p-6">
@@ -307,6 +472,23 @@ function Info({ label, value }: { label: string; value: string }) {
         {label}
       </div>
       <div className="mt-0.5 font-medium">{value}</div>
+    </div>
+  );
+}
+
+function FilterField({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <label className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        {label}
+      </label>
+      {children}
     </div>
   );
 }

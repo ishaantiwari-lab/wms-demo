@@ -1,6 +1,7 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ArrowLeft, Search, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -279,9 +280,26 @@ function PicklistDetailPage() {
 // ─── View Picklist tab ────────────────────────────────────────────────────────
 
 function ViewPicklistTable() {
+  const [query, setQuery] = useState("");
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return LINES;
+    return LINES.filter((l) =>
+      `${l.status} ${l.storageLocation} ${l.lpn} ${l.productCode} ${l.description} ${l.category} ${l.lot} ${l.remarks}`
+        .toLowerCase()
+        .includes(q),
+    );
+  }, [query]);
+
   return (
-    <div className="rounded-lg border border-border bg-card shadow-sm">
-      <Table>
+    <div className="space-y-3">
+      <SearchBox
+        value={query}
+        onChange={setQuery}
+        placeholder="Search product, code, location, LPN…"
+      />
+      <div className="rounded-lg border border-border bg-card shadow-sm">
+        <Table>
         <TableHeader>
           <TableRow className="bg-muted [&>th]:sticky [&>th]:top-0 [&>th]:z-20 [&>th]:bg-muted [&>th]:shadow-[inset_0_-1px_0_hsl(var(--border))]">
             <TableHead>Status</TableHead>
@@ -297,7 +315,17 @@ function ViewPicklistTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {LINES.map((l) => (
+          {visible.length === 0 ? (
+            <TableRow>
+              <TableCell
+                colSpan={10}
+                className="py-12 text-center text-sm text-muted-foreground"
+              >
+                No lines match your search.
+              </TableCell>
+            </TableRow>
+          ) : (
+            visible.map((l) => (
             <TableRow key={l.lpn}>
               <TableCell>
                 <span
@@ -329,9 +357,11 @@ function ViewPicklistTable() {
                 {l.remarks}
               </TableCell>
             </TableRow>
-          ))}
+            ))
+          )}
         </TableBody>
       </Table>
+      </div>
     </div>
   );
 }
@@ -339,9 +369,26 @@ function ViewPicklistTable() {
 // ─── Picked SKU Details tab ───────────────────────────────────────────────────
 
 function PickedSkuTable() {
+  const [query, setQuery] = useState("");
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return PICKED_SKUS;
+    return PICKED_SKUS.filter((s) =>
+      `${s.pickNo} ${s.orderNo} ${s.storageLocation} ${s.bin} ${s.pickLpn} ${s.productCode} ${s.description} ${s.lotNo} ${s.mrp} ${s.mfg} ${s.expiry} ${s.pickerName}`
+        .toLowerCase()
+        .includes(q),
+    );
+  }, [query]);
+
   return (
-    <div className="rounded-lg border border-border bg-card shadow-sm">
-      <Table>
+    <div className="space-y-3">
+      <SearchBox
+        value={query}
+        onChange={setQuery}
+        placeholder="Search pick, order, product, picker…"
+      />
+      <div className="rounded-lg border border-border bg-card shadow-sm">
+        <Table>
         <TableHeader>
           <TableRow className="bg-muted [&>th]:sticky [&>th]:top-0 [&>th]:z-20 [&>th]:bg-muted [&>th]:shadow-[inset_0_-1px_0_hsl(var(--border))]">
             <TableHead>Pick No</TableHead>
@@ -361,7 +408,17 @@ function PickedSkuTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {PICKED_SKUS.map((s) => (
+          {visible.length === 0 ? (
+            <TableRow>
+              <TableCell
+                colSpan={14}
+                className="py-12 text-center text-sm text-muted-foreground"
+              >
+                No picked SKUs match your search.
+              </TableCell>
+            </TableRow>
+          ) : (
+            visible.map((s) => (
             <TableRow key={s.pickNo}>
               <TableCell className="font-mono text-xs font-medium">
                 {s.pickNo}
@@ -392,9 +449,42 @@ function PickedSkuTable() {
               </TableCell>
               <TableCell className="whitespace-nowrap">{s.pickerName}</TableCell>
             </TableRow>
-          ))}
+            ))
+          )}
         </TableBody>
       </Table>
+      </div>
+    </div>
+  );
+}
+
+function SearchBox({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+}) {
+  return (
+    <div className="relative w-full max-w-sm">
+      <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+      <Input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="h-9 pl-8"
+      />
+      {value && (
+        <button
+          type="button"
+          onClick={() => onChange("")}
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
+      )}
     </div>
   );
 }

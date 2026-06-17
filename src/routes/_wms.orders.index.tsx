@@ -1,6 +1,6 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Filter, Search, X } from "lucide-react";
+import { Columns3, Filter, Search, X } from "lucide-react";
 import { PageHeader } from "@/components/wms/page-header";
 import { StatusBadge } from "@/components/wms/status-badge";
 import { Button } from "@/components/ui/button";
@@ -84,6 +84,72 @@ const emptyFilters: Filters = {
 
 const ALL = "all";
 
+// ── Column registry (Shopify-style show/hide) ────────────────────────────────
+// `default: true` columns are shown on first load; the rest are optional extras
+// the user can switch on from the "Columns" menu.
+type ColKey =
+  | "orderNo"
+  | "extOrderNo"
+  | "orderType"
+  | "channel"
+  | "seller"
+  | "courier"
+  | "sla"
+  | "city"
+  | "state"
+  | "paymentMode"
+  | "status"
+  | "totalQuantity"
+  | "createdAt"
+  | "shipBy"
+  | "shipAfter"
+  | "dispatchDate";
+
+const COLUMNS: { key: ColKey; label: string; default: boolean }[] = [
+  { key: "orderNo", label: "Order No", default: true },
+  { key: "extOrderNo", label: "Ext Order No", default: true },
+  { key: "orderType", label: "Order Type", default: true },
+  { key: "channel", label: "Channel", default: true },
+  { key: "seller", label: "Seller", default: true },
+  { key: "courier", label: "Courier", default: true },
+  { key: "sla", label: "SLA", default: true },
+  { key: "city", label: "City", default: true },
+  { key: "state", label: "State", default: true },
+  { key: "paymentMode", label: "Payment Mode", default: true },
+  { key: "status", label: "Status", default: true },
+  { key: "totalQuantity", label: "Total Quantity", default: true },
+  { key: "createdAt", label: "Created At", default: true },
+  { key: "shipBy", label: "Ship By Date", default: false },
+  { key: "shipAfter", label: "Ship After Date", default: false },
+  { key: "dispatchDate", label: "Dispatch Date", default: false },
+];
+
+const defaultVisibleCols = COLUMNS.reduce(
+  (acc, c) => ({ ...acc, [c.key]: c.default }),
+  {} as Record<ColKey, boolean>,
+);
+
+// Date-only formatter for the optional date columns.
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+
+// "Ship after" = the earliest an order may leave (here, the order date).
+function shipAfterDate(o: Order): Date {
+  return new Date(o.createdAt);
+}
+
+// Dispatch date only exists once an order has actually left the warehouse.
+function dispatchDateFor(o: Order): Date | null {
+  if (o.status !== "dispatched") return null;
+  const d = slaDeadline(o.createdAt, o.sla);
+  // Dispatched a few hours before the SLA cut-off, for a realistic-looking date.
+  return new Date(d.getTime() - 6 * 60 * 60 * 1000);
+}
+
 // Illustrative trend series for the dashboard sparklines (last 7 days).
 const ORDERS_TODAY_SERIES = [6, 9, 7, 12, 10, 14, 18];
 const WEEK_ORDERS_SERIES = [42, 55, 48, 61, 53, 67, 72];
@@ -124,7 +190,14 @@ function OrdersPage() {
   const navigate = useNavigate();
   const [filters, setFilters] = useState<Filters>(emptyFilters);
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const [columnsOpen, setColumnsOpen] = useState(false);
+  const [visibleCols, setVisibleCols] =
+    useState<Record<ColKey, boolean>>(defaultVisibleCols);
   const [statusTab, setStatusTab] = useState<string>(ALL);
+
+  const toggleCol = (key: ColKey) =>
+    setVisibleCols((c) => ({ ...c, [key]: !c[key] }));
+  const visibleColCount = COLUMNS.filter((c) => visibleCols[c.key]).length;
 
   // Distinct sellers from the dataset, for the seller dropdown
   const sellerOptions = useMemo(
@@ -580,30 +653,82 @@ function OrdersPage() {
           })}
         </div>
 
-        <div className="rounded-lg border border-border bg-card shadow-sm">
+        <div className="relative overflow-hidden rounded-lg border border-border bg-card shadow-sm [&>div]:max-h-[calc(100vh-19rem)] [&>div]:overflow-auto">
+          {/* Floating column-config button pinned over the header's top-right */}
+          <Popover open={columnsOpen} onOpenChange={setColumnsOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="absolute right-2 top-1.5 z-30 h-7 w-7 bg-background/80 shadow-sm backdrop-blur"
+                aria-label="Edit columns"
+                title="Edit columns"
+              >
+                <Columns3 className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[260px] p-0" align="end" sideOffset={8}>
+              <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
+                <div className="text-sm font-semibold">Edit columns</div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 px-2 text-xs"
+                  onClick={() => setVisibleCols(defaultVisibleCols)}
+                >
+                  Reset
+                </Button>
+              </div>
+              <div className="max-h-[60vh] space-y-0.5 overflow-y-auto p-2">
+                {COLUMNS.map((c) => (
+                  <label
+                    key={c.key}
+                    className="flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm hover:bg-muted"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={visibleCols[c.key]}
+                      onChange={() => toggleCol(c.key)}
+                      className="h-4 w-4 cursor-pointer accent-primary"
+                    />
+                    {c.label}
+                  </label>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted [&>th]:sticky [&>th]:top-0 [&>th]:z-20 [&>th]:bg-muted [&>th]:shadow-[inset_0_-1px_0_hsl(var(--border))]">
-                <TableHead>Order No</TableHead>
-                <TableHead>Ext Order No</TableHead>
-                <TableHead>Order Type</TableHead>
-                <TableHead>Channel</TableHead>
-                <TableHead>Seller</TableHead>
-                <TableHead>Courier</TableHead>
-                <TableHead>SLA</TableHead>
-                <TableHead>City</TableHead>
-                <TableHead>State</TableHead>
-                <TableHead>Payment Mode</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Total Quantity</TableHead>
-                <TableHead>Created At</TableHead>
+                {visibleCols.orderNo && <TableHead>Order No</TableHead>}
+                {visibleCols.extOrderNo && <TableHead>Ext Order No</TableHead>}
+                {visibleCols.orderType && <TableHead>Order Type</TableHead>}
+                {visibleCols.channel && <TableHead>Channel</TableHead>}
+                {visibleCols.seller && <TableHead>Seller</TableHead>}
+                {visibleCols.courier && <TableHead>Courier</TableHead>}
+                {visibleCols.sla && <TableHead>SLA</TableHead>}
+                {visibleCols.city && <TableHead>City</TableHead>}
+                {visibleCols.state && <TableHead>State</TableHead>}
+                {visibleCols.paymentMode && <TableHead>Payment Mode</TableHead>}
+                {visibleCols.status && <TableHead>Status</TableHead>}
+                {visibleCols.totalQuantity && (
+                  <TableHead className="text-right">Total Quantity</TableHead>
+                )}
+                {visibleCols.createdAt && <TableHead>Created At</TableHead>}
+                {visibleCols.shipBy && <TableHead>Ship By Date</TableHead>}
+                {visibleCols.shipAfter && (
+                  <TableHead>Ship After Date</TableHead>
+                )}
+                {visibleCols.dispatchDate && (
+                  <TableHead>Dispatch Date</TableHead>
+                )}
               </TableRow>
             </TableHeader>
             <TableBody>
               {filtered.length === 0 && (
                 <TableRow>
                   <TableCell
-                    colSpan={13}
+                    colSpan={visibleColCount}
                     className="py-10 text-center text-sm text-muted-foreground"
                   >
                     No orders match the current filters.
@@ -614,6 +739,7 @@ function OrdersPage() {
                 const deadline = slaDeadline(o.createdAt, o.sla);
                 const rem = fmtSlaRemaining(deadline);
                 const dest = destinationFor(o);
+                const dispatched = dispatchDateFor(o);
                 return (
                   <TableRow
                     key={o.orderNo}
@@ -625,74 +751,113 @@ function OrdersPage() {
                     }
                     className="cursor-pointer transition-colors hover:bg-muted/50"
                   >
-                    <TableCell className="font-medium">
-                      <Link
-                        to="/orders/$orderNo"
-                        params={{ orderNo: o.orderNo }}
-                        className="text-primary hover:underline"
-                      >
-                        {o.orderNo}
-                      </Link>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {o.extOrderNo}
-                    </TableCell>
-                    <TableCell>
-                      <span
-                        className={cn(
-                          "rounded-md border px-1.5 py-0.5 text-[10px] font-bold",
-                          o.orderType === "B2B"
-                            ? "border-purple-300 bg-purple-50 text-purple-700"
-                            : "border-cyan-300 bg-cyan-50 text-cyan-700",
+                    {visibleCols.orderNo && (
+                      <TableCell className="font-medium">
+                        <Link
+                          to="/orders/$orderNo"
+                          params={{ orderNo: o.orderNo }}
+                          className="text-primary hover:underline"
+                        >
+                          {o.orderNo}
+                        </Link>
+                      </TableCell>
+                    )}
+                    {visibleCols.extOrderNo && (
+                      <TableCell className="text-muted-foreground">
+                        {o.extOrderNo}
+                      </TableCell>
+                    )}
+                    {visibleCols.orderType && (
+                      <TableCell>
+                        <span
+                          className={cn(
+                            "rounded-md border px-1.5 py-0.5 text-[10px] font-bold",
+                            o.orderType === "B2B"
+                              ? "border-purple-300 bg-purple-50 text-purple-700"
+                              : "border-cyan-300 bg-cyan-50 text-cyan-700",
+                          )}
+                        >
+                          {o.orderType}
+                        </span>
+                      </TableCell>
+                    )}
+                    {visibleCols.channel && <TableCell>{o.channel}</TableCell>}
+                    {visibleCols.seller && <TableCell>{o.seller}</TableCell>}
+                    {visibleCols.courier && <TableCell>{o.courier}</TableCell>}
+                    {visibleCols.sla && (
+                      <TableCell className="whitespace-nowrap">
+                        <div className="font-mono text-xs">
+                          {fmtTimestamp(deadline)}
+                        </div>
+                        <div
+                          className={cn(
+                            "text-[10px] font-medium",
+                            rem.overdue
+                              ? "text-destructive"
+                              : rem.close
+                                ? "text-orange-600"
+                                : "text-muted-foreground",
+                          )}
+                        >
+                          {rem.text}
+                        </div>
+                      </TableCell>
+                    )}
+                    {visibleCols.city && (
+                      <TableCell>
+                        {dest ? (
+                          dest.city
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
                         )}
-                      >
-                        {o.orderType}
-                      </span>
-                    </TableCell>
-                    <TableCell>{o.channel}</TableCell>
-                    <TableCell>{o.seller}</TableCell>
-                    <TableCell>{o.courier}</TableCell>
-                    <TableCell className="whitespace-nowrap">
-                      <div className="font-mono text-xs">
-                        {fmtTimestamp(deadline)}
-                      </div>
-                      <div
-                        className={cn(
-                          "text-[10px] font-medium",
-                          rem.overdue
-                            ? "text-destructive"
-                            : rem.close
-                              ? "text-orange-600"
-                              : "text-muted-foreground",
+                      </TableCell>
+                    )}
+                    {visibleCols.state && (
+                      <TableCell>
+                        {dest ? (
+                          dest.state
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
                         )}
-                      >
-                        {rem.text}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {dest ? (
-                        dest.city
-                      ) : (
-                        <span className="text-muted-foreground">—</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {dest ? (
-                        dest.state
-                      ) : (
-                        <span className="text-muted-foreground">—</span>
-                      )}
-                    </TableCell>
-                    <TableCell>{o.paymentMode}</TableCell>
-                    <TableCell>
-                      <StatusBadge status={o.status} />
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {o.totalQuantity}
-                    </TableCell>
-                    <TableCell className="font-mono text-xs whitespace-nowrap">
-                      {fmtTimestamp(new Date(o.createdAt))}
-                    </TableCell>
+                      </TableCell>
+                    )}
+                    {visibleCols.paymentMode && (
+                      <TableCell>{o.paymentMode}</TableCell>
+                    )}
+                    {visibleCols.status && (
+                      <TableCell>
+                        <StatusBadge status={o.status} />
+                      </TableCell>
+                    )}
+                    {visibleCols.totalQuantity && (
+                      <TableCell className="text-right tabular-nums">
+                        {o.totalQuantity}
+                      </TableCell>
+                    )}
+                    {visibleCols.createdAt && (
+                      <TableCell className="font-mono text-xs whitespace-nowrap">
+                        {fmtTimestamp(new Date(o.createdAt))}
+                      </TableCell>
+                    )}
+                    {visibleCols.shipBy && (
+                      <TableCell className="whitespace-nowrap text-xs">
+                        {fmtDate(deadline)}
+                      </TableCell>
+                    )}
+                    {visibleCols.shipAfter && (
+                      <TableCell className="whitespace-nowrap text-xs">
+                        {fmtDate(shipAfterDate(o))}
+                      </TableCell>
+                    )}
+                    {visibleCols.dispatchDate && (
+                      <TableCell className="whitespace-nowrap text-xs">
+                        {dispatched ? (
+                          fmtDate(dispatched)
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })}

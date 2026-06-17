@@ -377,6 +377,76 @@ export const orders: Order[] = [
       { sku: "VB-CON-250", name: "Botanical Conditioner 250ml", quantity: 1 },
     ],
   }),
+  // ── Bulk filler orders so the table scrolls (sticky-header demo) ──────────
+  ...Array.from({ length: 60 }, (_, i) => {
+    const channels = ["Amazon", "Flipkart", "Shopify", "Myntra"] as const;
+    const sellers = [
+      "Northwind Apparel",
+      "Acme Electronics",
+      "Loom & Linen",
+      "Verde Beauty",
+    ];
+    const couriers = [
+      "Delhivery",
+      "BlueDart",
+      "XpressBees",
+      "Ecom Express",
+    ] as const;
+    const slas = ["Same Day", "Next Day", "Standard"] as const;
+    const payments = ["Prepaid", "COD"] as const;
+    const statuses: OrderStatus[] = [
+      "created",
+      "picked",
+      "packed",
+      "manifested",
+      "dispatched",
+    ];
+    const products: { sku: string; name: string }[] = [
+      { sku: "NW-TSH-BLK-M", name: "Crew Tee Black / M" },
+      { sku: "AC-EAR-PRO", name: "Wireless Earbuds Pro" },
+      { sku: "LL-BED-KNG", name: "Cotton Bedsheet King" },
+      { sku: "VB-SER-30", name: "Vitamin C Serum 30ml" },
+      { sku: "NW-JKT-NVY-L", name: "Bomber Jacket Navy / L" },
+      { sku: "AC-CHG-65W", name: "65W GaN Charger" },
+      { sku: "LL-TOW-BTH", name: "Bath Towel Charcoal" },
+      { sku: "VB-LIP-RED", name: "Matte Lipstick Crimson" },
+    ];
+
+    const seq = 100246 + i;
+    const channel = channels[i % channels.length];
+    const seller = sellers[(i * 3) % sellers.length];
+    const courier = couriers[(i * 2) % couriers.length];
+    const sla = slas[i % slas.length];
+    const paymentMode = payments[i % payments.length];
+    const status = statuses[i % statuses.length];
+
+    // Spread created times across two days, descending minutes.
+    const day = i % 2 === 0 ? "01" : "02";
+    const hh = pad(6 + (i % 16));
+    const mm = pad((i * 7) % 60);
+
+    const p1 = products[i % products.length];
+    const p2 = products[(i + 3) % products.length];
+    const items = [
+      { sku: p1.sku, name: p1.name, quantity: 1 + (i % 3) },
+      ...(i % 2 === 0
+        ? [{ sku: p2.sku, name: p2.name, quantity: 1 + (i % 2) }]
+        : []),
+    ];
+
+    return make({
+      orderNo: `WMS-${seq}`,
+      extOrderNo: `EXT-${seq}`,
+      channel,
+      seller,
+      courier,
+      sla,
+      paymentMode,
+      status,
+      createdAt: `2026-06-${day}T${hh}:${mm}:00Z`,
+      items,
+    });
+  }),
 ];
 
 export const getOrder = (orderNo: string) =>

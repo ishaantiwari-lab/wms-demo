@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Eye, UserPlus } from "lucide-react";
+import { Eye, Filter, Search, UserPlus, X } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/wms/page-header";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -151,11 +157,75 @@ const TABS: Array<{ key: PackState; label: string }> = [
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
+const ALL = "all";
+
+interface PackFilters {
+  search: string;
+  channel: string;
+  courier: string;
+  sla: string;
+  assignedTo: string;
+}
+
+const emptyFilters: PackFilters = {
+  search: "",
+  channel: ALL,
+  courier: ALL,
+  sla: ALL,
+  assignedTo: ALL,
+};
+
 function ViewPackPage() {
   const [rows, setRows] = useState<PackRow[]>(INITIAL_PACKS);
   const [tab, setTab] = useState<PackState>("open");
   const [assignRow, setAssignRow] = useState<PackRow | null>(null);
   const [assignTo, setAssignTo] = useState<string>("");
+  const [filters, setFilters] = useState<PackFilters>(emptyFilters);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+
+  const setField = <K extends keyof PackFilters>(
+    key: K,
+    value: PackFilters[K],
+  ) => setFilters((f) => ({ ...f, [key]: value }));
+
+  const resetFilters = () => setFilters(emptyFilters);
+
+  const channelOptions = useMemo(
+    () => Array.from(new Set(rows.map((r) => r.channel))).sort(),
+    [rows],
+  );
+  const courierOptions = useMemo(
+    () => Array.from(new Set(rows.map((r) => r.courier))).sort(),
+    [rows],
+  );
+
+  const activeFilterCount = useMemo(() => {
+    let n = 0;
+    if (filters.channel !== ALL) n++;
+    if (filters.courier !== ALL) n++;
+    if (filters.sla !== ALL) n++;
+    if (filters.assignedTo !== ALL) n++;
+    return n;
+  }, [filters]);
+
+  const baseFiltered = useMemo(() => {
+    const q = filters.search.trim().toLowerCase();
+    return rows.filter((r) => {
+      if (q) {
+        const hay = `${r.id} ${r.channel} ${r.orderNo} ${r.courier} ${r.assignedTo ?? ""}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      if (filters.channel !== ALL && r.channel !== filters.channel) return false;
+      if (filters.courier !== ALL && r.courier !== filters.courier) return false;
+      if (filters.sla !== ALL && r.sla !== filters.sla) return false;
+      if (filters.assignedTo !== ALL) {
+        if (filters.assignedTo === "Unassigned") {
+          if (r.assignedTo) return false;
+        } else if (r.assignedTo !== filters.assignedTo) return false;
+      }
+      return true;
+    });
+  }, [rows, filters]);
 
   const counts = useMemo(() => {
     const c: Record<PackState, number> = {
@@ -163,11 +233,11 @@ function ViewPackPage() {
       part_packed: 0,
       packed: 0,
     };
-    rows.forEach((r) => c[r.state]++);
+    baseFiltered.forEach((r) => c[r.state]++);
     return c;
-  }, [rows]);
+  }, [baseFiltered]);
 
-  const visible = rows.filter((r) => r.state === tab);
+  const visible = baseFiltered.filter((r) => r.state === tab);
 
   const openAssign = (row: PackRow) => {
     setAssignRow(row);
@@ -192,6 +262,144 @@ function ViewPackPage() {
       <PageHeader
         title="View Packlists"
         subtitle="Review packlists, and assign or re-assign them to operators."
+        actions={
+          <>
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={filters.search}
+                onChange={(e) => setField("search", e.target.value)}
+                placeholder="Search packlist, order, operator…"
+                className="h-9 w-60 pl-8"
+              />
+              {filters.search && (
+                <button
+                  type="button"
+                  onClick={() => setField("search", "")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+            <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className="h-9 gap-2">
+                  <Filter className="h-3.5 w-3.5" />
+                  Filters
+                  {activeFilterCount > 0 && (
+                    <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium leading-none text-primary-foreground">
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[320px] p-0" align="end" sideOffset={8}>
+                <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
+                  <div className="text-sm font-semibold">Filter packlists</div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                    onClick={resetFilters}
+                    disabled={activeFilterCount === 0}
+                  >
+                    Reset
+                  </Button>
+                </div>
+                <div className="max-h-[60vh] space-y-3 overflow-y-auto p-4">
+                  <FilterField label="Channel">
+                    <Select
+                      value={filters.channel}
+                      onValueChange={(v) => setField("channel", v)}
+                    >
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={ALL}>All</SelectItem>
+                        {channelOptions.map((c) => (
+                          <SelectItem key={c} value={c}>
+                            {c}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FilterField>
+
+                  <FilterField label="Courier">
+                    <Select
+                      value={filters.courier}
+                      onValueChange={(v) => setField("courier", v)}
+                    >
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={ALL}>All</SelectItem>
+                        {courierOptions.map((c) => (
+                          <SelectItem key={c} value={c}>
+                            {c}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FilterField>
+
+                  <FilterField label="SLA">
+                    <Select
+                      value={filters.sla}
+                      onValueChange={(v) => setField("sla", v)}
+                    >
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={ALL}>All</SelectItem>
+                        {(["Same Day", "Next Day", "Standard"] as const).map(
+                          (s) => (
+                            <SelectItem key={s} value={s}>
+                              {s}
+                            </SelectItem>
+                          ),
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </FilterField>
+
+                  <FilterField label="Assigned To">
+                    <Select
+                      value={filters.assignedTo}
+                      onValueChange={(v) => setField("assignedTo", v)}
+                    >
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={ALL}>All</SelectItem>
+                        <SelectItem value="Unassigned">Unassigned</SelectItem>
+                        {OPERATORS.map((op) => (
+                          <SelectItem key={op} value={op}>
+                            {op}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FilterField>
+                </div>
+                <div className="border-t border-border px-4 py-2.5">
+                  <Button
+                    size="sm"
+                    className="w-full"
+                    onClick={() => setPopoverOpen(false)}
+                  >
+                    Apply
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </>
+        }
       />
 
       <div className="space-y-4 p-6">
@@ -364,6 +572,23 @@ function ViewPackPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+function FilterField({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <label className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        {label}
+      </label>
+      {children}
     </div>
   );
 }

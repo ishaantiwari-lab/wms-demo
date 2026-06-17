@@ -12,7 +12,7 @@ function WmsLayout() {
       <div className="flex min-h-screen w-full bg-muted/30">
         <AppSidebar />
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex h-12 items-center gap-2 border-b border-border bg-background px-4">
+          <header className="sticky top-0 z-30 flex h-12 items-center gap-2 border-b border-border bg-background px-4">
             <SidebarTrigger />
             <div className="text-sm font-medium text-muted-foreground">
               Warehouse Management · Outbound

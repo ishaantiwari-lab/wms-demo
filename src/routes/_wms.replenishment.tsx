@@ -1,16 +1,32 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
 import {
-  AlertTriangle,
-  CheckCircle2,
-  Download,
-  FileSpreadsheet,
-  RotateCcw,
-  Upload,
+  Check,
+  ChevronsUpDown,
+  Filter,
+  Info,
+  Search,
+  Settings,
+  UserPlus,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -18,295 +34,1044 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_wms/replenishment")({
   head: () => ({
-    meta: [{ title: "Replenishment Policy — Inventory" }],
+    meta: [{ title: "Replenishment — Inventory" }],
   }),
   component: Replenishment,
 });
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
+const ALL = "all";
 
-const WAREHOUSES = [
-  { code: "DEL01", name: "Delhi — Bilaspur" },
-  { code: "MUM01", name: "Mumbai — Bhiwandi" },
-  { code: "BLR01", name: "Bengaluru — Hoskote" },
-  { code: "HYD01", name: "Hyderabad — Medchal" },
+// Operators a replenishment job can be assigned to.
+const OPERATORS = [
+  "Ravi Kumar",
+  "Anita Desai",
+  "Mohit Sharma",
+  "Priya Nair",
+  "Sandeep Roy",
 ];
 
-interface PolicyRow {
+// Illustrative trend series for the summary sparklines (last 7 days).
+const PENDING_JOBS_SERIES = [6, 5, 7, 6, 8, 5, 4];
+const PENDING_ORDERS_SERIES = [180, 210, 195, 230, 205, 240, 209];
+const PENDING_QTY_SERIES = [320, 360, 340, 400, 380, 420, 360];
+
+// ─── Columns (with hover explanations) ───────────────────────────────────────
+
+const COLUMNS: {
+  key: string;
+  label: string;
+  help?: string;
+  align?: "right";
+}[] = [
+  {
+    key: "orderNo",
+    label: "RO No",
+    help: "Replenishment Order number — unique reference for this job, generated when the trigger fires.",
+  },
+  {
+    key: "status",
+    label: "Status",
+    help: "Where the job stands — Open (not yet assigned), Job Assigned, Completed, or Cancelled.",
+  },
+  {
+    key: "sku",
+    label: "SKU",
+    help: "Stock-keeping unit code of the item that needs replenishing.",
+  },
+  {
+    key: "description",
+    label: "Description",
+    // No tooltip on this column.
+  },
+  {
+    key: "orderCount",
+    label: "Order Count",
+    help: "Number of open customer orders waiting on this item — drives how urgent the top-up is.",
+    align: "right",
+  },
+  {
+    key: "qtyAvailable",
+    label: "Qty Available",
+    help: "Units currently available in the pick-face location for this SKU.",
+    align: "right",
+  },
+  {
+    key: "packSize",
+    label: "Pack Size",
+    help: "Units per pack/case for this SKU — replenishment moves in whole packs.",
+    align: "right",
+  },
+  {
+    key: "suggestedQty",
+    label: "Suggested Qty",
+    help: "Quantity the system recommends moving, rounded to pack size to refill up to Max.",
+    align: "right",
+  },
+  {
+    key: "replenishmentBin",
+    label: "Replenishment Bin",
+    help: "Source location (reserve / bulk storage) the stock is pulled from.",
+  },
+  {
+    key: "allocatedBin",
+    label: "Allocated Bin",
+    help: "Destination pick-face location the stock is moved into.",
+  },
+];
+
+// ─── Mock data ───────────────────────────────────────────────────────────────
+
+type RepStatus = "Open" | "Job Assigned" | "Completed" | "Cancelled";
+
+interface RepRow {
+  orderNo: string;
+  status: RepStatus;
+  assignee?: string;
   sku: string;
-  name: string;
-  min: number;
-  max: number;
-  updatedAt: string;
+  description: string;
+  orderCount: number;
+  qtyAvailable: number;
+  packSize: number;
+  suggestedQty: number;
+  replenishmentBin: string;
+  allocatedBin: string;
 }
 
-const CURRENT_POLICY: PolicyRow[] = [
-  { sku: "600179", name: "boAt Airdopes 141 TWS Earbuds", min: 20, max: 100, updatedAt: "09/06/2026" },
-  { sku: "600822", name: "boAt Rockerz 450 Bluetooth Headphones", min: 10, max: 50, updatedAt: "09/06/2026" },
-  { sku: "600868", name: "boAt Bassheads 100 Wired Earphones", min: 15, max: 75, updatedAt: "08/06/2026" },
-  { sku: "600900", name: "boAt Stone 350 Bluetooth Speaker", min: 8, max: 40, updatedAt: "08/06/2026" },
-  { sku: "601000", name: "boAt Wave Call Smartwatch", min: 12, max: 60, updatedAt: "07/06/2026" },
-  { sku: "601002", name: "boAt Type-C 500 Charging Cable", min: 30, max: 150, updatedAt: "07/06/2026" },
-  { sku: "601005", name: "boAt Aavante Bar 1160 Soundbar", min: 5, max: 25, updatedAt: "05/06/2026" },
+const ROWS: RepRow[] = [
+  {
+    orderNo: "REP-20460",
+    status: "Open",
+    sku: "600179",
+    description: "boAt Airdopes 141 TWS Earbuds",
+    orderCount: 34,
+    qtyAvailable: 12,
+    packSize: 10,
+    suggestedQty: 90,
+    replenishmentBin: "RSV-A-04-02",
+    allocatedBin: "PF-12-03",
+  },
+  {
+    orderNo: "REP-20461",
+    status: "Completed",
+    assignee: "Anita Desai",
+    sku: "600822",
+    description: "boAt Rockerz 450 Bluetooth Headphones",
+    orderCount: 18,
+    qtyAvailable: 6,
+    packSize: 5,
+    suggestedQty: 45,
+    replenishmentBin: "RSV-B-01-07",
+    allocatedBin: "PF-08-01",
+  },
+  {
+    orderNo: "REP-20462",
+    status: "Open",
+    sku: "600868",
+    description: "boAt Bassheads 100 Wired Earphones",
+    orderCount: 52,
+    qtyAvailable: 9,
+    packSize: 15,
+    suggestedQty: 60,
+    replenishmentBin: "RSV-A-02-05",
+    allocatedBin: "PF-04-06",
+  },
+  {
+    orderNo: "REP-20463",
+    status: "Cancelled",
+    sku: "600900",
+    description: "boAt Stone 350 Bluetooth Speaker",
+    orderCount: 7,
+    qtyAvailable: 4,
+    packSize: 8,
+    suggestedQty: 32,
+    replenishmentBin: "RSV-C-03-01",
+    allocatedBin: "PF-15-02",
+  },
+  {
+    orderNo: "REP-20464",
+    status: "Completed",
+    assignee: "Ravi Kumar",
+    sku: "601000",
+    description: "boAt Wave Call Smartwatch",
+    orderCount: 23,
+    qtyAvailable: 11,
+    packSize: 12,
+    suggestedQty: 48,
+    replenishmentBin: "RSV-B-04-03",
+    allocatedBin: "PF-09-04",
+  },
+  {
+    orderNo: "REP-20465",
+    status: "Open",
+    sku: "601002",
+    description: "boAt Type-C 500 Charging Cable",
+    orderCount: 88,
+    qtyAvailable: 22,
+    packSize: 30,
+    suggestedQty: 120,
+    replenishmentBin: "RSV-A-06-09",
+    allocatedBin: "PF-02-07",
+  },
+  {
+    orderNo: "REP-20466",
+    status: "Job Assigned",
+    assignee: "Mohit Sharma",
+    sku: "601005",
+    description: "boAt Aavante Bar 1160 Soundbar",
+    orderCount: 5,
+    qtyAvailable: 3,
+    packSize: 5,
+    suggestedQty: 25,
+    replenishmentBin: "RSV-C-01-02",
+    allocatedBin: "PF-18-01",
+  },
 ];
 
-interface UploadSummary {
-  total: number;
-  successful: number;
-  failed: number;
-  duplicate: number;
-  updated: number;
-  new: number;
-}
-
-const MOCK_SUMMARY: UploadSummary = {
-  total: 500,
-  successful: 495,
-  failed: 5,
-  duplicate: 8,
-  updated: 312,
-  new: 183,
+const STATUS_STYLES: Record<RepStatus, string> = {
+  Open: "bg-amber-50 text-amber-700 ring-amber-200",
+  "Job Assigned": "bg-blue-50 text-blue-700 ring-blue-200",
+  Completed: "bg-green-50 text-green-700 ring-green-200",
+  Cancelled: "bg-red-50 text-red-700 ring-red-200",
 };
 
-// ─── Screen ───────────────────────────────────────────────────────────────────
+// ─── Filters ─────────────────────────────────────────────────────────────────
+
+interface Filters {
+  search: string;
+  status: string;
+  sku: string;
+  replenishmentBin: string;
+  allocatedBin: string;
+  orderCountMin: string;
+  orderCountMax: string;
+  qtyAvailableMin: string;
+  qtyAvailableMax: string;
+  packSizeMin: string;
+  packSizeMax: string;
+  suggestedQtyMin: string;
+  suggestedQtyMax: string;
+}
+
+const emptyFilters: Filters = {
+  search: "",
+  status: ALL,
+  sku: ALL,
+  replenishmentBin: ALL,
+  allocatedBin: ALL,
+  orderCountMin: "",
+  orderCountMax: "",
+  qtyAvailableMin: "",
+  qtyAvailableMax: "",
+  packSizeMin: "",
+  packSizeMax: "",
+  suggestedQtyMin: "",
+  suggestedQtyMax: "",
+};
 
 function Replenishment() {
-  const [warehouse, setWarehouse] = useState("DEL01");
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [overwrite, setOverwrite] = useState(true);
-  const [summary, setSummary] = useState<UploadSummary | null>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
+  const [rows, setRows] = useState<RepRow[]>(ROWS);
+  const [filters, setFilters] = useState<Filters>(emptyFilters);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [assignee, setAssignee] = useState("");
 
-  const reset = () => {
-    setFileName(null);
-    setSummary(null);
-    if (fileRef.current) fileRef.current.value = "";
+  const setField = <K extends keyof Filters>(key: K, value: Filters[K]) =>
+    setFilters((f) => ({ ...f, [key]: value }));
+
+  // Dropdown options derived from the data
+  const skuOptions = useMemo(
+    () => Array.from(new Set(ROWS.map((r) => r.sku))).sort(),
+    [],
+  );
+  const replenishmentBinOptions = useMemo(
+    () => Array.from(new Set(ROWS.map((r) => r.replenishmentBin))).sort(),
+    [],
+  );
+  const allocatedBinOptions = useMemo(
+    () => Array.from(new Set(ROWS.map((r) => r.allocatedBin))).sort(),
+    [],
+  );
+
+  const activeFilterCount = useMemo(() => {
+    let n = 0;
+    if (filters.status !== ALL) n++;
+    if (filters.sku !== ALL) n++;
+    if (filters.replenishmentBin !== ALL) n++;
+    if (filters.allocatedBin !== ALL) n++;
+    if (filters.orderCountMin !== "" || filters.orderCountMax !== "") n++;
+    if (filters.qtyAvailableMin !== "" || filters.qtyAvailableMax !== "") n++;
+    if (filters.packSizeMin !== "" || filters.packSizeMax !== "") n++;
+    if (filters.suggestedQtyMin !== "" || filters.suggestedQtyMax !== "") n++;
+    return n;
+  }, [filters]);
+
+  const inRange = (v: number, min: string, max: string) => {
+    if (min !== "" && v < Number(min)) return false;
+    if (max !== "" && v > Number(max)) return false;
+    return true;
   };
 
-  const handleUpload = () => {
-    if (!fileName) {
-      toast.error("Please upload an Excel / CSV file first");
+  const visible = useMemo(() => {
+    const q = filters.search.trim().toLowerCase();
+    return rows.filter((r) => {
+      if (q) {
+        const hay =
+          `${r.orderNo} ${r.sku} ${r.description} ${r.replenishmentBin} ${r.allocatedBin}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      if (filters.status !== ALL && r.status !== filters.status) return false;
+      if (filters.sku !== ALL && r.sku !== filters.sku) return false;
+      if (
+        filters.replenishmentBin !== ALL &&
+        r.replenishmentBin !== filters.replenishmentBin
+      )
+        return false;
+      if (
+        filters.allocatedBin !== ALL &&
+        r.allocatedBin !== filters.allocatedBin
+      )
+        return false;
+      if (!inRange(r.orderCount, filters.orderCountMin, filters.orderCountMax))
+        return false;
+      if (
+        !inRange(
+          r.qtyAvailable,
+          filters.qtyAvailableMin,
+          filters.qtyAvailableMax,
+        )
+      )
+        return false;
+      if (!inRange(r.packSize, filters.packSizeMin, filters.packSizeMax))
+        return false;
+      if (
+        !inRange(
+          r.suggestedQty,
+          filters.suggestedQtyMin,
+          filters.suggestedQtyMax,
+        )
+      )
+        return false;
+      return true;
+    });
+  }, [rows, filters]);
+
+  // Pending = work still to be done (open or assigned, not completed/cancelled).
+  const pendingJobs = rows.filter(
+    (r) => r.status === "Open" || r.status === "Job Assigned",
+  );
+  const pendingOrders = pendingJobs.reduce((s, r) => s + r.orderCount, 0);
+  const pendingQty = pendingJobs.reduce((s, r) => s + r.suggestedQty, 0);
+
+  // Selection only applies to Open (assignable) jobs that are currently visible.
+  const openVisible = visible.filter((r) => r.status === "Open");
+  const selectedCount = selectedIds.size;
+  const allOpenSelected =
+    openVisible.length > 0 &&
+    openVisible.every((r) => selectedIds.has(r.orderNo));
+  const headerChecked: boolean | "indeterminate" = allOpenSelected
+    ? true
+    : selectedCount > 0
+      ? "indeterminate"
+      : false;
+
+  const toggleRow = (id: string) =>
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
+  const toggleAll = () =>
+    setSelectedIds((prev) => {
+      if (openVisible.every((r) => prev.has(r.orderNo))) return new Set();
+      return new Set(openVisible.map((r) => r.orderNo));
+    });
+
+  const assignSelected = () => {
+    if (!assignee) {
+      toast.error("Pick an operator to assign to");
       return;
     }
-    setSummary(MOCK_SUMMARY);
-    toast.success(`Policy uploaded for ${warehouse}`);
+    setRows((prev) =>
+      prev.map((r) =>
+        selectedIds.has(r.orderNo)
+          ? { ...r, status: "Job Assigned", assignee }
+          : r,
+      ),
+    );
+    toast.success(
+      `${selectedCount} job${selectedCount > 1 ? "s" : ""} assigned to ${assignee}`,
+    );
+    setSelectedIds(new Set());
+    setAssignee("");
   };
 
-  return (
-    <div className="space-y-6 p-6">
-      {/* Page header */}
-      <div>
-        <h1 className="text-xl font-semibold">Replenishment Policy</h1>
-        <p className="mt-0.5 text-sm text-muted-foreground">
-          Min-Max Replenishment Policy Upload — configure the stock thresholds the
-          replenishment engine uses to refill pick-face locations from reserve /
-          bulk storage.
-        </p>
-      </div>
+  const resetFilters = () => setFilters(emptyFilters);
+  const clearSearch = () => setField("search", "");
 
-      {/* ── Upload Min-Max Policy ──────────────────────────────────────────── */}
-      <Card className="overflow-hidden">
-        <div className="flex items-center justify-between border-b border-border px-5 py-3">
-          <div className="text-sm font-semibold">Upload Min-Max Policy</div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => toast.success("Template downloaded")}
-          >
-            <Download className="mr-1.5 h-3.5 w-3.5" />
-            Download Template
+  return (
+    <div className="p-6">
+      {/* Page header */}
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-semibold">Replenishment</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            {visible.length} of {rows.length} replenishment jobs shown
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search RO no, SKU, bin…"
+              value={filters.search}
+              onChange={(e) => setField("search", e.target.value)}
+              className="h-9 w-64 pl-8 pr-8"
+            />
+            {filters.search && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="absolute right-2 top-2.5 text-muted-foreground hover:text-foreground"
+                aria-label="Clear search"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+          <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className={cn(
+                  activeFilterCount > 0 &&
+                    "border-primary/40 bg-primary/5 text-primary",
+                )}
+              >
+                <Filter className="h-4 w-4" />
+                Filters
+                {activeFilterCount > 0 && (
+                  <span className="ml-1 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[360px] p-0" align="end" sideOffset={8}>
+              <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
+                <div className="text-sm font-semibold">
+                  Filter replenishment jobs
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 px-2 text-xs"
+                  onClick={resetFilters}
+                  disabled={activeFilterCount === 0}
+                >
+                  Reset
+                </Button>
+              </div>
+              <div className="max-h-[60vh] space-y-3 overflow-y-auto p-4">
+                <FilterField label="Status">
+                  <Select
+                    value={filters.status}
+                    onValueChange={(v) => setField("status", v)}
+                  >
+                    <SelectTrigger className="h-9">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={ALL}>All</SelectItem>
+                      <SelectItem value="Open">Open</SelectItem>
+                      <SelectItem value="Job Assigned">Job Assigned</SelectItem>
+                      <SelectItem value="Completed">Completed</SelectItem>
+                      <SelectItem value="Cancelled">Cancelled</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FilterField>
+
+                <FilterField label="SKU">
+                  <SearchableSelect
+                    value={filters.sku}
+                    options={skuOptions}
+                    placeholder="All"
+                    searchPlaceholder="Search SKU…"
+                    emptyText="No SKU found."
+                    onChange={(v) => setField("sku", v)}
+                  />
+                </FilterField>
+
+                <FilterField label="Order Count">
+                  <RangeInputs
+                    minValue={filters.orderCountMin}
+                    maxValue={filters.orderCountMax}
+                    onMin={(v) => setField("orderCountMin", v)}
+                    onMax={(v) => setField("orderCountMax", v)}
+                  />
+                </FilterField>
+
+                <FilterField label="Qty Available">
+                  <RangeInputs
+                    minValue={filters.qtyAvailableMin}
+                    maxValue={filters.qtyAvailableMax}
+                    onMin={(v) => setField("qtyAvailableMin", v)}
+                    onMax={(v) => setField("qtyAvailableMax", v)}
+                  />
+                </FilterField>
+
+                <FilterField label="Pack Size">
+                  <RangeInputs
+                    minValue={filters.packSizeMin}
+                    maxValue={filters.packSizeMax}
+                    onMin={(v) => setField("packSizeMin", v)}
+                    onMax={(v) => setField("packSizeMax", v)}
+                  />
+                </FilterField>
+
+                <FilterField label="Suggested Qty">
+                  <RangeInputs
+                    minValue={filters.suggestedQtyMin}
+                    maxValue={filters.suggestedQtyMax}
+                    onMin={(v) => setField("suggestedQtyMin", v)}
+                    onMax={(v) => setField("suggestedQtyMax", v)}
+                  />
+                </FilterField>
+
+                <FilterField label="Replenishment Bin">
+                  <Select
+                    value={filters.replenishmentBin}
+                    onValueChange={(v) => setField("replenishmentBin", v)}
+                  >
+                    <SelectTrigger className="h-9">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={ALL}>All</SelectItem>
+                      {replenishmentBinOptions.map((b) => (
+                        <SelectItem key={b} value={b}>
+                          {b}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FilterField>
+
+                <FilterField label="Allocated Bin">
+                  <Select
+                    value={filters.allocatedBin}
+                    onValueChange={(v) => setField("allocatedBin", v)}
+                  >
+                    <SelectTrigger className="h-9">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={ALL}>All</SelectItem>
+                      {allocatedBinOptions.map((b) => (
+                        <SelectItem key={b} value={b}>
+                          {b}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FilterField>
+              </div>
+              <div className="border-t border-border px-4 py-2.5">
+                <Button
+                  size="sm"
+                  className="w-full"
+                  onClick={() => setPopoverOpen(false)}
+                >
+                  Apply
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/replenishment-setup">
+              <Settings className="mr-1.5 h-4 w-4" />
+              Setup
+            </Link>
           </Button>
         </div>
-        <div className="space-y-5 p-5">
-          {/* Warehouse */}
-          <Field label="Warehouse">
-            <Select value={warehouse} onValueChange={setWarehouse}>
-              <SelectTrigger className="max-w-sm">
-                <SelectValue />
+      </div>
+
+      {/* Summary cards */}
+      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <TrendCard
+          label="Pending Jobs"
+          value={pendingJobs.length}
+          delta={-7.4}
+          series={PENDING_JOBS_SERIES}
+          tone="amber"
+        />
+        <TrendCard
+          label="Pending Orders"
+          value={pendingOrders}
+          delta={6.2}
+          series={PENDING_ORDERS_SERIES}
+          tone="blue"
+        />
+        <TrendCard
+          label="Pending Quantity"
+          value={pendingQty}
+          suffix="units"
+          delta={5.1}
+          series={PENDING_QTY_SERIES}
+          tone="violet"
+        />
+      </div>
+
+      {/* Assignment toolbar — appears when one or more open jobs are selected */}
+      {selectedCount > 0 && (
+        <div className="mt-4 flex flex-wrap items-center gap-3 rounded-lg border border-primary/30 bg-primary/5 px-4 py-2.5">
+          <span className="text-sm font-medium">
+            {selectedCount} job{selectedCount > 1 ? "s" : ""} selected
+          </span>
+          <div className="ml-auto flex items-center gap-2">
+            <Select value={assignee} onValueChange={setAssignee}>
+              <SelectTrigger className="h-9 w-48">
+                <SelectValue placeholder="Assign to…" />
               </SelectTrigger>
               <SelectContent>
-                {WAREHOUSES.map((w) => (
-                  <SelectItem key={w.code} value={w.code}>
-                    {w.code} — {w.name}
+                {OPERATORS.map((op) => (
+                  <SelectItem key={op} value={op}>
+                    {op}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          </Field>
-
-          {/* Upload File */}
-          <Field label="Upload File">
-            <input
-              ref={fileRef}
-              type="file"
-              accept=".xlsx,.xls,.csv"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) {
-                  setFileName(f.name);
-                  setSummary(null);
-                }
-              }}
-            />
-            {fileName ? (
-              <div className="flex max-w-sm items-center justify-between gap-3 rounded-lg border border-border bg-muted/30 px-4 py-3">
-                <div className="flex min-w-0 items-center gap-2.5">
-                  <FileSpreadsheet className="h-5 w-5 shrink-0 text-green-600" />
-                  <span className="truncate text-sm font-medium">{fileName}</span>
-                </div>
-                <button
-                  type="button"
-                  className="text-xs text-muted-foreground hover:text-foreground"
-                  onClick={reset}
-                >
-                  Remove
-                </button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => fileRef.current?.click()}
-                className="flex w-full max-w-sm flex-col items-center gap-2 rounded-lg border-2 border-dashed border-border px-4 py-7 text-center transition-colors hover:border-primary/50 hover:bg-muted/30"
-              >
-                <Upload className="h-6 w-6 text-muted-foreground" />
-                <span className="text-sm font-medium">
-                  Click to upload Excel / CSV
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  .xlsx, .xls or .csv — SKU Min-Max mapping
-                </span>
-              </button>
-            )}
-          </Field>
-
-          {/* Options */}
-          <Field label="Overwrite Existing Policies">
-            <Toggle
-              value={overwrite}
-              onYes={() => setOverwrite(true)}
-              onNo={() => setOverwrite(false)}
-            />
-          </Field>
-
-          <Button onClick={handleUpload}>
-            <Upload className="mr-2 h-4 w-4" />
-            Upload
-          </Button>
-        </div>
-      </Card>
-
-      {/* ── Current Min-Max Policy ─────────────────────────────────────────── */}
-      <Card className="overflow-hidden">
-        <div className="flex items-center justify-between border-b border-border px-5 py-3">
-          <div className="text-sm font-semibold">
-            Current Min-Max Policy{" "}
-            <span className="ml-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-              {warehouse}
-            </span>
-          </div>
-          <div className="text-xs text-muted-foreground">
-            {CURRENT_POLICY.length} SKUs configured
-          </div>
-        </div>
-
-        {/* Table header */}
-        <div className="grid grid-cols-[7rem_1fr_6rem_6rem_7rem] gap-3 border-b border-border bg-muted/30 px-5 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-          <span>SKU Code</span>
-          <span>Item</span>
-          <span className="text-right">Minimum Qty</span>
-          <span className="text-right">Maximum Qty</span>
-          <span className="text-right">Last Updated</span>
-        </div>
-
-        {/* Rows */}
-        {CURRENT_POLICY.map((p) => (
-          <div
-            key={p.sku}
-            className="grid grid-cols-[7rem_1fr_6rem_6rem_7rem] items-center gap-3 border-b border-border px-5 py-2.5 text-sm last:border-0"
-          >
-            <span className="font-mono font-medium">{p.sku}</span>
-            <span className="truncate text-muted-foreground">{p.name}</span>
-            <span className="text-right font-mono tabular-nums">{p.min}</span>
-            <span className="text-right font-mono tabular-nums">{p.max}</span>
-            <span className="text-right text-xs text-muted-foreground">
-              {p.updatedAt}
-            </span>
-          </div>
-        ))}
-      </Card>
-
-      {/* ── Step 3: Summary / Confirmation ─────────────────────────────────── */}
-      {summary && (
-        <Card className="overflow-hidden">
-          <div className="flex items-center justify-between border-b border-border px-5 py-3">
-            <div className="text-sm font-semibold">Upload Completed</div>
-            <Button variant="ghost" size="sm" onClick={reset}>
-              <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
-              New upload
+            <Button size="sm" onClick={assignSelected}>
+              <UserPlus className="mr-1.5 h-4 w-4" />
+              Assign
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSelectedIds(new Set())}
+            >
+              Clear
             </Button>
           </div>
+        </div>
+      )}
 
-          <div className="space-y-5 p-5">
-            {/* Banner */}
-            <div className="flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 p-4 text-green-800">
-              <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
-              <div>
-                <div className="text-sm font-semibold">
-                  Replenishment policy saved
-                </div>
-                <div className="mt-0.5 text-xs">
-                  Warehouse: <span className="font-mono font-semibold">{warehouse}</span>
-                  {" · "}
-                  {overwrite ? "Existing policies overwritten" : "Existing policies kept"}
-                </div>
-              </div>
-            </div>
+      {/* Table */}
+      <TooltipProvider delayDuration={150}>
+        <div className="mt-5 overflow-hidden rounded-lg border border-border bg-card shadow-sm [&>div]:max-h-[calc(100vh-12rem)] [&>div]:overflow-auto">
+          <Table className="table-fixed">
+            <TableHeader>
+              <TableRow className="bg-muted [&>th]:sticky [&>th]:top-0 [&>th]:z-20 [&>th]:bg-muted [&>th]:align-middle [&>th]:shadow-[inset_0_-1px_0_hsl(var(--border))]">
+                <TableHead className="w-10">
+                  <Checkbox
+                    checked={headerChecked}
+                    onCheckedChange={toggleAll}
+                    disabled={openVisible.length === 0}
+                    aria-label="Select all open jobs"
+                  />
+                </TableHead>
+                {COLUMNS.map((c) => (
+                  <TableHead key={c.key}>
+                    {c.help ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span
+                            className={cn(
+                              "flex w-full cursor-help items-center gap-1 leading-tight",
+                              c.align === "right" && "justify-end",
+                            )}
+                          >
+                            {c.label}
+                            <Info className="h-3 w-3 shrink-0 text-muted-foreground/70" />
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent
+                          side="top"
+                          align="center"
+                          className="max-w-[240px] text-left"
+                        >
+                          {c.help}
+                        </TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      <span
+                        className={cn(
+                          "flex w-full items-center leading-tight",
+                          c.align === "right" && "justify-end",
+                        )}
+                      >
+                        {c.label}
+                      </span>
+                    )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {visible.length === 0 && (
+                <TableRow>
+                  <TableCell
+                    colSpan={COLUMNS.length + 1}
+                    className="py-10 text-center text-sm text-muted-foreground"
+                  >
+                    No replenishment jobs match the current filters.
+                  </TableCell>
+                </TableRow>
+              )}
+              {visible.map((r) => {
+                const selectable = r.status === "Open";
+                return (
+                  <TableRow
+                    key={r.orderNo}
+                    data-state={
+                      selectedIds.has(r.orderNo) ? "selected" : undefined
+                    }
+                    className="align-top hover:bg-muted/50 data-[state=selected]:bg-primary/5"
+                  >
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.has(r.orderNo)}
+                        onCheckedChange={() => toggleRow(r.orderNo)}
+                        disabled={!selectable}
+                        aria-label={`Select ${r.orderNo}`}
+                      />
+                    </TableCell>
+                    <TableCell className="font-medium text-primary">
+                      {r.orderNo}
+                    </TableCell>
+                    <TableCell>
+                      <span
+                        className={cn(
+                          "inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset",
+                          STATUS_STYLES[r.status],
+                        )}
+                      >
+                        {r.status}
+                      </span>
+                      {r.assignee && (
+                        <div className="mt-1 text-[11px] text-muted-foreground">
+                          {r.assignee}
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell className="font-mono">{r.sku}</TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {r.description}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {r.orderCount}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {r.qtyAvailable}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {r.packSize}
+                    </TableCell>
+                    <TableCell className="text-right font-semibold tabular-nums">
+                      {r.suggestedQty}
+                    </TableCell>
+                    <TableCell className="break-words font-mono text-xs">
+                      {r.replenishmentBin}
+                    </TableCell>
+                    <TableCell className="break-words font-mono text-xs">
+                      {r.allocatedBin}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
+      </TooltipProvider>
+    </div>
+  );
+}
 
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-              <Stat label="Total Records" value={summary.total} />
-              <Stat label="Successful" value={summary.successful} tone="green" />
-              <Stat label="Failed" value={summary.failed} tone="red" />
-              <Stat label="Duplicate" value={summary.duplicate} tone="amber" />
-              <Stat label="Updated" value={summary.updated} />
-              <Stat label="New" value={summary.new} />
-            </div>
+// ─── Small building blocks ───────────────────────────────────────────────────
 
-            {/* Error report */}
-            {summary.failed > 0 && (
-              <div className="flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
-                <div className="flex items-center gap-2.5">
-                  <AlertTriangle className="h-5 w-5 text-amber-600" />
-                  <div className="text-sm text-amber-800">
-                    <span className="font-semibold">{summary.failed} records failed</span>{" "}
-                    validation — download the report to review and fix them.
-                  </div>
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => toast.success("Error report downloaded")}
-                >
-                  <Download className="mr-1.5 h-3.5 w-3.5" />
-                  Error report
-                </Button>
-              </div>
-            )}
-          </div>
-        </Card>
+const TONES: Record<string, { stroke: string; fill: string }> = {
+  blue: { stroke: "#2563eb", fill: "#2563eb" },
+  violet: { stroke: "#7c3aed", fill: "#7c3aed" },
+  amber: { stroke: "#d97706", fill: "#d97706" },
+};
+
+const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Today"];
+
+function Sparkline({ series, color }: { series: number[]; color: string }) {
+  const w = 96;
+  const h = 36;
+  const max = Math.max(...series);
+  const min = Math.min(...series);
+  const span = max - min || 1;
+  const step = w / (series.length - 1);
+  const pts = series.map((v, i) => {
+    const x = i * step;
+    const y = h - ((v - min) / span) * (h - 4) - 2;
+    return [x, y] as const;
+  });
+  const line = pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+  const area = `0,${h} ${line} ${w},${h}`;
+  const gid = `spark-${color.replace("#", "")}`;
+  const offset = series.length - DAY_LABELS.length;
+  const [hover, setHover] = useState<number | null>(null);
+
+  return (
+    <div className="relative shrink-0" style={{ width: w, height: h }}>
+      <svg width={w} height={h} className="overflow-visible">
+        <defs>
+          <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity="0.22" />
+            <stop offset="100%" stopColor={color} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <polygon points={area} fill={`url(#${gid})`} />
+        {hover !== null && (
+          <line
+            x1={pts[hover][0]}
+            x2={pts[hover][0]}
+            y1="0"
+            y2={h}
+            stroke={color}
+            strokeWidth="0.75"
+            strokeDasharray="2 2"
+            opacity="0.5"
+          />
+        )}
+        <polyline
+          points={line}
+          fill="none"
+          stroke={color}
+          strokeWidth="1.75"
+          strokeDasharray="1.5 3"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+        {pts.map(([x, y], i) => (
+          <circle
+            key={i}
+            cx={x}
+            cy={y}
+            r={hover === i ? 3 : 1.6}
+            fill={hover === i ? color : "#fff"}
+            stroke={color}
+            strokeWidth="1.25"
+          />
+        ))}
+        {pts.map(([x], i) => {
+          const prevX = i === 0 ? 0 : pts[i - 1][0];
+          const nextX = i === pts.length - 1 ? w : pts[i + 1][0];
+          const left = i === 0 ? 0 : (prevX + x) / 2;
+          const right = i === pts.length - 1 ? w : (x + nextX) / 2;
+          return (
+            <rect
+              key={`hit-${i}`}
+              x={left}
+              y={0}
+              width={right - left}
+              height={h}
+              fill="transparent"
+              className="cursor-pointer"
+              onMouseEnter={() => setHover(i)}
+              onMouseLeave={() => setHover(null)}
+            />
+          );
+        })}
+      </svg>
+      {hover !== null && (
+        <div
+          className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md bg-foreground px-2 py-1 text-[10px] font-medium leading-tight text-background shadow-md"
+          style={{ left: pts[hover][0], top: pts[hover][1] - 6 }}
+        >
+          <span className="opacity-70">
+            {DAY_LABELS[hover - offset] ?? `Day ${hover + 1}`}:{" "}
+          </span>
+          {series[hover]}
+        </div>
       )}
     </div>
   );
 }
 
-// ─── Small building blocks ────────────────────────────────────────────────────
+function TrendCard({
+  label,
+  value,
+  suffix,
+  delta,
+  series,
+  tone,
+}: {
+  label: string;
+  value: number;
+  suffix?: string;
+  delta: number;
+  series: number[];
+  tone: keyof typeof TONES;
+}) {
+  const up = delta >= 0;
+  const color = TONES[tone].stroke;
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-4 shadow-sm">
+      <div className="min-w-0">
+        <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+          {label}
+        </div>
+        <div className="mt-1 flex items-baseline gap-1.5">
+          <span className="text-2xl font-bold tabular-nums">{value}</span>
+          {suffix && (
+            <span className="text-xs text-muted-foreground">{suffix}</span>
+          )}
+        </div>
+        <div
+          className={cn(
+            "mt-1 inline-flex items-center gap-0.5 text-xs font-medium",
+            up ? "text-green-600" : "text-red-600",
+          )}
+        >
+          {up ? "▲" : "▼"} {Math.abs(delta)}%
+          <span className="ml-1 font-normal text-muted-foreground">
+            vs last week
+          </span>
+        </div>
+      </div>
+      <Sparkline series={series} color={color} />
+    </div>
+  );
+}
 
-function Field({
+function SearchableSelect({
+  value,
+  options,
+  placeholder,
+  searchPlaceholder,
+  emptyText,
+  onChange,
+}: {
+  value: string;
+  options: string[];
+  placeholder: string;
+  searchPlaceholder: string;
+  emptyText: string;
+  onChange: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="h-9 w-full justify-between font-normal"
+        >
+          {value === ALL ? placeholder : value}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-[var(--radix-popover-trigger-width)] p-0"
+        align="start"
+      >
+        <Command>
+          <CommandInput placeholder={searchPlaceholder} className="h-9" />
+          <CommandList>
+            <CommandEmpty>{emptyText}</CommandEmpty>
+            <CommandGroup>
+              <CommandItem
+                value="all"
+                onSelect={() => {
+                  onChange(ALL);
+                  setOpen(false);
+                }}
+              >
+                <Check
+                  className={cn(
+                    "mr-2 h-4 w-4",
+                    value === ALL ? "opacity-100" : "opacity-0",
+                  )}
+                />
+                {placeholder}
+              </CommandItem>
+              {options.map((o) => (
+                <CommandItem
+                  key={o}
+                  value={o}
+                  onSelect={() => {
+                    onChange(o);
+                    setOpen(false);
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      value === o ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                  {o}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function RangeInputs({
+  minValue,
+  maxValue,
+  onMin,
+  onMax,
+}: {
+  minValue: string;
+  maxValue: string;
+  onMin: (v: string) => void;
+  onMax: (v: string) => void;
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <Input
+        type="number"
+        min={0}
+        placeholder="Min"
+        value={minValue}
+        onChange={(e) => onMin(e.target.value)}
+        className="h-9 flex-1"
+      />
+      <span className="text-xs text-muted-foreground">–</span>
+      <Input
+        type="number"
+        min={0}
+        placeholder="Max"
+        value={maxValue}
+        onChange={(e) => onMax(e.target.value)}
+        className="h-9 flex-1"
+      />
+    </div>
+  );
+}
+
+function FilterField({
   label,
   children,
 }: {
@@ -315,72 +1080,10 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+      <label className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
         {label}
-      </div>
+      </label>
       {children}
-    </div>
-  );
-}
-
-function Toggle({
-  value,
-  onYes,
-  onNo,
-}: {
-  value: boolean;
-  onYes: () => void;
-  onNo: () => void;
-}) {
-  return (
-    <div className="flex w-32 rounded-lg border border-border bg-muted/40 p-1">
-      <button
-        type="button"
-        onClick={onYes}
-        className={cn(
-          "flex-1 rounded-md py-1.5 text-sm font-medium transition-colors",
-          value ? "bg-background text-foreground shadow-sm" : "text-muted-foreground",
-        )}
-      >
-        Yes
-      </button>
-      <button
-        type="button"
-        onClick={onNo}
-        className={cn(
-          "flex-1 rounded-md py-1.5 text-sm font-medium transition-colors",
-          !value ? "bg-background text-foreground shadow-sm" : "text-muted-foreground",
-        )}
-      >
-        No
-      </button>
-    </div>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: number;
-  tone?: "green" | "red" | "amber";
-}) {
-  const color =
-    tone === "green"
-      ? "text-green-600"
-      : tone === "red"
-        ? "text-red-600"
-        : tone === "amber"
-          ? "text-amber-600"
-          : "text-foreground";
-  return (
-    <div className="rounded-lg border border-border p-3">
-      <div className={cn("text-2xl font-bold tabular-nums", color)}>{value}</div>
-      <div className="mt-0.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-        {label}
-      </div>
     </div>
   );
 }

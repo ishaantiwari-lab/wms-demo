@@ -16,6 +16,7 @@ import { Route as WmsViewDispatchRouteImport } from './routes/_wms.view-dispatch
 import { Route as WmsUnloadingRouteImport } from './routes/_wms.unloading'
 import { Route as WmsSalesReturnGrnRouteImport } from './routes/_wms.sales-return-grn'
 import { Route as WmsReportsRouteImport } from './routes/_wms.reports'
+import { Route as WmsReplenishmentSetupRouteImport } from './routes/_wms.replenishment-setup'
 import { Route as WmsReplenishmentRouteImport } from './routes/_wms.replenishment'
 import { Route as WmsPutwallRouteImport } from './routes/_wms.putwall'
 import { Route as WmsPutawayRouteImport } from './routes/_wms.putaway'
@@ -73,6 +74,11 @@ const WmsSalesReturnGrnRoute = WmsSalesReturnGrnRouteImport.update({
 const WmsReportsRoute = WmsReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsReplenishmentSetupRoute = WmsReplenishmentSetupRouteImport.update({
+  id: '/replenishment-setup',
+  path: '/replenishment-setup',
   getParentRoute: () => WmsRoute,
 } as any)
 const WmsReplenishmentRoute = WmsReplenishmentRouteImport.update({
@@ -214,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/putaway': typeof WmsPutawayRoute
   '/putwall': typeof WmsPutwallRoute
   '/replenishment': typeof WmsReplenishmentRoute
+  '/replenishment-setup': typeof WmsReplenishmentSetupRoute
   '/reports': typeof WmsReportsRoute
   '/sales-return-grn': typeof WmsSalesReturnGrnRoute
   '/unloading': typeof WmsUnloadingRoute
@@ -246,6 +253,7 @@ export interface FileRoutesByTo {
   '/putaway': typeof WmsPutawayRoute
   '/putwall': typeof WmsPutwallRoute
   '/replenishment': typeof WmsReplenishmentRoute
+  '/replenishment-setup': typeof WmsReplenishmentSetupRoute
   '/reports': typeof WmsReportsRoute
   '/sales-return-grn': typeof WmsSalesReturnGrnRoute
   '/unloading': typeof WmsUnloadingRoute
@@ -280,6 +288,7 @@ export interface FileRoutesById {
   '/_wms/putaway': typeof WmsPutawayRoute
   '/_wms/putwall': typeof WmsPutwallRoute
   '/_wms/replenishment': typeof WmsReplenishmentRoute
+  '/_wms/replenishment-setup': typeof WmsReplenishmentSetupRoute
   '/_wms/reports': typeof WmsReportsRoute
   '/_wms/sales-return-grn': typeof WmsSalesReturnGrnRoute
   '/_wms/unloading': typeof WmsUnloadingRoute
@@ -314,6 +323,7 @@ export interface FileRouteTypes {
     | '/putaway'
     | '/putwall'
     | '/replenishment'
+    | '/replenishment-setup'
     | '/reports'
     | '/sales-return-grn'
     | '/unloading'
@@ -346,6 +356,7 @@ export interface FileRouteTypes {
     | '/putaway'
     | '/putwall'
     | '/replenishment'
+    | '/replenishment-setup'
     | '/reports'
     | '/sales-return-grn'
     | '/unloading'
@@ -379,6 +390,7 @@ export interface FileRouteTypes {
     | '/_wms/putaway'
     | '/_wms/putwall'
     | '/_wms/replenishment'
+    | '/_wms/replenishment-setup'
     | '/_wms/reports'
     | '/_wms/sales-return-grn'
     | '/_wms/unloading'
@@ -450,6 +462,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/reports'
       preLoaderRoute: typeof WmsReportsRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/replenishment-setup': {
+      id: '/_wms/replenishment-setup'
+      path: '/replenishment-setup'
+      fullPath: '/replenishment-setup'
+      preLoaderRoute: typeof WmsReplenishmentSetupRouteImport
       parentRoute: typeof WmsRoute
     }
     '/_wms/replenishment': {
@@ -638,6 +657,7 @@ interface WmsRouteChildren {
   WmsPutawayRoute: typeof WmsPutawayRoute
   WmsPutwallRoute: typeof WmsPutwallRoute
   WmsReplenishmentRoute: typeof WmsReplenishmentRoute
+  WmsReplenishmentSetupRoute: typeof WmsReplenishmentSetupRoute
   WmsReportsRoute: typeof WmsReportsRoute
   WmsSalesReturnGrnRoute: typeof WmsSalesReturnGrnRoute
   WmsUnloadingRoute: typeof WmsUnloadingRoute
@@ -670,6 +690,7 @@ const WmsRouteChildren: WmsRouteChildren = {
   WmsPutawayRoute: WmsPutawayRoute,
   WmsPutwallRoute: WmsPutwallRoute,
   WmsReplenishmentRoute: WmsReplenishmentRoute,
+  WmsReplenishmentSetupRoute: WmsReplenishmentSetupRoute,
   WmsReportsRoute: WmsReportsRoute,
   WmsSalesReturnGrnRoute: WmsSalesReturnGrnRoute,
   WmsUnloadingRoute: WmsUnloadingRoute,

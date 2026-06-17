@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Eye, Truck } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Eye, Filter, Search, Truck, X } from "lucide-react";
 import { PageHeader } from "@/components/wms/page-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +11,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -101,16 +114,216 @@ const SHIPLISTS: ShiplistRow[] = [
   },
 ];
 
+// ─── Filters ──────────────────────────────────────────────────────────────────
+
+const ALL = "all";
+
+interface ShiplistFilters {
+  search: string;
+  seller: string;
+  courier: string;
+  closedBy: string;
+  exceptions: string;
+}
+
+const emptyFilters: ShiplistFilters = {
+  search: "",
+  seller: ALL,
+  courier: ALL,
+  closedBy: ALL,
+  exceptions: ALL,
+};
+
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
 function ViewDispatchPage() {
   const [viewRow, setViewRow] = useState<ShiplistRow | null>(null);
+  const [filters, setFilters] = useState<ShiplistFilters>(emptyFilters);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+
+  const setField = <K extends keyof ShiplistFilters>(
+    key: K,
+    value: ShiplistFilters[K],
+  ) => setFilters((f) => ({ ...f, [key]: value }));
+
+  const resetFilters = () => setFilters(emptyFilters);
+
+  const sellerOptions = useMemo(
+    () => Array.from(new Set(SHIPLISTS.map((r) => r.seller))).sort(),
+    [],
+  );
+  const courierOptions = useMemo(
+    () => Array.from(new Set(SHIPLISTS.map((r) => r.courier))).sort(),
+    [],
+  );
+  const closedByOptions = useMemo(
+    () => Array.from(new Set(SHIPLISTS.map((r) => r.closedBy))).sort(),
+    [],
+  );
+
+  const activeFilterCount = useMemo(() => {
+    let n = 0;
+    if (filters.seller !== ALL) n++;
+    if (filters.courier !== ALL) n++;
+    if (filters.closedBy !== ALL) n++;
+    if (filters.exceptions !== ALL) n++;
+    return n;
+  }, [filters]);
+
+  const visible = useMemo(() => {
+    const q = filters.search.trim().toLowerCase();
+    return SHIPLISTS.filter((r) => {
+      if (q) {
+        const hay = `${r.id} ${r.gatePass} ${r.seller} ${r.courier} ${r.closedBy}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      if (filters.seller !== ALL && r.seller !== filters.seller) return false;
+      if (filters.courier !== ALL && r.courier !== filters.courier) return false;
+      if (filters.closedBy !== ALL && r.closedBy !== filters.closedBy)
+        return false;
+      if (filters.exceptions === "with" && r.exceptions === 0) return false;
+      if (filters.exceptions === "none" && r.exceptions > 0) return false;
+      return true;
+    });
+  }, [filters]);
 
   return (
     <div>
       <PageHeader
         title="View Shiplists"
         subtitle="Review closed handovers with their proof-of-handover summary."
+        actions={
+          <>
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={filters.search}
+                onChange={(e) => setField("search", e.target.value)}
+                placeholder="Search shiplist, gate pass, seller…"
+                className="h-9 w-60 pl-8"
+              />
+              {filters.search && (
+                <button
+                  type="button"
+                  onClick={() => setField("search", "")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+            <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className="h-9 gap-2">
+                  <Filter className="h-3.5 w-3.5" />
+                  Filters
+                  {activeFilterCount > 0 && (
+                    <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium leading-none text-primary-foreground">
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[320px] p-0" align="end" sideOffset={8}>
+                <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
+                  <div className="text-sm font-semibold">Filter shiplists</div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                    onClick={resetFilters}
+                    disabled={activeFilterCount === 0}
+                  >
+                    Reset
+                  </Button>
+                </div>
+                <div className="max-h-[60vh] space-y-3 overflow-y-auto p-4">
+                  <FilterField label="Seller">
+                    <Select
+                      value={filters.seller}
+                      onValueChange={(v) => setField("seller", v)}
+                    >
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={ALL}>All</SelectItem>
+                        {sellerOptions.map((s) => (
+                          <SelectItem key={s} value={s}>
+                            {s}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FilterField>
+
+                  <FilterField label="Courier">
+                    <Select
+                      value={filters.courier}
+                      onValueChange={(v) => setField("courier", v)}
+                    >
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={ALL}>All</SelectItem>
+                        {courierOptions.map((c) => (
+                          <SelectItem key={c} value={c}>
+                            {c}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FilterField>
+
+                  <FilterField label="Closed By">
+                    <Select
+                      value={filters.closedBy}
+                      onValueChange={(v) => setField("closedBy", v)}
+                    >
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={ALL}>All</SelectItem>
+                        {closedByOptions.map((c) => (
+                          <SelectItem key={c} value={c}>
+                            {c}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FilterField>
+
+                  <FilterField label="Exceptions">
+                    <Select
+                      value={filters.exceptions}
+                      onValueChange={(v) => setField("exceptions", v)}
+                    >
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={ALL}>All</SelectItem>
+                        <SelectItem value="with">With exceptions</SelectItem>
+                        <SelectItem value="none">No exceptions</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FilterField>
+                </div>
+                <div className="border-t border-border px-4 py-2.5">
+                  <Button
+                    size="sm"
+                    className="w-full"
+                    onClick={() => setPopoverOpen(false)}
+                  >
+                    Apply
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </>
+        }
       />
 
       <div className="space-y-4 p-6">
@@ -131,7 +344,17 @@ function ViewDispatchPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {SHIPLISTS.map((r) => (
+              {visible.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={10}
+                    className="py-12 text-center text-sm text-muted-foreground"
+                  >
+                    No shiplists match the current filters.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                visible.map((r) => (
                 <TableRow key={r.id}>
                   <TableCell className="font-mono text-xs font-medium">
                     {r.id}
@@ -182,7 +405,8 @@ function ViewDispatchPage() {
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
@@ -230,6 +454,23 @@ function Info({ label, value }: { label: string; value: string }) {
         {label}
       </div>
       <div className="mt-0.5 font-medium">{value}</div>
+    </div>
+  );
+}
+
+function FilterField({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <label className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        {label}
+      </label>
+      {children}
     </div>
   );
 }
