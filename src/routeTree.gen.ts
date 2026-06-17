@@ -23,6 +23,9 @@ import { Route as WmsPutawayRouteImport } from './routes/_wms.putaway'
 import { Route as WmsPackRouteImport } from './routes/_wms.pack'
 import { Route as WmsMovementTaskCreateRouteImport } from './routes/_wms.movement-task-create'
 import { Route as WmsManifestRouteImport } from './routes/_wms.manifest'
+import { Route as WmsKittingRouteImport } from './routes/_wms.kitting'
+import { Route as WmsKitOrderRouteImport } from './routes/_wms.kit-order'
+import { Route as WmsKitMappingRouteImport } from './routes/_wms.kit-mapping'
 import { Route as WmsItemMovementRouteImport } from './routes/_wms.item-movement'
 import { Route as WmsItemInfoUpdateRouteImport } from './routes/_wms.item-info-update'
 import { Route as WmsGrnRouteImport } from './routes/_wms.grn'
@@ -109,6 +112,21 @@ const WmsMovementTaskCreateRoute = WmsMovementTaskCreateRouteImport.update({
 const WmsManifestRoute = WmsManifestRouteImport.update({
   id: '/manifest',
   path: '/manifest',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsKittingRoute = WmsKittingRouteImport.update({
+  id: '/kitting',
+  path: '/kitting',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsKitOrderRoute = WmsKitOrderRouteImport.update({
+  id: '/kit-order',
+  path: '/kit-order',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsKitMappingRoute = WmsKitMappingRouteImport.update({
+  id: '/kit-mapping',
+  path: '/kit-mapping',
   getParentRoute: () => WmsRoute,
 } as any)
 const WmsItemMovementRoute = WmsItemMovementRouteImport.update({
@@ -214,6 +232,9 @@ export interface FileRoutesByFullPath {
   '/grn': typeof WmsGrnRoute
   '/item-info-update': typeof WmsItemInfoUpdateRoute
   '/item-movement': typeof WmsItemMovementRoute
+  '/kit-mapping': typeof WmsKitMappingRoute
+  '/kit-order': typeof WmsKitOrderRoute
+  '/kitting': typeof WmsKittingRoute
   '/manifest': typeof WmsManifestRoute
   '/movement-task-create': typeof WmsMovementTaskCreateRoute
   '/pack': typeof WmsPackRoute
@@ -247,6 +268,9 @@ export interface FileRoutesByTo {
   '/grn': typeof WmsGrnRoute
   '/item-info-update': typeof WmsItemInfoUpdateRoute
   '/item-movement': typeof WmsItemMovementRoute
+  '/kit-mapping': typeof WmsKitMappingRoute
+  '/kit-order': typeof WmsKitOrderRoute
+  '/kitting': typeof WmsKittingRoute
   '/manifest': typeof WmsManifestRoute
   '/movement-task-create': typeof WmsMovementTaskCreateRoute
   '/pack': typeof WmsPackRoute
@@ -282,6 +306,9 @@ export interface FileRoutesById {
   '/_wms/grn': typeof WmsGrnRoute
   '/_wms/item-info-update': typeof WmsItemInfoUpdateRoute
   '/_wms/item-movement': typeof WmsItemMovementRoute
+  '/_wms/kit-mapping': typeof WmsKitMappingRoute
+  '/_wms/kit-order': typeof WmsKitOrderRoute
+  '/_wms/kitting': typeof WmsKittingRoute
   '/_wms/manifest': typeof WmsManifestRoute
   '/_wms/movement-task-create': typeof WmsMovementTaskCreateRoute
   '/_wms/pack': typeof WmsPackRoute
@@ -317,6 +344,9 @@ export interface FileRouteTypes {
     | '/grn'
     | '/item-info-update'
     | '/item-movement'
+    | '/kit-mapping'
+    | '/kit-order'
+    | '/kitting'
     | '/manifest'
     | '/movement-task-create'
     | '/pack'
@@ -350,6 +380,9 @@ export interface FileRouteTypes {
     | '/grn'
     | '/item-info-update'
     | '/item-movement'
+    | '/kit-mapping'
+    | '/kit-order'
+    | '/kitting'
     | '/manifest'
     | '/movement-task-create'
     | '/pack'
@@ -384,6 +417,9 @@ export interface FileRouteTypes {
     | '/_wms/grn'
     | '/_wms/item-info-update'
     | '/_wms/item-movement'
+    | '/_wms/kit-mapping'
+    | '/_wms/kit-order'
+    | '/_wms/kitting'
     | '/_wms/manifest'
     | '/_wms/movement-task-create'
     | '/_wms/pack'
@@ -511,6 +547,27 @@ declare module '@tanstack/react-router' {
       path: '/manifest'
       fullPath: '/manifest'
       preLoaderRoute: typeof WmsManifestRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/kitting': {
+      id: '/_wms/kitting'
+      path: '/kitting'
+      fullPath: '/kitting'
+      preLoaderRoute: typeof WmsKittingRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/kit-order': {
+      id: '/_wms/kit-order'
+      path: '/kit-order'
+      fullPath: '/kit-order'
+      preLoaderRoute: typeof WmsKitOrderRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/kit-mapping': {
+      id: '/_wms/kit-mapping'
+      path: '/kit-mapping'
+      fullPath: '/kit-mapping'
+      preLoaderRoute: typeof WmsKitMappingRouteImport
       parentRoute: typeof WmsRoute
     }
     '/_wms/item-movement': {
@@ -651,6 +708,9 @@ interface WmsRouteChildren {
   WmsGrnRoute: typeof WmsGrnRoute
   WmsItemInfoUpdateRoute: typeof WmsItemInfoUpdateRoute
   WmsItemMovementRoute: typeof WmsItemMovementRoute
+  WmsKitMappingRoute: typeof WmsKitMappingRoute
+  WmsKitOrderRoute: typeof WmsKitOrderRoute
+  WmsKittingRoute: typeof WmsKittingRoute
   WmsManifestRoute: typeof WmsManifestRoute
   WmsMovementTaskCreateRoute: typeof WmsMovementTaskCreateRoute
   WmsPackRoute: typeof WmsPackRoute
@@ -684,6 +744,9 @@ const WmsRouteChildren: WmsRouteChildren = {
   WmsGrnRoute: WmsGrnRoute,
   WmsItemInfoUpdateRoute: WmsItemInfoUpdateRoute,
   WmsItemMovementRoute: WmsItemMovementRoute,
+  WmsKitMappingRoute: WmsKitMappingRoute,
+  WmsKitOrderRoute: WmsKitOrderRoute,
+  WmsKittingRoute: WmsKittingRoute,
   WmsManifestRoute: WmsManifestRoute,
   WmsMovementTaskCreateRoute: WmsMovementTaskCreateRoute,
   WmsPackRoute: WmsPackRoute,

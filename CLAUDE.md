@@ -1,3 +1,9 @@
+## Changelog
+
+**IMPORTANT: At the start of every session, read `CHANGELOG.md` (it is the handoff doc).**
+
+After every change made in a session, append a brief entry to `CHANGELOG.md` automatically — no need to ask the user. Format: `- YYYY-MM-DD: <one-line description>`. Keep the file under 300 words total; trim oldest entries if it grows too large.
+
 <!-- code-review-graph MCP tools -->
 ## MCP Tools: code-review-graph
 

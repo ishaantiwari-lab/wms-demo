@@ -14,6 +14,7 @@ import {
   LayoutGrid,
   MoveDown,
   Package,
+  PackageCheck,
   PackageOpen,
   PackagePlus,
   ShuffleIcon,
@@ -138,6 +139,15 @@ const sections: NavSection[] = [
       { title: "Item Movement", url: "/item-movement", icon: ArrowLeftRight },
       { title: "Create Movement", url: "/movement-task-create", icon: FilePlus2 },
       { title: "Bin Inventory", url: "/item-info-update", icon: SquarePen },
+      {
+        title: "Kit",
+        icon: Layers,
+        children: [
+          { title: "Kit Mapping", url: "/kit-mapping", icon: Boxes },
+          { title: "Kit Order", url: "/kit-order", icon: FilePlus2 },
+          { title: "Kitting", url: "/kitting", icon: PackageCheck },
+        ],
+      },
       { title: "Approvals", url: "/approvals", icon: BadgeCheck },
       { title: "Replenishment", url: "/replenishment", icon: PackagePlus },
     ],
