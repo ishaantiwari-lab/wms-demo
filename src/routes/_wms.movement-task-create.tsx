@@ -237,7 +237,7 @@ function MovementTaskCreate() {
           </div>
 
           {/* Table header */}
-          <div className="grid grid-cols-[2rem_6rem_5rem_1fr_1fr_6rem_6rem_3rem] gap-3 border-b border-border bg-muted/30 px-5 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="grid grid-cols-[2rem_6rem_5rem_1fr_1fr_6rem_6rem_3rem] gap-3 border-b border-border bg-muted/30 px-5 py-2.5 text-[10px] font-semibold font-mono uppercase tracking-[0.08em] text-muted-foreground">
             <span>#</span>
             <span>Task ID</span>
             <span>Type</span>
@@ -351,7 +351,7 @@ function TaskForm({ onAdd }: { onAdd: (data: FormData) => void }) {
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Type toggle */}
       <div className="space-y-1.5">
-        <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
           Task type
         </label>
         <div className="flex overflow-hidden rounded-lg border border-border w-fit">
@@ -381,7 +381,7 @@ function TaskForm({ onAdd }: { onAdd: (data: FormData) => void }) {
       <div className="grid grid-cols-2 gap-4">
         {/* From */}
         <div className="space-y-1.5">
-          <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
             From {formType === "bin" ? "Location" : "Bin"}
           </label>
           <Input
@@ -394,7 +394,7 @@ function TaskForm({ onAdd }: { onAdd: (data: FormData) => void }) {
 
         {/* To */}
         <div className="space-y-1.5">
-          <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
             To {formType === "bin" ? "Location" : "Bin"}
           </label>
           <Input
@@ -410,7 +410,7 @@ function TaskForm({ onAdd }: { onAdd: (data: FormData) => void }) {
         <div className="grid grid-cols-2 gap-4">
           {/* SKU */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
               SKU
             </label>
             <Select value={sku} onValueChange={setSku}>
@@ -432,7 +432,7 @@ function TaskForm({ onAdd }: { onAdd: (data: FormData) => void }) {
 
           {/* Quantity */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
               Quantity
             </label>
             <Input
@@ -446,7 +446,7 @@ function TaskForm({ onAdd }: { onAdd: (data: FormData) => void }) {
         </div>
       ) : (
         <div className="space-y-1.5">
-          <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
             Bin No
           </label>
           <Input
@@ -460,7 +460,7 @@ function TaskForm({ onAdd }: { onAdd: (data: FormData) => void }) {
 
       {/* Reason */}
       <div className="space-y-1.5">
-        <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
           Reason
         </label>
         <Select value={reason} onValueChange={setReason}>
@@ -584,7 +584,7 @@ function UploadTab({
           </div>
 
           <div className="overflow-hidden rounded-lg border border-border">
-            <div className="grid grid-cols-[5rem_5rem_1fr_1fr_6rem_6rem] gap-3 border-b border-border bg-muted/30 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="grid grid-cols-[5rem_5rem_1fr_1fr_6rem_6rem] gap-3 border-b border-border bg-muted/30 px-4 py-2.5 text-[10px] font-semibold font-mono uppercase tracking-[0.08em] text-muted-foreground">
               <span>Task ID</span>
               <span>Type</span>
               <span>From</span>

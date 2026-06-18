@@ -312,7 +312,7 @@ function Dispatch() {
         {/* ── Step: Scan Gate Pass ── */}
         {step === "scan-gatepass" && (
           <Card className="space-y-3 p-4">
-            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
               <ScanBarcode className="h-3.5 w-3.5" />
               Scan Gate Pass
             </div>
@@ -331,7 +331,7 @@ function Dispatch() {
         {/* ── Step: Scan Manifest ── */}
         {step === "scan-manifest" && (
           <Card className="space-y-3 p-4">
-            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
               <ScanBarcode className="h-3.5 w-3.5" />
               Scan Manifest sticker
             </div>
@@ -351,7 +351,7 @@ function Dispatch() {
         {step === "scan-awbs" && (
           <>
             <Card className="space-y-3 p-4">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 <ScanBarcode className="h-3.5 w-3.5" />
                 Scan shipment AWB
               </div>
@@ -394,7 +394,7 @@ function Dispatch() {
             {/* Accepted list */}
             {accepted.length > 0 && (
               <Card className="space-y-2 p-4">
-                <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   <CheckCircle2 className="h-3.5 w-3.5 text-status-picked" />
                   On shiplist ({accepted.length})
                 </div>
@@ -414,7 +414,7 @@ function Dispatch() {
             {/* Removed list */}
             {removed.length > 0 && (
               <Card className="space-y-2 p-4">
-                <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   <MinusCircle className="h-3.5 w-3.5" />
                   Removed from shiplist ({removed.length})
                 </div>
@@ -432,7 +432,7 @@ function Dispatch() {
                           {r.reason}
                         </div>
                       </div>
-                      <span className="shrink-0 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                      <span className="shrink-0 rounded-[2px] bg-muted px-1.5 py-0.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.06em] text-muted-foreground">
                         Removed
                       </span>
                     </div>
@@ -527,7 +527,7 @@ function Dispatch() {
           <div className="space-y-3">
             {/* Scan input */}
             <div>
-              <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <label className="mb-1 block text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 Scan AWB to Remove
               </label>
               {removeScanError && <ErrorBanner message={removeScanError} />}
@@ -542,10 +542,10 @@ function Dispatch() {
             {/* Queue list */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <div className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   Queued for Removal
                 </div>
-                <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium">
+                <span className="rounded-[3px] bg-muted px-2 py-0.5 font-mono text-[11px] font-medium">
                   {removeQueue.length} item{removeQueue.length === 1 ? "" : "s"}
                 </span>
               </div>
@@ -669,7 +669,7 @@ function ScanFlash({ scan }: { scan: LastScan }) {
       <div className="min-w-0 flex-1">
         <div
           className={cn(
-            "text-[11px] font-medium uppercase tracking-wide",
+            "text-[11px] font-medium font-mono uppercase tracking-[0.06em]",
             isAccepted ? "text-status-picked" : "text-destructive",
           )}
         >
@@ -932,8 +932,8 @@ function CompletionCard({
         </div>
 
         {/* Shiplist ID + barcode */}
-        <div className="rounded-lg border-2 border-dashed border-border p-3">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+        <div className="rounded-md border-2 border-dashed border-border p-3">
+          <div className="text-[10px] font-mono uppercase tracking-[0.08em] text-muted-foreground">
             Shiplist ID
           </div>
           <div className="font-mono text-sm font-bold">{shiplistId}</div>

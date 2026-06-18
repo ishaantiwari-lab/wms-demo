@@ -6,8 +6,10 @@ import {
   ClipboardCheck,
   HelpCircle,
   Layers,
+  Mail,
   Plus,
   Printer,
+  Save,
   ScanBarcode,
   ThumbsDown,
   ThumbsUp,
@@ -62,7 +64,22 @@ type Step =
   | "scan-bad-lpn"
   | "scan-awb"
   | "scan-items"
+  | "unidentified"
   | "done";
+
+// Suggested remarks for unidentified return parcels (operator can pick one).
+const UNIDENTIFIED_REMARKS = [
+  "No AWB / label match found",
+  "Shipping label damaged or unreadable",
+  "Empty parcel received",
+  "Wrong item returned",
+  "Parcel belongs to a different seller",
+  "Missing return authorisation (RAN)",
+  "Packaging tampered / opened in transit",
+  "Counterfeit or non-original product",
+  "Partial / incomplete return",
+  "Customer details not traceable",
+];
 
 type QcMode = "good" | "bad";
 
@@ -105,6 +122,8 @@ function SalesReturnGrn() {
   const [rejectReason, setRejectReason] = useState("");
   const [usn, setUsn] = useState("");
   const [scanKey, setScanKey] = useState(0);
+  const [unidReason, setUnidReason] = useState("");
+  const [unidNote, setUnidNote] = useState("");
 
   const totals = useMemo(() => {
     let good = 0;
@@ -186,10 +205,17 @@ function SalesReturnGrn() {
     const v = val.trim().toUpperCase();
     if (!v) return;
     setRan(v);
-    setProfile(getReturnRanProfile(v));
+    const prof = getReturnRanProfile(v);
+    setProfile(prof);
     setRecordingStart(new Date());
-    // After RAN, scan the two session bins (Good + Bad) once
-    setStep("scan-good-lpn");
+    // Unidentified returns are not QC'd — skip the Good/Bad bin setup and go
+    // straight to the AWB scan.
+    if (prof?.type === "unidentified") {
+      setStep("scan-awb");
+    } else {
+      // Identified — scan the two session bins (Good + Bad) once
+      setStep("scan-good-lpn");
+    }
     setScanKey((k) => k + 1);
   };
 
@@ -226,8 +252,17 @@ function SalesReturnGrn() {
     if (!v) return;
     setAwb(v);
     setOrderNumber(orderNumberFromAwb(v));
-    setStep("scan-items");
+    // Unidentified parcel — no QC, just capture the AWB & notify the seller.
+    if (profile?.type === "unidentified") {
+      setStep("unidentified");
+    } else {
+      setStep("scan-items");
+    }
     setScanKey((k) => k + 1);
+  };
+
+  const saveUnidentified = () => {
+    setStep("done");
   };
 
   // Commits the current pending item to the Good LPN bin
@@ -350,6 +385,8 @@ function SalesReturnGrn() {
     setQcMode("good");
     setRejectReason("");
     setUsn("");
+    setUnidReason("");
+    setUnidNote("");
     setScanError(null);
     setScanKey((k) => k + 1);
   };
@@ -387,7 +424,7 @@ function SalesReturnGrn() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-destructive" />
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider">
+              <span className="text-[10px] font-bold font-mono uppercase tracking-[0.08em]">
                 Rec
               </span>
             </div>
@@ -432,7 +469,7 @@ function SalesReturnGrn() {
           {/* Step 0 — QC Station */}
           {step === "scan-qc-station" && (
             <Card className="space-y-3 p-4">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 <ScanBarcode className="h-3.5 w-3.5" />
                 Scan QC Station
               </div>
@@ -452,7 +489,7 @@ function SalesReturnGrn() {
           {/* Step 0.5 — Return Acknowledgement Number */}
           {step === "scan-ran" && (
             <Card className="space-y-3 p-4">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 <ScanBarcode className="h-3.5 w-3.5" />
                 Scan Return Ack barcode
               </div>
@@ -472,7 +509,7 @@ function SalesReturnGrn() {
           {/* Step 1 — AWB */}
           {step === "scan-awb" && (
             <Card className="space-y-3 p-4">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 <ScanBarcode className="h-3.5 w-3.5" />
                 Scan return AWB
               </div>
@@ -485,6 +522,77 @@ function SalesReturnGrn() {
             </Card>
           )}
 
+          {/* Unidentified parcel — no QC, capture AWB + remarks, notify seller */}
+          {step === "unidentified" && awb && (
+            <>
+              <Card className="space-y-2 border-orange-300 bg-orange-50 p-4">
+                <div className="flex items-center gap-2 text-sm font-semibold text-orange-700">
+                  <HelpCircle className="h-4 w-4" />
+                  Unidentified parcel — do not QC
+                </div>
+                <p className="text-xs text-orange-700/90">
+                  This parcel could not be matched to a return. QC is not required.
+                  Save the AWB number and notify the seller for further
+                  instructions. No items are scanned and no USN is printed.
+                </p>
+              </Card>
+
+              {/* AWB captured */}
+              <Card className="flex items-center justify-between gap-3 p-3">
+                <div className="min-w-0">
+                  <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
+                    AWB to be saved
+                  </div>
+                  <div className="font-mono text-base font-bold">{awb}</div>
+                </div>
+                <span className="rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-medium text-orange-700">
+                  Unidentified
+                </span>
+              </Card>
+
+              {/* Remarks */}
+              <Card className="space-y-3 p-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
+                    Remarks
+                  </label>
+                  <Select value={unidReason} onValueChange={setUnidReason}>
+                    <SelectTrigger className="h-11">
+                      <SelectValue placeholder="Select a reason…" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {UNIDENTIFIED_REMARKS.map((r) => (
+                        <SelectItem key={r} value={r}>
+                          {r}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
+                    Additional note (optional)
+                  </label>
+                  <Input
+                    value={unidNote}
+                    onChange={(e) => setUnidNote(e.target.value)}
+                    placeholder="Add any extra detail for the seller…"
+                    className="h-11 text-sm"
+                  />
+                </div>
+              </Card>
+
+              <Button
+                className="h-11 w-full"
+                disabled={!unidReason}
+                onClick={saveUnidentified}
+              >
+                <Save className="mr-2 h-4 w-4" />
+                Save AWB &amp; notify seller
+              </Button>
+            </>
+          )}
+
           {/* Expected items — prominent list shown from AWB scan onwards */}
           {profile?.type === "identified" &&
             profile.expectedItems &&
@@ -494,7 +602,7 @@ function SalesReturnGrn() {
             step !== "done" && (
               <Card className="p-3">
                 <div className="mb-2 flex items-center justify-between">
-                  <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  <div className="text-[11px] font-semibold font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Expected items
                   </div>
                   <div className="text-[10px] text-muted-foreground">
@@ -620,7 +728,7 @@ function SalesReturnGrn() {
           {/* Step 2a — Scan the GOOD LPN (session bin) */}
           {step === "scan-good-lpn" && (
             <Card className="space-y-3 p-4">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-status-picked">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-status-picked">
                 <ThumbsUp className="h-3.5 w-3.5" />
                 Scan GOOD QC bin LPN
               </div>
@@ -641,7 +749,7 @@ function SalesReturnGrn() {
           {/* Step 2b — Scan the BAD LPN (session bin) */}
           {step === "scan-bad-lpn" && (
             <Card className="space-y-3 p-4">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-destructive">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-destructive">
                 <ThumbsDown className="h-3.5 w-3.5" />
                 Scan BAD QC bin LPN
               </div>
@@ -665,7 +773,7 @@ function SalesReturnGrn() {
               {/* Order info — shown after AWB scan */}
               <Card className="flex items-center justify-between gap-3 p-2.5">
                 <div className="min-w-0">
-                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                  <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Order
                   </div>
                   <div className="font-mono text-sm font-bold">
@@ -673,7 +781,7 @@ function SalesReturnGrn() {
                   </div>
                 </div>
                 <div className="min-w-0 text-right">
-                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                  <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Channel
                   </div>
                   <div className="text-sm font-semibold">
@@ -681,7 +789,7 @@ function SalesReturnGrn() {
                   </div>
                 </div>
                 <div className="min-w-0 text-right">
-                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                  <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     AWB
                   </div>
                   <div className="font-mono text-[11px] text-muted-foreground">
@@ -694,7 +802,7 @@ function SalesReturnGrn() {
               <div className="grid grid-cols-2 gap-1.5">
                 <div className="flex items-center gap-1.5 rounded-md border border-status-picked/30 bg-status-picked/5 px-2 py-1 text-[10px]">
                   <ThumbsUp className="h-3 w-3 text-status-picked" />
-                  <span className="text-muted-foreground uppercase tracking-wide">
+                  <span className="text-muted-foreground font-mono uppercase tracking-[0.06em]">
                     Good
                   </span>
                   <span className="ml-auto truncate font-mono font-semibold">
@@ -703,7 +811,7 @@ function SalesReturnGrn() {
                 </div>
                 <div className="flex items-center gap-1.5 rounded-md border border-destructive/30 bg-destructive/5 px-2 py-1 text-[10px]">
                   <ThumbsDown className="h-3 w-3 text-destructive" />
-                  <span className="text-muted-foreground uppercase tracking-wide">
+                  <span className="text-muted-foreground font-mono uppercase tracking-[0.06em]">
                     Bad
                   </span>
                   <span className="ml-auto truncate font-mono font-semibold">
@@ -843,7 +951,7 @@ function SalesReturnGrn() {
               {/* QC'd items table */}
               {qcTableRows.length > 0 && (
                 <Card className="overflow-hidden p-0">
-                  <div className="border-b border-border bg-muted/30 px-3 py-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                  <div className="border-b border-border bg-muted/30 px-3 py-2 text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     QC'd items ({qcTableRows.length})
                   </div>
                   <div className="[&_th]:px-2 [&_th]:py-1.5 [&_td]:px-2 [&_td]:py-1.5 [&_th]:h-auto [&_th]:text-[10px] [&_td]:text-xs">
@@ -908,8 +1016,39 @@ function SalesReturnGrn() {
             </>
           )}
 
-          {/* Step 5 — Done */}
-          {step === "done" && awb && (
+          {/* Step 5 — Done (identified: USN; unidentified: seller notified) */}
+          {step === "done" && awb && isUnidentified && (
+            <>
+              <Card className="space-y-2 p-4 text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-orange-100 text-orange-600">
+                  <Mail className="h-6 w-6" />
+                </div>
+                <div>
+                  <div className="text-base font-semibold">
+                    AWB saved · Seller notified
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    No QC performed for this unidentified parcel.
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-4">
+                <dl className="space-y-1 text-xs">
+                  <Row label="AWB" value={awb} mono />
+                  <Row label="Type" value="Unidentified" />
+                  <Row label="Remarks" value={unidReason || "—"} />
+                  {unidNote && <Row label="Note" value={unidNote} />}
+                </dl>
+              </Card>
+
+              <Button className="h-11 w-full" onClick={reset}>
+                Start next AWB
+              </Button>
+            </>
+          )}
+
+          {step === "done" && awb && !isUnidentified && (
             <>
               <Card className="space-y-2 p-4 text-center">
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-status-picked/15 text-status-picked">
@@ -979,7 +1118,7 @@ function SalesReturnGrn() {
                 </div>
               )}
             </div>
-            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
               Reason
             </label>
             <Select value={rejectReason} onValueChange={setRejectReason}>
@@ -1079,7 +1218,7 @@ function Row({
 }) {
   return (
     <div className="flex items-baseline gap-3">
-      <dt className="w-16 shrink-0 text-[10px] uppercase tracking-wider text-muted-foreground">
+      <dt className="w-16 shrink-0 text-[10px] font-mono uppercase tracking-[0.08em] text-muted-foreground">
         {label}
       </dt>
       <dd className={cn("flex-1 font-medium", mono && "font-mono")}>{value}</dd>
@@ -1125,7 +1264,7 @@ function CameraPanel({
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-500" />
             </span>
-            <span className="font-bold uppercase tracking-wider">Rec</span>
+            <span className="font-bold font-mono uppercase tracking-[0.08em]">Rec</span>
             <span className="font-mono">
               {mm}:{ss}
             </span>

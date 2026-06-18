@@ -369,7 +369,7 @@ function Grn() {
             </div>
           )}
           {grnDocs.length > 0 && (
-            <div className="rounded-full bg-status-picked/15 px-2 py-0.5 font-semibold text-status-picked">
+            <div className="rounded-[2px] bg-status-picked/15 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-status-picked">
               {grnDocs.length} GRN{grnDocs.length === 1 ? "" : "s"} done
             </div>
           )}
@@ -385,13 +385,13 @@ function Grn() {
               step === "scan-items") && (
               <Card className="flex items-center justify-between gap-3 p-2.5">
                 <div className="min-w-0">
-                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                  <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Box
                   </div>
                   <div className="font-mono text-sm font-bold">{box.boxId}</div>
                 </div>
                 <div className="min-w-0 text-right">
-                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                  <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Seller
                   </div>
                   <div className="truncate text-sm font-semibold">
@@ -399,12 +399,12 @@ function Grn() {
                   </div>
                 </div>
                 <div className="shrink-0 text-right">
-                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                  <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Mode
                   </div>
                   <span
                     className={cn(
-                      "rounded-full px-1.5 py-0.5 text-[10px] font-medium",
+                      "rounded-[2px] px-1.5 py-0.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.06em]",
                       box.sellerFirst
                         ? "bg-primary/10 text-primary"
                         : "bg-muted text-muted-foreground",
@@ -419,7 +419,7 @@ function Grn() {
           {/* Step — QC Table */}
           {step === "scan-qc-table" && (
             <Card className="space-y-3 p-4">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 <ScanBarcode className="h-3.5 w-3.5" />
                 Scan QC Table
               </div>
@@ -440,7 +440,7 @@ function Grn() {
           {step === "select-box" && (
             <>
               <Card className="space-y-3 p-4">
-                <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   <ScanBarcode className="h-3.5 w-3.5" />
                   Scan Box ID
                 </div>
@@ -457,7 +457,7 @@ function Grn() {
               </Card>
 
               <Card className="overflow-hidden p-0">
-                <div className="flex items-center gap-1.5 border-b border-border bg-muted/30 px-3 py-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                <div className="flex items-center gap-1.5 border-b border-border bg-muted/30 px-3 py-2 text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   <ClipboardList className="h-3.5 w-3.5" />
                   Or pick a task from unloading
                 </div>
@@ -476,7 +476,7 @@ function Grn() {
                           {t.seller} · {t.asn}
                         </div>
                       </div>
-                      <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+                      <span className="shrink-0 rounded-[2px] bg-muted px-2 py-0.5 font-mono text-[10px] font-medium text-muted-foreground">
                         {t.items} units
                       </span>
                     </button>
@@ -489,7 +489,7 @@ function Grn() {
           {/* Step — Good LPN */}
           {step === "scan-good-lpn" && (
             <Card className="space-y-3 p-4">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-status-picked">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-status-picked">
                 <ThumbsUp className="h-3.5 w-3.5" />
                 Scan GOOD QC bin LPN
               </div>
@@ -509,7 +509,7 @@ function Grn() {
           {/* Step — Bad LPN */}
           {step === "scan-bad-lpn" && (
             <Card className="space-y-3 p-4">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-destructive">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-destructive">
                 <ThumbsDown className="h-3.5 w-3.5" />
                 Scan BAD QC bin LPN
               </div>
@@ -534,7 +534,7 @@ function Grn() {
               <div className="grid grid-cols-2 gap-1.5">
                 <div className="flex items-center gap-1.5 rounded-md border border-status-picked/30 bg-status-picked/5 px-2 py-1 text-[10px]">
                   <ThumbsUp className="h-3 w-3 text-status-picked" />
-                  <span className="uppercase tracking-wide text-muted-foreground">
+                  <span className="font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Good
                   </span>
                   <span className="ml-auto truncate font-mono font-semibold">
@@ -543,7 +543,7 @@ function Grn() {
                 </div>
                 <div className="flex items-center gap-1.5 rounded-md border border-destructive/30 bg-destructive/5 px-2 py-1 text-[10px]">
                   <ThumbsDown className="h-3 w-3 text-destructive" />
-                  <span className="uppercase tracking-wide text-muted-foreground">
+                  <span className="font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Bad
                   </span>
                   <span className="ml-auto truncate font-mono font-semibold">
@@ -613,7 +613,7 @@ function Grn() {
                   {pendingItem && (
                     <div className="space-y-2 rounded-md border border-border bg-muted/20 p-2.5">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                        <span className="text-[10px] font-semibold font-mono uppercase tracking-[0.06em] text-muted-foreground">
                           Batch / variant details
                         </span>
                         <Button
@@ -707,7 +707,7 @@ function Grn() {
               {/* QC'd table */}
               {qcTableRows.length > 0 && (
                 <Card className="overflow-hidden p-0">
-                  <div className="border-b border-border bg-muted/30 px-3 py-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                  <div className="border-b border-border bg-muted/30 px-3 py-2 text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     QC'd items ({qcTableRows.length})
                   </div>
                   <div className="[&_th]:px-2 [&_th]:py-1.5 [&_td]:px-2 [&_td]:py-1.5 [&_th]:h-auto [&_th]:text-[10px] [&_td]:text-xs">
@@ -742,7 +742,7 @@ function Grn() {
                             <TableCell>
                               <span
                                 className={cn(
-                                  "rounded-full px-1.5 py-0.5 text-[10px] font-medium",
+                                  "rounded-[2px] px-1.5 py-0.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.06em]",
                                   r.mode === "good"
                                     ? "bg-status-picked/15 text-status-picked"
                                     : "bg-destructive/15 text-destructive",
@@ -833,7 +833,7 @@ function Grn() {
             {/* Pendency */}
             <Card className="p-3">
               <div className="mb-2 flex items-center justify-between gap-2">
-                <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                <div className="text-[11px] font-semibold font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   ASN pendency
                 </div>
                 <Button
@@ -885,11 +885,11 @@ function Grn() {
             {box.sellerFirst && box.qcParams.length > 0 && (
               <Card className="p-3">
                 <div className="mb-2 flex items-center justify-between">
-                  <div className="text-[11px] font-semibold uppercase tracking-wide text-primary">
+                  <div className="text-[11px] font-semibold font-mono uppercase tracking-[0.06em] text-primary">
                     Seller QC params
                   </div>
                   {failedParams.length > 0 && (
-                    <span className="rounded-full bg-destructive/15 px-1.5 py-0.5 text-[10px] font-semibold text-destructive">
+                    <span className="rounded-[2px] bg-destructive/15 px-1.5 py-0.5 font-mono text-[9.5px] font-semibold uppercase tracking-[0.06em] text-destructive">
                       {failedParams.length} failed
                     </span>
                   )}
@@ -1077,7 +1077,7 @@ function BatchField({
 }) {
   return (
     <div className="space-y-0.5">
-      <label className="text-[9px] uppercase tracking-wider text-muted-foreground">
+      <label className="text-[9px] font-mono uppercase tracking-[0.06em]r text-muted-foreground">
         {label}
       </label>
       <Input
@@ -1093,9 +1093,9 @@ function BatchField({
 function GrnDocSticker({ doc }: { doc: GrnDoc }) {
   const bars = useMemo(() => grnBarcodePattern(doc.grnId), [doc.grnId]);
   return (
-    <div className="rounded-lg border-2 border-dashed border-border bg-background p-4">
+    <div className="rounded-md border-2 border-dashed border-border bg-background p-4">
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <span className="text-[10px] font-semibold font-mono uppercase tracking-[0.06em]r text-muted-foreground">
           GRN Document
         </span>
         <span className="text-[10px] font-mono text-muted-foreground">
@@ -1139,7 +1139,7 @@ function SessionSummary({
   return (
     <Card className="overflow-hidden p-0">
       <div className="flex items-center justify-between border-b border-border bg-muted/30 px-3 py-2">
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+        <span className="text-[11px] font-semibold font-mono uppercase tracking-[0.06em] text-muted-foreground">
           Summarized GRN · {qcTable}
         </span>
         <span className="text-[10px] text-muted-foreground">
@@ -1187,7 +1187,7 @@ function Row({
 }) {
   return (
     <div className="flex items-baseline gap-3">
-      <dt className="w-16 shrink-0 text-[10px] uppercase tracking-wider text-muted-foreground">
+      <dt className="w-16 shrink-0 text-[10px] font-mono uppercase tracking-[0.06em]r text-muted-foreground">
         {label}
       </dt>
       <dd className={cn("flex-1 font-medium", mono && "font-mono")}>{value}</dd>
@@ -1235,7 +1235,7 @@ function CameraPanel({
 
   return (
     <div className="sticky top-4 space-y-1.5">
-      <div className="overflow-hidden rounded-lg border border-border bg-black shadow-sm">
+      <div className="overflow-hidden rounded-md border border-border bg-black">
         <div className="relative aspect-square bg-black">
           <img
             src="https://picsum.photos/seed/grn-bench-cam/400/400"
@@ -1248,7 +1248,7 @@ function CameraPanel({
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-500" />
             </span>
-            <span className="font-bold uppercase tracking-wider">Rec</span>
+            <span className="font-bold font-mono uppercase tracking-[0.06em]r">Rec</span>
             <span className="font-mono">
               {mm}:{ss}
             </span>

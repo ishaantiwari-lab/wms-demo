@@ -11,15 +11,24 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WmsRouteImport } from './routes/_wms'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WmsWaveCreationRouteImport } from './routes/_wms.wave-creation'
+import { Route as WmsViewManifestRouteImport } from './routes/_wms.view-manifest'
+import { Route as WmsViewDispatchRouteImport } from './routes/_wms.view-dispatch'
 import { Route as WmsUnloadingRouteImport } from './routes/_wms.unloading'
+import { Route as WmsSlottingConfigRouteImport } from './routes/_wms.slotting-config'
+import { Route as WmsSlottingRouteImport } from './routes/_wms.slotting'
 import { Route as WmsSalesReturnGrnRouteImport } from './routes/_wms.sales-return-grn'
 import { Route as WmsReportsRouteImport } from './routes/_wms.reports'
+import { Route as WmsReplenishmentSetupRouteImport } from './routes/_wms.replenishment-setup'
 import { Route as WmsReplenishmentRouteImport } from './routes/_wms.replenishment'
 import { Route as WmsPutwallRouteImport } from './routes/_wms.putwall'
 import { Route as WmsPutawayRouteImport } from './routes/_wms.putaway'
 import { Route as WmsPackRouteImport } from './routes/_wms.pack'
 import { Route as WmsMovementTaskCreateRouteImport } from './routes/_wms.movement-task-create'
 import { Route as WmsManifestRouteImport } from './routes/_wms.manifest'
+import { Route as WmsKittingRouteImport } from './routes/_wms.kitting'
+import { Route as WmsKitOrderRouteImport } from './routes/_wms.kit-order'
+import { Route as WmsKitMappingRouteImport } from './routes/_wms.kit-mapping'
 import { Route as WmsItemMovementRouteImport } from './routes/_wms.item-movement'
 import { Route as WmsItemInfoUpdateRouteImport } from './routes/_wms.item-info-update'
 import { Route as WmsGrnRouteImport } from './routes/_wms.grn'
@@ -28,9 +37,13 @@ import { Route as WmsDockManagementRouteImport } from './routes/_wms.dock-manage
 import { Route as WmsDispatchRouteImport } from './routes/_wms.dispatch'
 import { Route as WmsDetailedInventoryViewRouteImport } from './routes/_wms.detailed-inventory-view'
 import { Route as WmsApprovalsRouteImport } from './routes/_wms.approvals'
+import { Route as WmsViewPicklistIndexRouteImport } from './routes/_wms.view-picklist.index'
+import { Route as WmsViewPackIndexRouteImport } from './routes/_wms.view-pack.index'
 import { Route as WmsSortIndexRouteImport } from './routes/_wms.sort.index'
 import { Route as WmsPickIndexRouteImport } from './routes/_wms.pick.index'
 import { Route as WmsOrdersIndexRouteImport } from './routes/_wms.orders.index'
+import { Route as WmsViewPicklistPicklistIdRouteImport } from './routes/_wms.view-picklist.$picklistId'
+import { Route as WmsViewPackPacklistIdRouteImport } from './routes/_wms.view-pack.$packlistId'
 import { Route as WmsSortTaskIdRouteImport } from './routes/_wms.sort.$taskId'
 import { Route as WmsPickPicklistIdRouteImport } from './routes/_wms.pick.$picklistId'
 import { Route as WmsOrdersOrderNoRouteImport } from './routes/_wms.orders.$orderNo'
@@ -44,9 +57,34 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WmsWaveCreationRoute = WmsWaveCreationRouteImport.update({
+  id: '/wave-creation',
+  path: '/wave-creation',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsViewManifestRoute = WmsViewManifestRouteImport.update({
+  id: '/view-manifest',
+  path: '/view-manifest',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsViewDispatchRoute = WmsViewDispatchRouteImport.update({
+  id: '/view-dispatch',
+  path: '/view-dispatch',
+  getParentRoute: () => WmsRoute,
+} as any)
 const WmsUnloadingRoute = WmsUnloadingRouteImport.update({
   id: '/unloading',
   path: '/unloading',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsSlottingConfigRoute = WmsSlottingConfigRouteImport.update({
+  id: '/slotting-config',
+  path: '/slotting-config',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsSlottingRoute = WmsSlottingRouteImport.update({
+  id: '/slotting',
+  path: '/slotting',
   getParentRoute: () => WmsRoute,
 } as any)
 const WmsSalesReturnGrnRoute = WmsSalesReturnGrnRouteImport.update({
@@ -57,6 +95,11 @@ const WmsSalesReturnGrnRoute = WmsSalesReturnGrnRouteImport.update({
 const WmsReportsRoute = WmsReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsReplenishmentSetupRoute = WmsReplenishmentSetupRouteImport.update({
+  id: '/replenishment-setup',
+  path: '/replenishment-setup',
   getParentRoute: () => WmsRoute,
 } as any)
 const WmsReplenishmentRoute = WmsReplenishmentRouteImport.update({
@@ -87,6 +130,21 @@ const WmsMovementTaskCreateRoute = WmsMovementTaskCreateRouteImport.update({
 const WmsManifestRoute = WmsManifestRouteImport.update({
   id: '/manifest',
   path: '/manifest',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsKittingRoute = WmsKittingRouteImport.update({
+  id: '/kitting',
+  path: '/kitting',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsKitOrderRoute = WmsKitOrderRouteImport.update({
+  id: '/kit-order',
+  path: '/kit-order',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsKitMappingRoute = WmsKitMappingRouteImport.update({
+  id: '/kit-mapping',
+  path: '/kit-mapping',
   getParentRoute: () => WmsRoute,
 } as any)
 const WmsItemMovementRoute = WmsItemMovementRouteImport.update({
@@ -130,6 +188,16 @@ const WmsApprovalsRoute = WmsApprovalsRouteImport.update({
   path: '/approvals',
   getParentRoute: () => WmsRoute,
 } as any)
+const WmsViewPicklistIndexRoute = WmsViewPicklistIndexRouteImport.update({
+  id: '/view-picklist/',
+  path: '/view-picklist/',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsViewPackIndexRoute = WmsViewPackIndexRouteImport.update({
+  id: '/view-pack/',
+  path: '/view-pack/',
+  getParentRoute: () => WmsRoute,
+} as any)
 const WmsSortIndexRoute = WmsSortIndexRouteImport.update({
   id: '/sort/',
   path: '/sort/',
@@ -143,6 +211,17 @@ const WmsPickIndexRoute = WmsPickIndexRouteImport.update({
 const WmsOrdersIndexRoute = WmsOrdersIndexRouteImport.update({
   id: '/orders/',
   path: '/orders/',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsViewPicklistPicklistIdRoute =
+  WmsViewPicklistPicklistIdRouteImport.update({
+    id: '/view-picklist/$picklistId',
+    path: '/view-picklist/$picklistId',
+    getParentRoute: () => WmsRoute,
+  } as any)
+const WmsViewPackPacklistIdRoute = WmsViewPackPacklistIdRouteImport.update({
+  id: '/view-pack/$packlistId',
+  path: '/view-pack/$packlistId',
   getParentRoute: () => WmsRoute,
 } as any)
 const WmsSortTaskIdRoute = WmsSortTaskIdRouteImport.update({
@@ -171,21 +250,34 @@ export interface FileRoutesByFullPath {
   '/grn': typeof WmsGrnRoute
   '/item-info-update': typeof WmsItemInfoUpdateRoute
   '/item-movement': typeof WmsItemMovementRoute
+  '/kit-mapping': typeof WmsKitMappingRoute
+  '/kit-order': typeof WmsKitOrderRoute
+  '/kitting': typeof WmsKittingRoute
   '/manifest': typeof WmsManifestRoute
   '/movement-task-create': typeof WmsMovementTaskCreateRoute
   '/pack': typeof WmsPackRoute
   '/putaway': typeof WmsPutawayRoute
   '/putwall': typeof WmsPutwallRoute
   '/replenishment': typeof WmsReplenishmentRoute
+  '/replenishment-setup': typeof WmsReplenishmentSetupRoute
   '/reports': typeof WmsReportsRoute
   '/sales-return-grn': typeof WmsSalesReturnGrnRoute
+  '/slotting': typeof WmsSlottingRoute
+  '/slotting-config': typeof WmsSlottingConfigRoute
   '/unloading': typeof WmsUnloadingRoute
+  '/view-dispatch': typeof WmsViewDispatchRoute
+  '/view-manifest': typeof WmsViewManifestRoute
+  '/wave-creation': typeof WmsWaveCreationRoute
   '/orders/$orderNo': typeof WmsOrdersOrderNoRoute
   '/pick/$picklistId': typeof WmsPickPicklistIdRoute
   '/sort/$taskId': typeof WmsSortTaskIdRoute
+  '/view-pack/$packlistId': typeof WmsViewPackPacklistIdRoute
+  '/view-picklist/$picklistId': typeof WmsViewPicklistPicklistIdRoute
   '/orders/': typeof WmsOrdersIndexRoute
   '/pick/': typeof WmsPickIndexRoute
   '/sort/': typeof WmsSortIndexRoute
+  '/view-pack/': typeof WmsViewPackIndexRoute
+  '/view-picklist/': typeof WmsViewPicklistIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -197,21 +289,34 @@ export interface FileRoutesByTo {
   '/grn': typeof WmsGrnRoute
   '/item-info-update': typeof WmsItemInfoUpdateRoute
   '/item-movement': typeof WmsItemMovementRoute
+  '/kit-mapping': typeof WmsKitMappingRoute
+  '/kit-order': typeof WmsKitOrderRoute
+  '/kitting': typeof WmsKittingRoute
   '/manifest': typeof WmsManifestRoute
   '/movement-task-create': typeof WmsMovementTaskCreateRoute
   '/pack': typeof WmsPackRoute
   '/putaway': typeof WmsPutawayRoute
   '/putwall': typeof WmsPutwallRoute
   '/replenishment': typeof WmsReplenishmentRoute
+  '/replenishment-setup': typeof WmsReplenishmentSetupRoute
   '/reports': typeof WmsReportsRoute
   '/sales-return-grn': typeof WmsSalesReturnGrnRoute
+  '/slotting': typeof WmsSlottingRoute
+  '/slotting-config': typeof WmsSlottingConfigRoute
   '/unloading': typeof WmsUnloadingRoute
+  '/view-dispatch': typeof WmsViewDispatchRoute
+  '/view-manifest': typeof WmsViewManifestRoute
+  '/wave-creation': typeof WmsWaveCreationRoute
   '/orders/$orderNo': typeof WmsOrdersOrderNoRoute
   '/pick/$picklistId': typeof WmsPickPicklistIdRoute
   '/sort/$taskId': typeof WmsSortTaskIdRoute
+  '/view-pack/$packlistId': typeof WmsViewPackPacklistIdRoute
+  '/view-picklist/$picklistId': typeof WmsViewPicklistPicklistIdRoute
   '/orders': typeof WmsOrdersIndexRoute
   '/pick': typeof WmsPickIndexRoute
   '/sort': typeof WmsSortIndexRoute
+  '/view-pack': typeof WmsViewPackIndexRoute
+  '/view-picklist': typeof WmsViewPicklistIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -225,21 +330,34 @@ export interface FileRoutesById {
   '/_wms/grn': typeof WmsGrnRoute
   '/_wms/item-info-update': typeof WmsItemInfoUpdateRoute
   '/_wms/item-movement': typeof WmsItemMovementRoute
+  '/_wms/kit-mapping': typeof WmsKitMappingRoute
+  '/_wms/kit-order': typeof WmsKitOrderRoute
+  '/_wms/kitting': typeof WmsKittingRoute
   '/_wms/manifest': typeof WmsManifestRoute
   '/_wms/movement-task-create': typeof WmsMovementTaskCreateRoute
   '/_wms/pack': typeof WmsPackRoute
   '/_wms/putaway': typeof WmsPutawayRoute
   '/_wms/putwall': typeof WmsPutwallRoute
   '/_wms/replenishment': typeof WmsReplenishmentRoute
+  '/_wms/replenishment-setup': typeof WmsReplenishmentSetupRoute
   '/_wms/reports': typeof WmsReportsRoute
   '/_wms/sales-return-grn': typeof WmsSalesReturnGrnRoute
+  '/_wms/slotting': typeof WmsSlottingRoute
+  '/_wms/slotting-config': typeof WmsSlottingConfigRoute
   '/_wms/unloading': typeof WmsUnloadingRoute
+  '/_wms/view-dispatch': typeof WmsViewDispatchRoute
+  '/_wms/view-manifest': typeof WmsViewManifestRoute
+  '/_wms/wave-creation': typeof WmsWaveCreationRoute
   '/_wms/orders/$orderNo': typeof WmsOrdersOrderNoRoute
   '/_wms/pick/$picklistId': typeof WmsPickPicklistIdRoute
   '/_wms/sort/$taskId': typeof WmsSortTaskIdRoute
+  '/_wms/view-pack/$packlistId': typeof WmsViewPackPacklistIdRoute
+  '/_wms/view-picklist/$picklistId': typeof WmsViewPicklistPicklistIdRoute
   '/_wms/orders/': typeof WmsOrdersIndexRoute
   '/_wms/pick/': typeof WmsPickIndexRoute
   '/_wms/sort/': typeof WmsSortIndexRoute
+  '/_wms/view-pack/': typeof WmsViewPackIndexRoute
+  '/_wms/view-picklist/': typeof WmsViewPicklistIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -253,21 +371,34 @@ export interface FileRouteTypes {
     | '/grn'
     | '/item-info-update'
     | '/item-movement'
+    | '/kit-mapping'
+    | '/kit-order'
+    | '/kitting'
     | '/manifest'
     | '/movement-task-create'
     | '/pack'
     | '/putaway'
     | '/putwall'
     | '/replenishment'
+    | '/replenishment-setup'
     | '/reports'
     | '/sales-return-grn'
+    | '/slotting'
+    | '/slotting-config'
     | '/unloading'
+    | '/view-dispatch'
+    | '/view-manifest'
+    | '/wave-creation'
     | '/orders/$orderNo'
     | '/pick/$picklistId'
     | '/sort/$taskId'
+    | '/view-pack/$packlistId'
+    | '/view-picklist/$picklistId'
     | '/orders/'
     | '/pick/'
     | '/sort/'
+    | '/view-pack/'
+    | '/view-picklist/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -279,21 +410,34 @@ export interface FileRouteTypes {
     | '/grn'
     | '/item-info-update'
     | '/item-movement'
+    | '/kit-mapping'
+    | '/kit-order'
+    | '/kitting'
     | '/manifest'
     | '/movement-task-create'
     | '/pack'
     | '/putaway'
     | '/putwall'
     | '/replenishment'
+    | '/replenishment-setup'
     | '/reports'
     | '/sales-return-grn'
+    | '/slotting'
+    | '/slotting-config'
     | '/unloading'
+    | '/view-dispatch'
+    | '/view-manifest'
+    | '/wave-creation'
     | '/orders/$orderNo'
     | '/pick/$picklistId'
     | '/sort/$taskId'
+    | '/view-pack/$packlistId'
+    | '/view-picklist/$picklistId'
     | '/orders'
     | '/pick'
     | '/sort'
+    | '/view-pack'
+    | '/view-picklist'
   id:
     | '__root__'
     | '/'
@@ -306,21 +450,34 @@ export interface FileRouteTypes {
     | '/_wms/grn'
     | '/_wms/item-info-update'
     | '/_wms/item-movement'
+    | '/_wms/kit-mapping'
+    | '/_wms/kit-order'
+    | '/_wms/kitting'
     | '/_wms/manifest'
     | '/_wms/movement-task-create'
     | '/_wms/pack'
     | '/_wms/putaway'
     | '/_wms/putwall'
     | '/_wms/replenishment'
+    | '/_wms/replenishment-setup'
     | '/_wms/reports'
     | '/_wms/sales-return-grn'
+    | '/_wms/slotting'
+    | '/_wms/slotting-config'
     | '/_wms/unloading'
+    | '/_wms/view-dispatch'
+    | '/_wms/view-manifest'
+    | '/_wms/wave-creation'
     | '/_wms/orders/$orderNo'
     | '/_wms/pick/$picklistId'
     | '/_wms/sort/$taskId'
+    | '/_wms/view-pack/$packlistId'
+    | '/_wms/view-picklist/$picklistId'
     | '/_wms/orders/'
     | '/_wms/pick/'
     | '/_wms/sort/'
+    | '/_wms/view-pack/'
+    | '/_wms/view-picklist/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -344,11 +501,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_wms/wave-creation': {
+      id: '/_wms/wave-creation'
+      path: '/wave-creation'
+      fullPath: '/wave-creation'
+      preLoaderRoute: typeof WmsWaveCreationRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/view-manifest': {
+      id: '/_wms/view-manifest'
+      path: '/view-manifest'
+      fullPath: '/view-manifest'
+      preLoaderRoute: typeof WmsViewManifestRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/view-dispatch': {
+      id: '/_wms/view-dispatch'
+      path: '/view-dispatch'
+      fullPath: '/view-dispatch'
+      preLoaderRoute: typeof WmsViewDispatchRouteImport
+      parentRoute: typeof WmsRoute
+    }
     '/_wms/unloading': {
       id: '/_wms/unloading'
       path: '/unloading'
       fullPath: '/unloading'
       preLoaderRoute: typeof WmsUnloadingRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/slotting-config': {
+      id: '/_wms/slotting-config'
+      path: '/slotting-config'
+      fullPath: '/slotting-config'
+      preLoaderRoute: typeof WmsSlottingConfigRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/slotting': {
+      id: '/_wms/slotting'
+      path: '/slotting'
+      fullPath: '/slotting'
+      preLoaderRoute: typeof WmsSlottingRouteImport
       parentRoute: typeof WmsRoute
     }
     '/_wms/sales-return-grn': {
@@ -363,6 +555,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/reports'
       preLoaderRoute: typeof WmsReportsRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/replenishment-setup': {
+      id: '/_wms/replenishment-setup'
+      path: '/replenishment-setup'
+      fullPath: '/replenishment-setup'
+      preLoaderRoute: typeof WmsReplenishmentSetupRouteImport
       parentRoute: typeof WmsRoute
     }
     '/_wms/replenishment': {
@@ -405,6 +604,27 @@ declare module '@tanstack/react-router' {
       path: '/manifest'
       fullPath: '/manifest'
       preLoaderRoute: typeof WmsManifestRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/kitting': {
+      id: '/_wms/kitting'
+      path: '/kitting'
+      fullPath: '/kitting'
+      preLoaderRoute: typeof WmsKittingRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/kit-order': {
+      id: '/_wms/kit-order'
+      path: '/kit-order'
+      fullPath: '/kit-order'
+      preLoaderRoute: typeof WmsKitOrderRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/kit-mapping': {
+      id: '/_wms/kit-mapping'
+      path: '/kit-mapping'
+      fullPath: '/kit-mapping'
+      preLoaderRoute: typeof WmsKitMappingRouteImport
       parentRoute: typeof WmsRoute
     }
     '/_wms/item-movement': {
@@ -463,6 +683,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WmsApprovalsRouteImport
       parentRoute: typeof WmsRoute
     }
+    '/_wms/view-picklist/': {
+      id: '/_wms/view-picklist/'
+      path: '/view-picklist'
+      fullPath: '/view-picklist/'
+      preLoaderRoute: typeof WmsViewPicklistIndexRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/view-pack/': {
+      id: '/_wms/view-pack/'
+      path: '/view-pack'
+      fullPath: '/view-pack/'
+      preLoaderRoute: typeof WmsViewPackIndexRouteImport
+      parentRoute: typeof WmsRoute
+    }
     '/_wms/sort/': {
       id: '/_wms/sort/'
       path: '/sort'
@@ -482,6 +716,20 @@ declare module '@tanstack/react-router' {
       path: '/orders'
       fullPath: '/orders/'
       preLoaderRoute: typeof WmsOrdersIndexRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/view-picklist/$picklistId': {
+      id: '/_wms/view-picklist/$picklistId'
+      path: '/view-picklist/$picklistId'
+      fullPath: '/view-picklist/$picklistId'
+      preLoaderRoute: typeof WmsViewPicklistPicklistIdRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/view-pack/$packlistId': {
+      id: '/_wms/view-pack/$packlistId'
+      path: '/view-pack/$packlistId'
+      fullPath: '/view-pack/$packlistId'
+      preLoaderRoute: typeof WmsViewPackPacklistIdRouteImport
       parentRoute: typeof WmsRoute
     }
     '/_wms/sort/$taskId': {
@@ -517,21 +765,34 @@ interface WmsRouteChildren {
   WmsGrnRoute: typeof WmsGrnRoute
   WmsItemInfoUpdateRoute: typeof WmsItemInfoUpdateRoute
   WmsItemMovementRoute: typeof WmsItemMovementRoute
+  WmsKitMappingRoute: typeof WmsKitMappingRoute
+  WmsKitOrderRoute: typeof WmsKitOrderRoute
+  WmsKittingRoute: typeof WmsKittingRoute
   WmsManifestRoute: typeof WmsManifestRoute
   WmsMovementTaskCreateRoute: typeof WmsMovementTaskCreateRoute
   WmsPackRoute: typeof WmsPackRoute
   WmsPutawayRoute: typeof WmsPutawayRoute
   WmsPutwallRoute: typeof WmsPutwallRoute
   WmsReplenishmentRoute: typeof WmsReplenishmentRoute
+  WmsReplenishmentSetupRoute: typeof WmsReplenishmentSetupRoute
   WmsReportsRoute: typeof WmsReportsRoute
   WmsSalesReturnGrnRoute: typeof WmsSalesReturnGrnRoute
+  WmsSlottingRoute: typeof WmsSlottingRoute
+  WmsSlottingConfigRoute: typeof WmsSlottingConfigRoute
   WmsUnloadingRoute: typeof WmsUnloadingRoute
+  WmsViewDispatchRoute: typeof WmsViewDispatchRoute
+  WmsViewManifestRoute: typeof WmsViewManifestRoute
+  WmsWaveCreationRoute: typeof WmsWaveCreationRoute
   WmsOrdersOrderNoRoute: typeof WmsOrdersOrderNoRoute
   WmsPickPicklistIdRoute: typeof WmsPickPicklistIdRoute
   WmsSortTaskIdRoute: typeof WmsSortTaskIdRoute
+  WmsViewPackPacklistIdRoute: typeof WmsViewPackPacklistIdRoute
+  WmsViewPicklistPicklistIdRoute: typeof WmsViewPicklistPicklistIdRoute
   WmsOrdersIndexRoute: typeof WmsOrdersIndexRoute
   WmsPickIndexRoute: typeof WmsPickIndexRoute
   WmsSortIndexRoute: typeof WmsSortIndexRoute
+  WmsViewPackIndexRoute: typeof WmsViewPackIndexRoute
+  WmsViewPicklistIndexRoute: typeof WmsViewPicklistIndexRoute
 }
 
 const WmsRouteChildren: WmsRouteChildren = {
@@ -543,21 +804,34 @@ const WmsRouteChildren: WmsRouteChildren = {
   WmsGrnRoute: WmsGrnRoute,
   WmsItemInfoUpdateRoute: WmsItemInfoUpdateRoute,
   WmsItemMovementRoute: WmsItemMovementRoute,
+  WmsKitMappingRoute: WmsKitMappingRoute,
+  WmsKitOrderRoute: WmsKitOrderRoute,
+  WmsKittingRoute: WmsKittingRoute,
   WmsManifestRoute: WmsManifestRoute,
   WmsMovementTaskCreateRoute: WmsMovementTaskCreateRoute,
   WmsPackRoute: WmsPackRoute,
   WmsPutawayRoute: WmsPutawayRoute,
   WmsPutwallRoute: WmsPutwallRoute,
   WmsReplenishmentRoute: WmsReplenishmentRoute,
+  WmsReplenishmentSetupRoute: WmsReplenishmentSetupRoute,
   WmsReportsRoute: WmsReportsRoute,
   WmsSalesReturnGrnRoute: WmsSalesReturnGrnRoute,
+  WmsSlottingRoute: WmsSlottingRoute,
+  WmsSlottingConfigRoute: WmsSlottingConfigRoute,
   WmsUnloadingRoute: WmsUnloadingRoute,
+  WmsViewDispatchRoute: WmsViewDispatchRoute,
+  WmsViewManifestRoute: WmsViewManifestRoute,
+  WmsWaveCreationRoute: WmsWaveCreationRoute,
   WmsOrdersOrderNoRoute: WmsOrdersOrderNoRoute,
   WmsPickPicklistIdRoute: WmsPickPicklistIdRoute,
   WmsSortTaskIdRoute: WmsSortTaskIdRoute,
+  WmsViewPackPacklistIdRoute: WmsViewPackPacklistIdRoute,
+  WmsViewPicklistPicklistIdRoute: WmsViewPicklistPicklistIdRoute,
   WmsOrdersIndexRoute: WmsOrdersIndexRoute,
   WmsPickIndexRoute: WmsPickIndexRoute,
   WmsSortIndexRoute: WmsSortIndexRoute,
+  WmsViewPackIndexRoute: WmsViewPackIndexRoute,
+  WmsViewPicklistIndexRoute: WmsViewPicklistIndexRoute,
 }
 
 const WmsRouteWithChildren = WmsRoute._addFileChildren(WmsRouteChildren)

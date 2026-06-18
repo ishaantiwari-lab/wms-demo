@@ -263,7 +263,7 @@ function ItemMovement() {
             <div className="divide-y divide-border">
               {openTasks.length > 0 && (
                 <>
-                  <div className="px-4 py-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                  <div className="px-4 py-2 text-[10px] font-semibold font-mono uppercase tracking-[0.06em]st text-muted-foreground">
                     Item
                   </div>
                   {openTasks.map((t) => (
@@ -296,7 +296,7 @@ function ItemMovement() {
 
               {openBinTasks.length > 0 && (
                 <>
-                  <div className="px-4 py-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                  <div className="px-4 py-2 text-[10px] font-semibold font-mono uppercase tracking-[0.06em]st text-muted-foreground">
                     Bin
                   </div>
                   {openBinTasks.map((t) => (
@@ -611,25 +611,25 @@ function AdHocItemFlow({ onComplete }: { onComplete: () => void }) {
       {stage === "confirm" && (
         <Card className="space-y-3 p-4">
           <div className="space-y-3 rounded-md border border-border bg-muted/20 p-3">
-            <div className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+            <div className="text-[10px] font-semibold font-mono uppercase tracking-[0.06em] text-muted-foreground">
               Move summary
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   From
                 </div>
                 <div className="font-mono text-sm font-semibold">{fromBin}</div>
               </div>
               <div>
-                <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   To
                 </div>
                 <div className="font-mono text-sm font-semibold">{toBin}</div>
               </div>
             </div>
             <div>
-              <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+              <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 Item
               </div>
               <div className="text-sm font-semibold">
@@ -640,7 +640,7 @@ function AdHocItemFlow({ onComplete }: { onComplete: () => void }) {
               </div>
             </div>
             <div>
-              <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+              <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 Quantity
               </div>
               <div className="font-mono text-sm font-semibold">{qty} units</div>
@@ -757,12 +757,12 @@ function AdHocBinFlow({ onComplete }: { onComplete: () => void }) {
             <div className="space-y-3">
               <ConfirmedStrip label="Destination" value={destLocation} />
               <div className="rounded-md border border-border bg-muted/20 p-3 space-y-3">
-                <div className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                <div className="text-[10px] font-semibold font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   Move summary
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                    <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                       From
                     </div>
                     <div className="font-mono text-sm font-semibold">
@@ -770,7 +770,7 @@ function AdHocBinFlow({ onComplete }: { onComplete: () => void }) {
                     </div>
                   </div>
                   <div>
-                    <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                    <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                       To
                     </div>
                     <div className="font-mono text-sm font-semibold">
@@ -779,7 +779,7 @@ function AdHocBinFlow({ onComplete }: { onComplete: () => void }) {
                   </div>
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                  <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Bin
                   </div>
                   <div className="font-mono text-sm font-semibold">{binNo}</div>
@@ -867,7 +867,7 @@ function MovementFlow({
           <div className="mb-3 grid grid-cols-2 gap-1.5">
             <div className="flex items-center gap-1.5 rounded-md border border-border bg-muted/30 px-2 py-1.5 text-[11px]">
               <ArrowUpFromLine className="h-3 w-3 shrink-0 text-muted-foreground" />
-              <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+              <span className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 From
               </span>
               <span className="ml-auto truncate font-mono font-semibold">
@@ -876,7 +876,7 @@ function MovementFlow({
             </div>
             <div className="flex items-center gap-1.5 rounded-md border border-border bg-muted/30 px-2 py-1.5 text-[11px]">
               <ArrowDownToLine className="h-3 w-3 shrink-0 text-muted-foreground" />
-              <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+              <span className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 To
               </span>
               <span className="ml-auto truncate font-mono font-semibold">
@@ -1086,7 +1086,7 @@ function BinMovementFlow({
           <div className="mb-3 grid grid-cols-2 gap-1.5">
             <div className="flex items-center gap-1.5 rounded-md border border-border bg-muted/30 px-2 py-1.5 text-[11px]">
               <ArrowUpFromLine className="h-3 w-3 shrink-0 text-muted-foreground" />
-              <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+              <span className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 From
               </span>
               <span className="ml-auto truncate font-mono font-semibold">
@@ -1095,7 +1095,7 @@ function BinMovementFlow({
             </div>
             <div className="flex items-center gap-1.5 rounded-md border border-border bg-muted/30 px-2 py-1.5 text-[11px]">
               <ArrowDownToLine className="h-3 w-3 shrink-0 text-muted-foreground" />
-              <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+              <span className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 To
               </span>
               <span className="ml-auto truncate font-mono font-semibold">
@@ -1168,12 +1168,12 @@ function BinMovementFlow({
                 <div className="space-y-3">
                   <ConfirmedStrip label="Destination" value={task.toLocation} />
                   <div className="rounded-md border border-border bg-muted/20 p-3 space-y-3">
-                    <div className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    <div className="text-[10px] font-semibold font-mono uppercase tracking-[0.06em] text-muted-foreground">
                       Move summary
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                        <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                           From
                         </div>
                         <div className="font-mono text-sm font-semibold">
@@ -1181,7 +1181,7 @@ function BinMovementFlow({
                         </div>
                       </div>
                       <div>
-                        <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                        <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                           To
                         </div>
                         <div className="font-mono text-sm font-semibold">
@@ -1190,7 +1190,7 @@ function BinMovementFlow({
                       </div>
                     </div>
                     <div>
-                      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                      <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                         Bin
                       </div>
                       <div className="font-mono text-sm font-semibold">
@@ -1255,7 +1255,7 @@ function SuggestRow({
 }) {
   return (
     <div>
-      <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
+      <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-[0.06em] text-muted-foreground">
         <Icon className="h-3.5 w-3.5" />
         {label}
       </div>
@@ -1274,7 +1274,7 @@ function FieldHeader({
   label: string;
 }) {
   return (
-    <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+    <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
       <Icon className="h-3.5 w-3.5" />
       {label}
     </div>
@@ -1299,7 +1299,7 @@ function ReadonlyField({
         <span className={cn("text-sm font-semibold", mono && "font-mono")}>
           {value}
         </span>
-        <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+        <span className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
           System
         </span>
       </div>
@@ -1326,7 +1326,7 @@ function ScanRow({
     <div>
       <div className="mb-1 flex items-center gap-2">
         <ScanBarcode className="h-3.5 w-3.5 text-muted-foreground" />
-        <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
           {label}
         </label>
       </div>
@@ -1382,7 +1382,7 @@ function FreeScanRow({
     <div>
       <div className="mb-1 flex items-center gap-2">
         <ScanBarcode className="h-3.5 w-3.5 text-muted-foreground" />
-        <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
           {label}
         </label>
       </div>

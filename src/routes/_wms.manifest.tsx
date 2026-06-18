@@ -146,7 +146,7 @@ function ManifestModule() {
 
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-muted/40 py-4">
-      <div className="mx-auto w-full max-w-[420px] overflow-hidden rounded-xl border border-border bg-background shadow-sm">
+      <div className="mx-auto w-full max-w-[420px] overflow-hidden rounded-md border border-border bg-background">
       {/* Top bar */}
       <div className="flex items-center justify-between gap-2 border-b border-border bg-background px-4 py-3">
         <div className="flex items-center gap-1.5 text-sm font-semibold">
@@ -162,7 +162,7 @@ function ManifestModule() {
         {/* Scan input */}
         <Card className="space-y-3 p-4">
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
               <ScanBarcode className="h-3.5 w-3.5" />
               Scan AWB
             </div>
@@ -220,7 +220,7 @@ function ManifestModule() {
             )}
           >
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 <CheckCircle2
                   className={cn(
                     "h-3.5 w-3.5",
@@ -237,7 +237,7 @@ function ManifestModule() {
               {/* Big pile letter */}
               <div
                 className={cn(
-                  "flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border-2 text-3xl font-black",
+                  "flex h-16 w-16 shrink-0 items-center justify-center rounded-md border-2 text-3xl font-black",
                   lastScan.isNewPile
                     ? "border-status-picked/60 bg-status-picked/10 text-status-picked"
                     : "border-primary/40 bg-primary/10 text-primary",
@@ -331,7 +331,7 @@ function PileCard({
   return (
     <Card className="flex items-center gap-3 p-2.5">
       {/* Pile letter */}
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-border bg-muted text-lg font-black">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border-2 border-border bg-muted text-lg font-black">
         {pile.letter}
       </div>
 
@@ -351,7 +351,7 @@ function PileCard({
         <div className="font-mono text-base font-bold leading-tight">
           {pile.awbs.length}
         </div>
-        <div className="text-[9px] uppercase tracking-wide text-muted-foreground">
+        <div className="text-[9px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
           shpmts
         </div>
       </div>
@@ -430,7 +430,7 @@ function ManifestSticker({ manifest }: { manifest: ClosedManifest }) {
     hour12: true,
   });
   return (
-    <div className="rounded-lg border-2 border-dashed border-border bg-background p-4">
+    <div className="rounded-md border-2 border-dashed border-border bg-background p-4">
       {/* Barcode + manifest ID — centred header */}
       <div className="flex flex-col items-center">
         <div className="flex items-end gap-px">
@@ -486,7 +486,7 @@ function StickerRow({
 }) {
   return (
     <div className="flex items-baseline gap-3">
-      <dt className="w-16 shrink-0 text-[10px] uppercase tracking-wider text-muted-foreground">
+      <dt className="w-16 shrink-0 text-[10px] font-mono uppercase tracking-[0.08em] text-muted-foreground">
         {label}
       </dt>
       <dd className={cn("flex-1 font-medium", mono && "font-mono")}>

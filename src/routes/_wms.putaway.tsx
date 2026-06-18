@@ -109,7 +109,7 @@ function Putaway() {
 
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-muted/40 py-4">
-      <div className="mx-auto w-full max-w-[420px] overflow-hidden rounded-xl border border-border bg-background shadow-sm">
+      <div className="mx-auto w-full max-w-[420px] overflow-hidden rounded-md border border-border bg-background">
         {/* Top bar */}
         <div className="flex items-center justify-between gap-2 border-b border-border bg-background px-4 py-3">
           <div className="flex items-center gap-1.5 text-sm font-semibold">
@@ -128,7 +128,7 @@ function Putaway() {
           {step === "scan" && (
             <>
               <Card className="space-y-3 p-4">
-                <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   <ScanBarcode className="h-3.5 w-3.5" />
                   Scan USN or GRN LPN
                 </div>
@@ -147,7 +147,7 @@ function Putaway() {
 
               {log.length > 0 && (
                 <Card className="space-y-1.5 p-3">
-                  <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                  <div className="text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Recent putaways ({log.length})
                   </div>
                   {log
@@ -161,7 +161,7 @@ function Putaway() {
                           "flex items-center justify-between gap-2 rounded-md border p-2 text-xs",
                           l.kind === "identified"
                             ? "border-status-picked/30 bg-status-picked/5"
-                            : "border-orange-300 bg-orange-50",
+                            : "border-warn/30 bg-warn-bg",
                         )}
                       >
                         <div className="min-w-0">
@@ -174,10 +174,10 @@ function Putaway() {
                         </div>
                         <span
                           className={cn(
-                            "shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium",
+                            "shrink-0 rounded-[2px] px-1.5 py-0.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.06em]",
                             l.kind === "identified"
                               ? "bg-status-picked/15 text-status-picked"
-                              : "bg-orange-100 text-orange-700",
+                              : "bg-warn-bg text-warn",
                           )}
                         >
                           {l.kind === "identified" ? "Storage" : "Holding"}
@@ -196,10 +196,10 @@ function Putaway() {
                   "space-y-3 p-4",
                   pending.kind === "identified"
                     ? "border-status-picked/30 bg-status-picked/5"
-                    : "border-orange-300 bg-orange-50",
+                    : "border-warn/30 bg-warn-bg",
                 )}
               >
-                <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide">
+                <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em]">
                   <ScanBarcode className="h-3.5 w-3.5" />
                   Scanned barcode
                 </div>
@@ -211,7 +211,7 @@ function Putaway() {
                     "rounded-md p-2 text-xs",
                     pending.kind === "identified"
                       ? "bg-status-picked/10 text-status-picked"
-                      : "bg-orange-100 text-orange-700",
+                      : "bg-warn-bg text-warn",
                   )}
                 >
                   {pending.kind === "identified"
@@ -221,7 +221,7 @@ function Putaway() {
               </Card>
 
               <Card className="space-y-2 p-4">
-                <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-muted-foreground">
+                <div className="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   <MapPin className="h-3.5 w-3.5" />
                   {pending.kind === "identified"
                     ? "Storage bay"
@@ -272,12 +272,12 @@ function Tile({
         "flex items-center justify-between gap-2 p-3",
         tone === "ok"
           ? "border-status-picked/30 bg-status-picked/5"
-          : "border-orange-300 bg-orange-50",
+          : "border-warn/30 bg-warn-bg",
       )}
     >
-      <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide">
+      <div className="flex items-center gap-1.5 text-[11px] font-medium font-mono uppercase tracking-[0.06em]">
         <span
-          className={tone === "ok" ? "text-status-picked" : "text-orange-600"}
+          className={tone === "ok" ? "text-status-picked" : "text-warn"}
         >
           {icon}
         </span>
