@@ -183,7 +183,7 @@ function KitMappingScreen() {
 
             {/* Components */}
             <div className="space-y-2">
-              <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <div className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 Child Components
               </div>
               <div className="space-y-2">
@@ -427,7 +427,7 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+      <div className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </div>
       {children}

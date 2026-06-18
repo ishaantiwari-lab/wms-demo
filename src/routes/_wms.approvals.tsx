@@ -242,7 +242,7 @@ function Approvals() {
 
         {/* Approval sub-type selector */}
         <div className="flex flex-wrap items-center gap-3">
-          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          <span className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
             Approval Type
           </span>
           <Select value={type} onValueChange={setType}>
@@ -316,16 +316,16 @@ function Approvals() {
             {/* Table card */}
             <Card className="overflow-hidden">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border p-3">
-                <div className="inline-flex rounded-lg bg-muted p-1">
+                <div className="inline-flex gap-1 border-b border-border">
                   {STAT_TABS.map((t) => (
                     <button
                       key={t}
                       onClick={() => setTab(t)}
                       className={cn(
-                        "rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
+                        "border-b-2 px-3 py-1.5 font-mono text-xs font-medium uppercase tracking-[0.06em] transition-colors -mb-px",
                         tab === t
-                          ? "bg-background text-foreground shadow-sm"
-                          : "text-muted-foreground hover:text-foreground",
+                          ? "border-foreground text-foreground"
+                          : "border-transparent text-muted-foreground hover:text-foreground",
                       )}
                     >
                       {t}
@@ -438,7 +438,7 @@ function StatCard({
       <div className="flex items-start justify-between">
         <div
           className={cn(
-            "flex h-9 w-9 items-center justify-center rounded-lg",
+            "flex h-9 w-9 items-center justify-center rounded-md",
             tone === "green" && "bg-status-dispatched/15 text-status-dispatched",
             tone === "red" && "bg-destructive/10 text-destructive",
             tone === "default" && "bg-muted text-foreground",
@@ -524,17 +524,17 @@ function ApprovalDetail({
             </div>
 
             {/* Comparison table */}
-            <div className="overflow-hidden rounded-lg border border-border">
+            <div className="overflow-hidden rounded-md border border-border">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-primary text-primary-foreground">
-                    <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide">
+                    <th className="px-4 py-2.5 text-left text-xs font-semibold font-mono uppercase tracking-[0.06em]">
                       Data Property
                     </th>
-                    <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide">
+                    <th className="px-4 py-2.5 text-left text-xs font-semibold font-mono uppercase tracking-[0.06em]">
                       Current Value
                     </th>
-                    <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide">
+                    <th className="px-4 py-2.5 text-left text-xs font-semibold font-mono uppercase tracking-[0.06em]">
                       Updated Value
                     </th>
                   </tr>
@@ -585,7 +585,7 @@ function ApprovalDetail({
 
             {/* Remarks */}
             {decided ? (
-              <div className="rounded-lg border border-border bg-muted/40 p-4 text-sm">
+              <div className="rounded-md border border-border bg-muted/40 p-4 text-sm">
                 <span className="font-medium">This request has been </span>
                 <span
                   className={cn(
@@ -601,7 +601,7 @@ function ApprovalDetail({
               </div>
             ) : (
               <div className="space-y-1.5">
-                <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   Approver Remarks <span className="text-destructive">*</span>
                 </label>
                 <Textarea
@@ -644,8 +644,8 @@ function SummaryCard({
   accent?: boolean;
 }) {
   return (
-    <div className="rounded-lg bg-muted/50 p-3">
-      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+    <div className="rounded-md bg-muted/50 p-3">
+      <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </div>
       <div

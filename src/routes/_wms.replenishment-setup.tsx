@@ -236,7 +236,7 @@ function ReplenishmentSetup() {
 
         {/* Template format & rules */}
         <div className="border-t border-border bg-muted/20 px-4 py-3">
-          <div className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          <div className="mb-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
             Template columns
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -310,7 +310,7 @@ function ReplenishmentSetup() {
         </div>
 
         {/* Table header */}
-        <div className="grid grid-cols-[7rem_1fr_6rem_6rem_7rem] gap-3 border-b border-border bg-muted/30 px-5 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <div className="grid grid-cols-[7rem_1fr_6rem_6rem_7rem] gap-3 border-b border-border bg-muted/30 px-5 py-2.5 text-[10px] font-semibold font-mono uppercase tracking-[0.08em] text-muted-foreground">
           <span>SKU Code</span>
           <span>Item</span>
           <span className="text-right">Minimum Qty</span>
@@ -414,7 +414,7 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+      <div className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </div>
       {children}
@@ -477,7 +477,7 @@ function Stat({
   return (
     <div className="rounded-lg border border-border p-3">
       <div className={cn("text-2xl font-bold tabular-nums", color)}>{value}</div>
-      <div className="mt-0.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+      <div className="mt-0.5 text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </div>
     </div>

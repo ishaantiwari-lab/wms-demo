@@ -218,7 +218,7 @@ function ViewDispatchPage() {
                   <Filter className="h-3.5 w-3.5" />
                   Filters
                   {activeFilterCount > 0 && (
-                    <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium leading-none text-primary-foreground">
+                    <span className="rounded-[3px] bg-primary px-1.5 py-0.5 font-mono text-[10px] font-medium leading-none text-primary-foreground">
                       {activeFilterCount}
                     </span>
                   )}
@@ -327,7 +327,7 @@ function ViewDispatchPage() {
       />
 
       <div className="space-y-4 p-6">
-        <div className="rounded-lg border border-border bg-card shadow-sm">
+        <div className="rounded-md border border-border bg-card">
           <Table>
             <TableHeader>
               <TableRow className="bg-muted [&>th]:sticky [&>th]:top-0 [&>th]:z-20 [&>th]:bg-muted [&>th]:shadow-[inset_0_-1px_0_hsl(var(--border))]">
@@ -418,7 +418,7 @@ function ViewDispatchPage() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 font-mono text-base">
               {viewRow?.id}
-              <span className="inline-flex items-center rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-emerald-600 ring-1 ring-inset ring-emerald-500/30">
+              <span className="inline-flex items-center rounded-[2px] border border-ok/30 bg-ok-bg px-1.5 py-0.5 text-[9.5px] font-medium font-mono uppercase tracking-[0.06em] text-ok">
                 Closed
               </span>
             </DialogTitle>
@@ -450,7 +450,7 @@ function ViewDispatchPage() {
 function Info({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+      <div className="text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </div>
       <div className="mt-0.5 font-medium">{value}</div>
@@ -467,7 +467,7 @@ function FilterField({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+      <label className="text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </label>
       {children}

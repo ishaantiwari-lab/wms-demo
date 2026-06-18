@@ -330,7 +330,7 @@ function ViewPicklistTable() {
               <TableCell>
                 <span
                   className={cn(
-                    "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide ring-1 ring-inset",
+                    "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium font-mono uppercase tracking-[0.06em] ring-1 ring-inset",
                     LINE_BADGE[l.status],
                   )}
                 >

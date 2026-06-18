@@ -22,6 +22,7 @@ import {
   SquarePen,
   Truck,
   Warehouse,
+  Waves,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -75,6 +76,7 @@ const sections: NavSection[] = [
         title: "Picking",
         icon: Hand,
         children: [
+          { title: "Wave Creation", url: "/wave-creation", icon: Waves },
           { title: "Pick", url: "/pick", icon: Hand },
           {
             title: "View Picklists",
@@ -155,6 +157,7 @@ const sections: NavSection[] = [
         title: "Slotting",
         icon: Settings2,
         children: [
+          { title: "Density Heatmap", url: "/slotting", icon: LayoutGrid },
           { title: "Slotting Config", url: "/slotting-config", icon: Settings2 },
         ],
       },
@@ -181,12 +184,16 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center gap-2 py-1.5 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 px-2">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[4px] bg-ai text-white">
             <Layers className="h-4 w-4" />
           </div>
           <div className="flex min-w-0 flex-col leading-tight group-data-[collapsible=icon]:hidden">
-            <span className="text-sm font-semibold">Shiprocket WMS</span>
-            <span className="text-xs text-muted-foreground">Warehouse</span>
+            <span className="text-sm font-bold tracking-tight text-sidebar-accent-foreground">
+              Shiprocket
+            </span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-sidebar-foreground/60">
+              OMS · WMS
+            </span>
           </div>
         </div>
       </SidebarHeader>
@@ -204,7 +211,7 @@ export function AppSidebar() {
               <SidebarGroup>
                 <SidebarGroupLabel
                   asChild
-                  className="cursor-pointer group-data-[collapsible=icon]:hidden"
+                  className="cursor-pointer font-mono text-[10px] uppercase tracking-[0.12em] text-sidebar-foreground/60 group-data-[collapsible=icon]:hidden"
                 >
                   <CollapsibleTrigger>
                     {section.label}

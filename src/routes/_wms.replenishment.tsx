@@ -937,7 +937,7 @@ function TrendCard({
   return (
     <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-4 shadow-sm">
       <div className="min-w-0">
-        <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        <div className="text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
           {label}
         </div>
         <div className="mt-1 flex items-baseline gap-1.5">
@@ -1089,7 +1089,7 @@ function FilterField({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+      <label className="text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </label>
       {children}

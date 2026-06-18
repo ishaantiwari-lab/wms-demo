@@ -263,7 +263,7 @@ function Unloading() {
           {/* Step — Gate Pass */}
           {step === "scan-gatepass" && (
             <Card className="space-y-3 p-4">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 <ScanBarcode className="h-3.5 w-3.5" />
                 Scan Gate Pass
               </div>
@@ -287,7 +287,7 @@ function Unloading() {
             <>
               <ConsignmentCard c={consignment} />
               <Card className="space-y-3 p-4">
-                <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   <Anchor className="h-3.5 w-3.5" />
                   Marry to Dock
                 </div>
@@ -318,7 +318,7 @@ function Unloading() {
           {step === "count" && consignment && (
             <>
               <Card className="space-y-3 p-4">
-                <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   <Package className="h-3.5 w-3.5" />
                   Box Count
                 </div>
@@ -444,7 +444,7 @@ function Unloading() {
           {step === "scan-boxes" && (
             <>
               <Card className="space-y-3 p-4">
-                <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   <ScanBarcode className="h-3.5 w-3.5" />
                   Scan box IDs
                 </div>
@@ -464,7 +464,7 @@ function Unloading() {
 
               {scanned.length > 0 && (
                 <Card className="space-y-1.5 p-3">
-                  <div className="flex items-center justify-between text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                  <div className="flex items-center justify-between text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     <span>Scanned boxes ({scanned.length})</span>
                     {rejectedCount > 0 && (
                       <span className="text-destructive">
@@ -533,7 +533,7 @@ function Unloading() {
           {step === "pod" && (
             <>
               <Card className="space-y-3 p-4">
-                <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   <Camera className="h-3.5 w-3.5" />
                   Proof of Delivery
                 </div>
@@ -574,7 +574,7 @@ function Unloading() {
               </Card>
 
               <Card className="space-y-3 p-4">
-                <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   <Camera className="h-3.5 w-3.5" />
                   Damaged Boxes
                   <span className="font-normal lowercase tracking-normal text-muted-foreground/70">
@@ -676,7 +676,7 @@ function Unloading() {
           {step === "scan-awbs" && (
             <>
               <Card className="space-y-3 p-4">
-                <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   <ScanBarcode className="h-3.5 w-3.5" />
                   Scan return AWB
                 </div>
@@ -711,7 +711,7 @@ function Unloading() {
 
               {identified.length > 0 && (
                 <Card className="space-y-1.5 p-3">
-                  <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                  <div className="flex items-center gap-1.5 text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     <CheckCircle2 className="h-3.5 w-3.5 text-status-picked" />
                     Identified pile ({identified.length})
                   </div>
@@ -723,7 +723,7 @@ function Unloading() {
 
               {unidentified.length > 0 && (
                 <Card className="space-y-1.5 p-3">
-                  <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                  <div className="flex items-center gap-1.5 text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     <HelpCircle className="h-3.5 w-3.5 text-orange-600" />
                     Unidentified pile ({unidentified.length})
                   </div>
@@ -861,7 +861,7 @@ function Unloading() {
 function DockTag({ dockId }: { dockId: string }) {
   return (
     <div className="flex items-center gap-1.5">
-      <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+      <span className="text-[10px] font-mono uppercase tracking-[0.08em] text-muted-foreground">
         Dock
       </span>
       <span className="font-mono text-xs font-semibold text-foreground">
@@ -877,7 +877,7 @@ function ConsignmentCard({ c }: { c: GatePassConsignment }) {
       <div className="flex items-center justify-between">
         <span className="text-sm font-semibold">{c.seller.name}</span>
         {c.community && (
-          <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+          <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold font-mono uppercase tracking-[0.06em] text-primary">
             {c.community}
           </span>
         )}
@@ -903,7 +903,7 @@ function Fact({
 }) {
   return (
     <div>
-      <dt className="text-[10px] uppercase tracking-wider text-muted-foreground">
+      <dt className="text-[10px] font-mono uppercase tracking-[0.08em] text-muted-foreground">
         {label}
       </dt>
       <dd className={cn("font-medium", mono && "font-mono")}>{value}</dd>
@@ -924,7 +924,7 @@ function BoxSticker({
   return (
     <div className="rounded-lg border-2 border-dashed border-border bg-background p-4">
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <span className="text-[10px] font-semibold font-mono uppercase tracking-[0.08em] text-muted-foreground">
           Inbound Box
         </span>
         <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
@@ -965,7 +965,7 @@ function RanSticker({ ack }: { ack: ReturnAck }) {
       <div className="mb-2 flex items-center justify-between">
         <span
           className={cn(
-            "rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide",
+            "rounded-full px-2 py-0.5 text-[10px] font-bold font-mono uppercase tracking-[0.06em]",
             isIdentified
               ? "bg-status-picked/15 text-status-picked"
               : "bg-orange-100 text-orange-700",
@@ -973,7 +973,7 @@ function RanSticker({ ack }: { ack: ReturnAck }) {
         >
           {isIdentified ? "Identified" : "Unidentified"}
         </span>
-        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+        <span className="text-[10px] font-mono uppercase tracking-[0.08em] text-muted-foreground">
           Return Ack
         </span>
       </div>
@@ -1026,7 +1026,7 @@ function RanSticker({ ack }: { ack: ReturnAck }) {
 function StickerRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline gap-3">
-      <dt className="w-16 shrink-0 text-[10px] uppercase tracking-wider text-muted-foreground">
+      <dt className="w-16 shrink-0 text-[10px] font-mono uppercase tracking-[0.08em] text-muted-foreground">
         {label}
       </dt>
       <dd className="flex-1 font-medium">{value}</dd>
@@ -1088,7 +1088,7 @@ function BucketTile({
           : "border-orange-300 bg-orange-50",
       )}
     >
-      <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide">
+      <div className="flex items-center gap-1.5 text-[11px] font-medium font-mono uppercase tracking-[0.06em]">
         <span
           className={tone === "ok" ? "text-status-picked" : "text-orange-600"}
         >

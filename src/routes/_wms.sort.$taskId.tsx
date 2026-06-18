@@ -141,7 +141,7 @@ function SortProcess() {
     return (
       <ScreenShell taskId={task.id} subtitle="Step 1 of 2 · Scan source tote">
         <Card className="space-y-4 p-4">
-          <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
             <ScanBarcode className="h-3.5 w-3.5" />
             Scan tote from batch picklist
           </div>
@@ -252,7 +252,7 @@ function SortProcess() {
           ) : (
             <>
               <div className="rounded-md border border-border bg-muted/30 p-3">
-                <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                <div className="text-[11px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   Item
                 </div>
                 <div className="mt-0.5 text-sm font-semibold">
@@ -269,7 +269,7 @@ function SortProcess() {
                     →
                   </div>
                   <div>
-                    <div className="text-[11px] font-medium uppercase tracking-wide text-status-picked/70">
+                    <div className="text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-status-picked/70">
                       Suggested putwall
                     </div>
                     <div className="font-mono text-lg font-bold text-status-picked">
@@ -314,7 +314,7 @@ function SortProcess() {
         {readyPutwalls.length > 0 ? (
           <Card className="space-y-2 p-4">
             <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 <Inbox className="h-3.5 w-3.5" />
                 Ready to transfer ({readyPutwalls.length})
               </div>
@@ -383,7 +383,7 @@ function SortProcess() {
             /* Step 2 — scan pick tote */
             <div className="space-y-3">
               <div className="rounded-md border border-status-picked/40 bg-status-picked/5 p-2.5">
-                <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                <div className="text-[11px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   Putwall
                 </div>
                 <div className="font-mono text-sm font-semibold text-status-picked">
@@ -391,7 +391,7 @@ function SortProcess() {
                 </div>
               </div>
               <div>
-                <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <label className="mb-1 block text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   Scan pick tote
                 </label>
                 <Input
@@ -464,7 +464,7 @@ function ScanRow({
   const inputRef = useRef<HTMLInputElement>(null);
   return (
     <div>
-      <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
+      <label className="mb-1 block text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </label>
       <form

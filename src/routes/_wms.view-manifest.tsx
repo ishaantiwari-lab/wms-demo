@@ -120,9 +120,9 @@ const TABS: Array<{ key: ManifestState; label: string }> = [
 ];
 
 const STATE_BADGE: Record<ManifestState, string> = {
-  created: "bg-status-created/15 text-status-created ring-status-created/30",
-  part_shipped: "bg-amber-500/15 text-amber-600 ring-amber-500/30",
-  shipped: "bg-emerald-500/15 text-emerald-600 ring-emerald-500/30",
+  created: "bg-status-created/15 text-status-created border-status-created/30",
+  part_shipped: "bg-warn-bg text-warn border-warn/30",
+  shipped: "bg-ok-bg text-ok border-ok/30",
 };
 
 // ─── Filters ──────────────────────────────────────────────────────────────────
@@ -230,7 +230,7 @@ function ViewManifestPage() {
                   <Filter className="h-3.5 w-3.5" />
                   Filters
                   {activeFilterCount > 0 && (
-                    <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium leading-none text-primary-foreground">
+                    <span className="rounded-[3px] bg-primary px-1.5 py-0.5 font-mono text-[10px] font-medium leading-none text-primary-foreground">
                       {activeFilterCount}
                     </span>
                   )}
@@ -323,7 +323,7 @@ function ViewManifestPage() {
                 {t.label}
                 <span
                   className={cn(
-                    "rounded-full px-2 py-0.5 text-[11px] font-medium",
+                    "rounded-[3px] px-2 py-0.5 font-mono text-[11px] font-medium",
                     active
                       ? "bg-primary/10 text-primary"
                       : "bg-muted text-muted-foreground",
@@ -337,7 +337,7 @@ function ViewManifestPage() {
         </div>
 
         {/* Table */}
-        <div className="rounded-lg border border-border bg-card shadow-sm">
+        <div className="rounded-md border border-border bg-card">
           <Table>
             <TableHeader>
               <TableRow className="bg-muted [&>th]:sticky [&>th]:top-0 [&>th]:z-20 [&>th]:bg-muted [&>th]:shadow-[inset_0_-1px_0_hsl(var(--border))]">
@@ -370,7 +370,7 @@ function ViewManifestPage() {
                     <TableCell>
                       <span
                         className={cn(
-                          "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide ring-1 ring-inset",
+                          "inline-flex items-center rounded-[2px] border px-1.5 py-0.5 text-[9.5px] font-medium font-mono uppercase tracking-[0.06em]",
                           STATE_BADGE[r.state],
                         )}
                       >
@@ -428,7 +428,7 @@ function ViewManifestPage() {
               {viewRow && (
                 <span
                   className={cn(
-                    "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide ring-1 ring-inset",
+                    "inline-flex items-center rounded-[2px] border px-1.5 py-0.5 text-[9.5px] font-medium font-mono uppercase tracking-[0.06em]",
                     STATE_BADGE[viewRow.state],
                   )}
                 >
@@ -468,7 +468,7 @@ function ViewManifestPage() {
 function Info({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+      <div className="text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </div>
       <div className="mt-0.5 font-medium">{value}</div>
@@ -485,7 +485,7 @@ function FilterField({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+      <label className="text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </label>
       {children}

@@ -243,7 +243,7 @@ function PickingScreen() {
         <div className="flex items-center justify-between gap-2 rounded-md border border-border bg-muted/30 px-2.5 py-1.5">
           <div className="flex items-center gap-1.5 min-w-0 text-xs">
             <Package className="h-3 w-3 shrink-0 text-muted-foreground" />
-            <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+            <span className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
               Pick LPN
             </span>
             <span className="font-mono font-medium truncate">{tote}</span>
@@ -262,7 +262,7 @@ function PickingScreen() {
         <Card className="space-y-3 p-4">
           {!activeProg?.locationScanned ? (
             <div>
-              <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 <MapPin className="h-3.5 w-3.5" />
                 Go to location
               </div>
@@ -321,7 +321,7 @@ function PickingScreen() {
                   <div className="font-mono text-[11px] text-muted-foreground">
                     {activeItem.sku}
                   </div>
-                  <div className="inline-flex items-center gap-2 rounded-full bg-background px-2.5 py-1 text-[11px] font-medium ring-1 ring-border">
+                  <div className="inline-flex items-center gap-2 rounded-[3px] border border-border bg-background px-2.5 py-1 font-mono text-[11px] font-medium">
                     <span className="tabular-nums">
                       {activeProg?.picked ?? 0} / {activeItem.quantity}
                     </span>
@@ -402,7 +402,7 @@ function PickingScreen() {
           </DialogHeader>
           <div className="space-y-3">
             <div>
-              <label className="text-xs font-medium uppercase text-muted-foreground">
+              <label className="text-xs font-mono font-medium uppercase tracking-[0.06em] text-muted-foreground">
                 Drop barcode
               </label>
               <Input
@@ -413,7 +413,7 @@ function PickingScreen() {
               />
             </div>
             <div>
-              <label className="text-xs font-medium uppercase text-muted-foreground">
+              <label className="text-xs font-mono font-medium uppercase tracking-[0.06em] text-muted-foreground">
                 New tote barcode
               </label>
               <Input
@@ -462,7 +462,7 @@ function ScreenShell({
 }) {
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-muted/40 py-4">
-      <div className="mx-auto w-full max-w-[420px] overflow-hidden rounded-xl border border-border bg-background shadow-sm">
+      <div className="mx-auto w-full max-w-[420px] overflow-hidden rounded-md border border-border bg-background">
         <div className="flex items-center justify-between gap-2 border-b border-border bg-background px-4 py-3">
           <Link
             to="/pick"
@@ -472,8 +472,8 @@ function ScreenShell({
             Pick
           </Link>
           <div className="text-right">
-            <div className="text-sm font-semibold">{picklistId}</div>
-            <div className="text-[11px] text-muted-foreground">{subtitle}</div>
+            <div className="font-mono text-sm font-semibold">{picklistId}</div>
+            <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">{subtitle}</div>
           </div>
         </div>
         <div className="p-4 pb-6">{children}</div>
@@ -491,7 +491,7 @@ function SectionTitle({
   title: string;
 }) {
   return (
-    <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+    <div className="flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-[0.06em] text-muted-foreground">
       <Icon className="h-3.5 w-3.5" />
       {title}
     </div>
@@ -517,7 +517,7 @@ function ScanRow({
   return (
     <div>
       <div className="mb-1 flex items-center justify-between">
-        <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
           {label}
         </label>
         {done ? (
@@ -573,7 +573,7 @@ function ProgressBar({ value, max }: { value: number; max: number }) {
           {value} / {max} units
         </span>
       </div>
-      <div className="h-2 overflow-hidden rounded-full bg-muted">
+      <div className="h-2 overflow-hidden rounded-[2px] bg-muted">
         <div
           className="h-full bg-status-picked transition-all"
           style={{ width: `${pct}%` }}

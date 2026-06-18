@@ -72,13 +72,13 @@ const CHANNEL_STYLES: Record<string, string> = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  created: "bg-status-created/15 text-status-created ring-status-created/40",
-  picked: "bg-status-picked/15 text-status-picked ring-status-picked/40",
-  packed: "bg-status-packed/15 text-status-packed ring-status-packed/40",
+  created: "bg-status-created/10 text-status-created border-status-created/40",
+  picked: "bg-status-picked/10 text-status-picked border-status-picked/40",
+  packed: "bg-status-packed/10 text-status-packed border-status-packed/40",
   manifested:
-    "bg-status-manifested/15 text-status-manifested ring-status-manifested/40",
+    "bg-status-manifested/10 text-status-manifested border-status-manifested/40",
   dispatched:
-    "bg-status-dispatched/15 text-status-dispatched ring-status-dispatched/40",
+    "bg-status-dispatched/10 text-status-dispatched border-status-dispatched/40",
 };
 
 interface JourneyComment {
@@ -98,7 +98,7 @@ function Stat({
   return (
     <Card>
       <CardContent className="p-3">
-        <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+        <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
           {label}
         </div>
         <div className="mt-1 text-xs font-semibold text-foreground">
@@ -152,7 +152,7 @@ function OrderDetailPage() {
           <div className="flex items-center gap-2">
             <span
               className={cn(
-                "rounded-lg border-2 px-3.5 py-1.5 text-base font-bold tracking-wide",
+                "rounded-[4px] border px-3 py-1.5 font-mono text-xs font-medium uppercase tracking-[0.06em]",
                 CHANNEL_STYLES[order.channel],
               )}
             >
@@ -160,7 +160,7 @@ function OrderDetailPage() {
             </span>
             <span
               className={cn(
-                "inline-flex items-center rounded-lg px-3.5 py-1.5 text-base font-bold uppercase tracking-wide ring-2 ring-inset",
+                "inline-flex items-center gap-1.5 rounded-[4px] border px-3 py-1.5 font-mono text-xs font-medium uppercase tracking-[0.06em] before:inline-block before:size-[6px] before:rounded-full before:bg-current",
                 STATUS_STYLES[order.status],
               )}
             >
@@ -170,7 +170,7 @@ function OrderDetailPage() {
         }
       />
 
-      <div className="space-y-4 p-4">
+      <div className="space-y-4 px-7 pb-14 pt-5">
         <Link
           to="/orders"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
@@ -184,10 +184,10 @@ function OrderDetailPage() {
           <Stat label="Order Type">
             <span
               className={cn(
-                "inline-block rounded-md border px-1.5 py-0.5 text-[10px] font-bold",
+                "inline-block rounded-[2px] border px-1.5 py-0.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.06em]",
                 order.orderType === "B2B"
-                  ? "border-purple-300 bg-purple-50 text-purple-700"
-                  : "border-cyan-300 bg-cyan-50 text-cyan-700",
+                  ? "border-sys/30 bg-sys-bg text-sys"
+                  : "border-ai-ring bg-ai-bg text-ai",
               )}
             >
               {order.orderType}
@@ -230,7 +230,7 @@ function OrderDetailPage() {
           {/* Items */}
           <div>
             <div className="mb-3 flex items-center justify-between gap-3">
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              <h2 className="font-mono text-xs font-medium uppercase tracking-[0.08em] text-muted-foreground">
                 Items ({filteredItems.length}
                 {filteredItems.length !== order.items.length
                   ? ` of ${order.items.length}`
@@ -247,10 +247,10 @@ function OrderDetailPage() {
                 />
               </div>
             </div>
-            <div className="overflow-x-auto rounded-lg border border-border bg-card shadow-sm [&_th]:px-2 [&_th]:py-2 [&_td]:px-2 [&_td]:py-2 [&_th]:h-auto [&_th]:text-[11px] [&_td]:text-xs">
+            <div className="overflow-x-auto rounded-md border border-border bg-card [&_th]:px-2 [&_th]:py-2 [&_td]:px-2 [&_td]:py-2 [&_th]:h-auto [&_th]:text-[10px] [&_td]:text-xs">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-muted/40">
+                  <TableRow className="bg-muted">
                     <TableHead className="w-8 text-center">#</TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead className="text-right">Ordered</TableHead>
@@ -323,7 +323,7 @@ function OrderDetailPage() {
               <Card>
                 <CardContent className="space-y-3 p-3">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                    <h2 className="font-mono text-xs font-medium uppercase tracking-[0.08em] text-muted-foreground">
                       Order Journey
                     </h2>
                     <Button
@@ -340,7 +340,7 @@ function OrderDetailPage() {
                   <JourneyTimeline events={history} />
 
                   <div className="space-y-2 border-t border-border pt-4">
-                    <div className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    <div className="flex items-center gap-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
                       <MessageSquare className="h-3.5 w-3.5" />
                       Comments ({comments.length})
                     </div>
@@ -408,7 +408,7 @@ function OrderDetailPage() {
                   >
                     <ChevronDown className="h-4 w-4" />
                   </Button>
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground [writing-mode:vertical-rl] [transform:rotate(180deg)]">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground [writing-mode:vertical-rl] [transform:rotate(180deg)]">
                     Order Journey
                   </div>
                 </CardContent>
@@ -479,7 +479,7 @@ function JourneyTimeline({ events }: { events: JourneyEvent[] }) {
                   {e.step}
                 </span>
                 {isCurrent && (
-                  <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-primary">
+                  <span className="rounded-[2px] bg-ai-bg px-1.5 py-0.5 font-mono text-[9px] font-medium uppercase tracking-[0.06em] text-ai">
                     Now
                   </span>
                 )}

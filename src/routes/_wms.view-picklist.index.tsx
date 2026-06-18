@@ -585,7 +585,7 @@ function ViewPicklistPage() {
                     <TableCell>
                       <span
                         className={cn(
-                          "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide ring-1 ring-inset",
+                          "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium font-mono uppercase tracking-[0.06em] ring-1 ring-inset",
                           STATUS_BADGE[r.status],
                         )}
                       >
@@ -680,7 +680,7 @@ function ViewPicklistPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-1.5">
-            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
               Operator
             </label>
             <Select value={assignTo} onValueChange={setAssignTo}>
@@ -722,7 +722,7 @@ function PickFilterField({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+      <label className="text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </label>
       {children}

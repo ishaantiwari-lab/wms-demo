@@ -16,9 +16,9 @@ export const Route = createFileRoute("/_wms/pick/")({
 });
 
 const priorityClass = {
-  High: "bg-status-created/15 text-status-created ring-status-created/30",
-  Medium: "bg-status-picked/15 text-status-picked ring-status-picked/30",
-  Low: "bg-muted text-muted-foreground ring-border",
+  High: "border-risk/30 bg-risk-bg text-risk",
+  Medium: "border-warn/30 bg-warn-bg text-warn",
+  Low: "border-border bg-muted text-muted-foreground",
 } as const;
 
 function PickPage() {
@@ -41,10 +41,10 @@ function PickPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <Hand className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-semibold">{p.id}</span>
+                    <span className="font-mono text-sm font-semibold">{p.id}</span>
                     <span
                       className={cn(
-                        "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide ring-1 ring-inset",
+                        "inline-flex items-center gap-1.5 rounded-[2px] border px-1.5 py-0.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.06em] leading-none before:inline-block before:size-[5px] before:rounded-full before:bg-current",
                         priorityClass[p.priority],
                       )}
                     >

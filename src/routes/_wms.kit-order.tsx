@@ -57,10 +57,10 @@ export const Route = createFileRoute("/_wms/kit-order")({
 });
 
 const STATUS_STYLES: Record<KitOrderStatus, string> = {
-  Open: "bg-amber-100 text-amber-700 ring-amber-600/20",
-  Picked: "bg-blue-100 text-blue-700 ring-blue-600/20",
-  "Kitting Done": "bg-violet-100 text-violet-700 ring-violet-600/20",
-  "Putaway Done": "bg-green-100 text-green-700 ring-green-600/20",
+  Open: "border-warn/30 bg-warn-bg text-warn",
+  Picked: "border-sys/30 bg-sys-bg text-sys",
+  "Kitting Done": "border-ai-ring bg-ai-bg text-ai",
+  "Putaway Done": "border-ok/30 bg-ok-bg text-ok",
 };
 
 const ALL = "all";
@@ -334,7 +334,7 @@ function KitOrderScreen() {
           {mapping && requestedQty > 0 && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <div className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   {isKit ? "Component Requirement" : "Components Returned"}
                 </div>
                 <div className="text-xs text-muted-foreground">
@@ -346,8 +346,8 @@ function KitOrderScreen() {
                 </div>
               </div>
 
-              <div className="overflow-hidden rounded-lg border border-border">
-                <div className="grid grid-cols-[6rem_1fr_5rem_5rem_6rem_6rem_5rem] gap-3 border-b border-border bg-muted/30 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <div className="overflow-hidden rounded-md border border-border">
+                <div className="grid grid-cols-[6rem_1fr_5rem_5rem_6rem_6rem_5rem] gap-3 border-b border-border bg-muted/30 px-4 py-2.5 text-[10px] font-semibold font-mono uppercase tracking-[0.08em] text-muted-foreground">
                   <span>SKU</span>
                   <span>Item</span>
                   <span className="text-right">Pack Size</span>
@@ -388,9 +388,9 @@ function KitOrderScreen() {
                             —
                           </span>
                         ) : r.ok ? (
-                          <CheckCircle2 className="h-4 w-4 text-green-600" />
+                          <CheckCircle2 className="h-4 w-4 text-ok" />
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-xs font-medium text-red-600">
+                          <span className="inline-flex items-center gap-1 text-xs font-medium text-risk">
                             <AlertTriangle className="h-3.5 w-3.5" />-{r.shortfall}
                           </span>
                         )}
@@ -402,7 +402,7 @@ function KitOrderScreen() {
 
               {/* Availability banner */}
               {available ? (
-                <div className="flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 p-3 text-green-800">
+                <div className="flex items-start gap-3 rounded-md border border-ok/30 bg-ok-bg p-3 text-ok">
                   <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
                   <div className="text-sm">
                     {isKit
@@ -411,7 +411,7 @@ function KitOrderScreen() {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-3 text-red-800">
+                <div className="flex items-start gap-3 rounded-md border border-risk/30 bg-risk-bg p-3 text-risk">
                   <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
                   <div className="text-sm">
                     {isKit ? (
@@ -456,7 +456,7 @@ function KitOrderScreen() {
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-3">
           <div className="text-sm font-semibold">
             Orders{" "}
-            <span className="ml-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+            <span className="ml-1.5 rounded-[3px] bg-primary/10 px-2 py-0.5 font-mono text-xs font-medium text-primary">
               {visibleOrders.length}
             </span>
           </div>
@@ -486,7 +486,7 @@ function KitOrderScreen() {
                   <SlidersHorizontal className="h-4 w-4" />
                   Filters
                   {activeFilterCount > 0 && (
-                    <span className="ml-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground">
+                    <span className="ml-0.5 flex h-5 min-w-5 items-center justify-center rounded-[3px] bg-primary px-1 font-mono text-[10px] font-semibold text-primary-foreground">
                       {activeFilterCount}
                     </span>
                   )}
@@ -575,7 +575,7 @@ function KitOrderScreen() {
           </div>
         </div>
 
-        <div className="grid grid-cols-[6rem_5rem_6rem_1fr_5rem_7rem_9rem] gap-3 border-b border-border bg-muted/30 px-5 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <div className="grid grid-cols-[6rem_5rem_6rem_1fr_5rem_7rem_9rem] gap-3 border-b border-border bg-muted/30 px-5 py-2.5 text-[10px] font-semibold font-mono uppercase tracking-[0.08em] text-muted-foreground">
           <span>Order ID</span>
           <span>Type</span>
           <span>Kit SKU</span>
@@ -624,7 +624,7 @@ function KitOrderScreen() {
                 <span>
                   <span
                     className={cn(
-                      "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset",
+                      "inline-flex items-center rounded-[2px] border px-1.5 py-0.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.06em]",
                       STATUS_STYLES[o.status],
                     )}
                   >
@@ -652,7 +652,7 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+      <div className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </div>
       {children}

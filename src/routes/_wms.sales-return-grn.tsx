@@ -424,7 +424,7 @@ function SalesReturnGrn() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-destructive" />
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider">
+              <span className="text-[10px] font-bold font-mono uppercase tracking-[0.08em]">
                 Rec
               </span>
             </div>
@@ -469,7 +469,7 @@ function SalesReturnGrn() {
           {/* Step 0 — QC Station */}
           {step === "scan-qc-station" && (
             <Card className="space-y-3 p-4">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 <ScanBarcode className="h-3.5 w-3.5" />
                 Scan QC Station
               </div>
@@ -489,7 +489,7 @@ function SalesReturnGrn() {
           {/* Step 0.5 — Return Acknowledgement Number */}
           {step === "scan-ran" && (
             <Card className="space-y-3 p-4">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 <ScanBarcode className="h-3.5 w-3.5" />
                 Scan Return Ack barcode
               </div>
@@ -509,7 +509,7 @@ function SalesReturnGrn() {
           {/* Step 1 — AWB */}
           {step === "scan-awb" && (
             <Card className="space-y-3 p-4">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                 <ScanBarcode className="h-3.5 w-3.5" />
                 Scan return AWB
               </div>
@@ -540,7 +540,7 @@ function SalesReturnGrn() {
               {/* AWB captured */}
               <Card className="flex items-center justify-between gap-3 p-3">
                 <div className="min-w-0">
-                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                  <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     AWB to be saved
                   </div>
                   <div className="font-mono text-base font-bold">{awb}</div>
@@ -553,7 +553,7 @@ function SalesReturnGrn() {
               {/* Remarks */}
               <Card className="space-y-3 p-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Remarks
                   </label>
                   <Select value={unidReason} onValueChange={setUnidReason}>
@@ -570,7 +570,7 @@ function SalesReturnGrn() {
                   </Select>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Additional note (optional)
                   </label>
                   <Input
@@ -602,7 +602,7 @@ function SalesReturnGrn() {
             step !== "done" && (
               <Card className="p-3">
                 <div className="mb-2 flex items-center justify-between">
-                  <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  <div className="text-[11px] font-semibold font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Expected items
                   </div>
                   <div className="text-[10px] text-muted-foreground">
@@ -728,7 +728,7 @@ function SalesReturnGrn() {
           {/* Step 2a — Scan the GOOD LPN (session bin) */}
           {step === "scan-good-lpn" && (
             <Card className="space-y-3 p-4">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-status-picked">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-status-picked">
                 <ThumbsUp className="h-3.5 w-3.5" />
                 Scan GOOD QC bin LPN
               </div>
@@ -749,7 +749,7 @@ function SalesReturnGrn() {
           {/* Step 2b — Scan the BAD LPN (session bin) */}
           {step === "scan-bad-lpn" && (
             <Card className="space-y-3 p-4">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-destructive">
+              <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-destructive">
                 <ThumbsDown className="h-3.5 w-3.5" />
                 Scan BAD QC bin LPN
               </div>
@@ -773,7 +773,7 @@ function SalesReturnGrn() {
               {/* Order info — shown after AWB scan */}
               <Card className="flex items-center justify-between gap-3 p-2.5">
                 <div className="min-w-0">
-                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                  <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Order
                   </div>
                   <div className="font-mono text-sm font-bold">
@@ -781,7 +781,7 @@ function SalesReturnGrn() {
                   </div>
                 </div>
                 <div className="min-w-0 text-right">
-                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                  <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Channel
                   </div>
                   <div className="text-sm font-semibold">
@@ -789,7 +789,7 @@ function SalesReturnGrn() {
                   </div>
                 </div>
                 <div className="min-w-0 text-right">
-                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                  <div className="text-[10px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     AWB
                   </div>
                   <div className="font-mono text-[11px] text-muted-foreground">
@@ -802,7 +802,7 @@ function SalesReturnGrn() {
               <div className="grid grid-cols-2 gap-1.5">
                 <div className="flex items-center gap-1.5 rounded-md border border-status-picked/30 bg-status-picked/5 px-2 py-1 text-[10px]">
                   <ThumbsUp className="h-3 w-3 text-status-picked" />
-                  <span className="text-muted-foreground uppercase tracking-wide">
+                  <span className="text-muted-foreground font-mono uppercase tracking-[0.06em]">
                     Good
                   </span>
                   <span className="ml-auto truncate font-mono font-semibold">
@@ -811,7 +811,7 @@ function SalesReturnGrn() {
                 </div>
                 <div className="flex items-center gap-1.5 rounded-md border border-destructive/30 bg-destructive/5 px-2 py-1 text-[10px]">
                   <ThumbsDown className="h-3 w-3 text-destructive" />
-                  <span className="text-muted-foreground uppercase tracking-wide">
+                  <span className="text-muted-foreground font-mono uppercase tracking-[0.06em]">
                     Bad
                   </span>
                   <span className="ml-auto truncate font-mono font-semibold">
@@ -951,7 +951,7 @@ function SalesReturnGrn() {
               {/* QC'd items table */}
               {qcTableRows.length > 0 && (
                 <Card className="overflow-hidden p-0">
-                  <div className="border-b border-border bg-muted/30 px-3 py-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                  <div className="border-b border-border bg-muted/30 px-3 py-2 text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     QC'd items ({qcTableRows.length})
                   </div>
                   <div className="[&_th]:px-2 [&_th]:py-1.5 [&_td]:px-2 [&_td]:py-1.5 [&_th]:h-auto [&_th]:text-[10px] [&_td]:text-xs">
@@ -1118,7 +1118,7 @@ function SalesReturnGrn() {
                 </div>
               )}
             </div>
-            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
               Reason
             </label>
             <Select value={rejectReason} onValueChange={setRejectReason}>
@@ -1218,7 +1218,7 @@ function Row({
 }) {
   return (
     <div className="flex items-baseline gap-3">
-      <dt className="w-16 shrink-0 text-[10px] uppercase tracking-wider text-muted-foreground">
+      <dt className="w-16 shrink-0 text-[10px] font-mono uppercase tracking-[0.08em] text-muted-foreground">
         {label}
       </dt>
       <dd className={cn("flex-1 font-medium", mono && "font-mono")}>{value}</dd>
@@ -1264,7 +1264,7 @@ function CameraPanel({
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-500" />
             </span>
-            <span className="font-bold uppercase tracking-wider">Rec</span>
+            <span className="font-bold font-mono uppercase tracking-[0.08em]">Rec</span>
             <span className="font-mono">
               {mm}:{ss}
             </span>

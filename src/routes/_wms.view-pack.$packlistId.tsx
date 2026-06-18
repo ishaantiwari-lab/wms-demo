@@ -469,7 +469,7 @@ function BoxLabel({ box }: { box: BoxRow }) {
       {/* Item table — two columns */}
       <table className="mt-2 w-full border-collapse text-[13px]">
         <thead>
-          <tr className="bg-neutral-100 text-[11px] uppercase tracking-wide text-neutral-600">
+          <tr className="bg-neutral-100 text-[11px] font-mono uppercase tracking-[0.06em] text-neutral-600">
             <th className={cn(cell, "w-8 font-medium")}>Sr</th>
             <th className={cn(cell, "text-left font-medium")}>Item Code</th>
             <th className={cn(cell, "w-10 font-medium")}>Qty</th>
@@ -576,7 +576,7 @@ function Info({
 }) {
   return (
     <div>
-      <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+      <div className="text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </div>
       <div className={cn("mt-0.5 font-medium", mono && "font-mono text-sm")}>

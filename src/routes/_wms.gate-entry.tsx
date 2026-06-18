@@ -404,7 +404,7 @@ function GateEntry() {
                         <span className="text-sm font-semibold">
                           Added Sellers
                         </span>
-                        <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+                        <span className="rounded-[2px] bg-primary/10 px-2 py-0.5 text-[10px] font-semibold font-mono uppercase tracking-[0.06em] text-primary">
                           {sellers.length} seller
                           {sellers.length === 1 ? "" : "s"} added
                         </span>
@@ -431,7 +431,7 @@ function GateEntry() {
                       </div>
                     ) : (
                       <div className="divide-y divide-border">
-                        <div className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 px-5 py-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                        <div className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 px-5 py-2 text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                           <span>Seller / ASN</span>
                           <span className="w-28">Warehouse ID</span>
                           <span className="w-20">Boxes</span>
@@ -533,7 +533,7 @@ function GateEntry() {
                     <button
                       onClick={() => setRunsheetUploaded((v) => !v)}
                       className={cn(
-                        "flex w-full flex-col items-center gap-2 rounded-lg border-2 border-dashed px-4 py-6 text-center transition-colors",
+                        "flex w-full flex-col items-center gap-2 rounded-md border-2 border-dashed px-4 py-6 text-center transition-colors",
                         runsheetUploaded
                           ? "border-status-dispatched/40 bg-status-dispatched/5"
                           : "border-border hover:border-primary/40 hover:bg-muted/40",
@@ -597,7 +597,7 @@ function GateEntry() {
                           className={cn(
                             "rounded px-3 py-1.5 text-sm font-medium transition-colors",
                             !tempControlled
-                              ? "bg-background shadow-sm"
+                              ? "bg-background"
                               : "text-muted-foreground hover:text-foreground",
                           )}
                         >
@@ -608,7 +608,7 @@ function GateEntry() {
                           className={cn(
                             "rounded px-3 py-1.5 text-sm font-medium transition-colors",
                             tempControlled
-                              ? "bg-primary text-primary-foreground shadow-sm"
+                              ? "bg-primary text-primary-foreground"
                               : "text-muted-foreground hover:text-foreground",
                           )}
                         >
@@ -660,7 +660,7 @@ function GateEntry() {
                     />
                   </div>
                 ) : (
-                  <div className="rounded-lg border border-dashed border-border bg-background px-4 py-8 text-center text-sm text-muted-foreground">
+                  <div className="rounded-md border border-dashed border-border bg-background px-4 py-8 text-center text-sm text-muted-foreground">
                     Enter a Trip ID to load the community program and dock
                     assignment.
                   </div>
@@ -805,7 +805,7 @@ function GateEntry() {
                   <CheckCircle2 className="h-6 w-6" />
                 </div>
                 <div>
-                  <div className="text-xs font-semibold uppercase tracking-wide text-status-dispatched">
+                  <div className="text-xs font-semibold font-mono uppercase tracking-[0.06em] text-status-dispatched">
                     Process Complete
                   </div>
                   <div className="text-base font-semibold">
@@ -995,7 +995,7 @@ function MethodCard({
     <button
       onClick={onClick}
       className={cn(
-        "flex items-start gap-3 rounded-lg border-2 p-4 text-left transition-colors",
+        "flex items-start gap-3 rounded-md border-2 p-4 text-left transition-colors",
         active
           ? "border-primary bg-primary/5"
           : "border-border bg-background hover:border-primary/40",
@@ -1071,8 +1071,8 @@ function NavRow({
 
 function GateProtocol() {
   return (
-    <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
-      <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-primary">
+    <div className="rounded-md border border-primary/20 bg-primary/5 p-4">
+      <div className="flex items-center gap-1.5 text-xs font-semibold font-mono uppercase tracking-[0.06em] text-primary">
         <ShieldCheck className="h-3.5 w-3.5" />
         Gate Protocol
       </div>
@@ -1204,8 +1204,8 @@ function CommunityTag({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full font-semibold",
-        small ? "px-1.5 py-0.5 text-[10px]" : "px-2 py-0.5 text-[11px]",
+        "inline-flex items-center gap-1 rounded-[2px] font-mono font-semibold uppercase tracking-[0.06em]",
+        small ? "px-1.5 py-0.5 text-[9.5px]" : "px-2 py-0.5 text-[10px]",
         COMMUNITY_TONE[COMMUNITY_META[community].tone],
       )}
     >
@@ -1226,7 +1226,7 @@ function ActivityBadge({ activity }: { activity: ActivityType }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold",
+        "inline-flex items-center gap-1 rounded-[2px] px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em]",
         ACTIVITY_TONE_CLASS[meta.tone],
       )}
     >
@@ -1252,7 +1252,7 @@ function SummaryTile({
   return (
     <Card className={cn("p-4", accent && "border-primary/40 bg-primary/5")}>
       <div className="flex items-center justify-between">
-        <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        <div className="text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
           {label}
         </div>
         {icon && <span className="text-primary">{icon}</span>}
@@ -1282,7 +1282,7 @@ function InfoTile({
 }) {
   return (
     <Card className={cn("p-4", accent && "border-primary/40 bg-primary/5")}>
-      <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+      <div className="flex items-center gap-1.5 text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
         <span className={accent ? "text-primary" : "text-muted-foreground"}>
           {icon}
         </span>
@@ -1304,7 +1304,7 @@ function FooterFact({
 }) {
   return (
     <div>
-      <div className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+      <div className="text-[10px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </div>
       <div className={cn("text-sm font-semibold", mono && "font-mono")}>
@@ -1376,7 +1376,7 @@ function SummaryTable({ head, rows }: { head: string[]; rows: string[][] }) {
   return (
     <table className="w-full text-sm">
       <thead>
-        <tr className="bg-muted/40 text-left text-[11px] uppercase tracking-wide text-muted-foreground">
+        <tr className="bg-muted/40 text-left text-[11px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
           {head.map((h, i) => (
             <th
               key={h}
@@ -1431,13 +1431,13 @@ function GatePassCard({
             <Boxes className="h-4 w-4" />
           </span>
           <div>
-            <div className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+            <div className="text-[10px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
               Pass ID
             </div>
             <div className="font-mono text-sm font-bold">{pass.id}</div>
           </div>
         </div>
-        <span className="flex items-center gap-1 rounded-full bg-status-dispatched/15 px-2 py-0.5 text-[11px] font-semibold text-status-dispatched">
+        <span className="flex items-center gap-1 rounded-[2px] bg-status-dispatched/15 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-status-dispatched">
           <span className="h-1.5 w-1.5 rounded-full bg-current" />
           Open
         </span>
@@ -1445,13 +1445,13 @@ function GatePassCard({
 
       <div className="grid grid-cols-2 gap-3 border-t border-border pt-3">
         <div>
-          <div className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+          <div className="text-[10px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
             Seller Name
           </div>
           <div className="text-sm font-semibold">{pass.seller.name}</div>
         </div>
         <div>
-          <div className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+          <div className="text-[10px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
             Activity Type
           </div>
           <div className="mt-0.5">
@@ -1461,7 +1461,7 @@ function GatePassCard({
       </div>
 
       <div className="flex items-center justify-between border-t border-border pt-3">
-        <span className="rounded-full bg-muted px-2 py-0.5 font-mono text-[11px] text-muted-foreground">
+        <span className="rounded-[2px] bg-muted px-2 py-0.5 font-mono text-[11px] text-muted-foreground">
           ITM +{pass.seller.skuCount}
         </span>
         <Button size="sm" variant="outline" onClick={onPrint}>
@@ -1476,9 +1476,9 @@ function GatePassCard({
 function PassSticker({ pass }: { pass: GatePass }) {
   const bars = useMemo(() => gateBarcodePattern(pass.id), [pass.id]);
   return (
-    <div className="rounded-lg border-2 border-dashed border-border bg-background p-4">
+    <div className="rounded-md border-2 border-dashed border-border bg-background p-4">
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <span className="text-[10px] font-semibold font-mono uppercase tracking-[0.06em]r text-muted-foreground">
           Inbound Gate Pass
         </span>
         <ActivityBadge activity={pass.activity} />
@@ -1534,7 +1534,7 @@ function StickerRow({
 }) {
   return (
     <div className="flex items-baseline gap-3">
-      <dt className="w-20 shrink-0 text-[10px] uppercase tracking-wider text-muted-foreground">
+      <dt className="w-20 shrink-0 text-[10px] font-mono uppercase tracking-[0.06em]r text-muted-foreground">
         {label}
       </dt>
       <dd className={cn("flex-1 font-medium", mono && "font-mono")}>{value}</dd>

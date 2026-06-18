@@ -351,7 +351,7 @@ function OrdersPage() {
                   <Filter className="h-4 w-4" />
                   Filters
                   {activeFilterCount > 0 && (
-                    <span className="ml-1 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+                    <span className="ml-1 inline-flex h-4 min-w-[16px] items-center justify-center rounded-[3px] bg-primary px-1 text-[10px] font-bold text-primary-foreground">
                       {activeFilterCount}
                     </span>
                   )}
@@ -592,7 +592,7 @@ function OrdersPage() {
           </>
         }
       />
-      <div className="space-y-4 p-6">
+      <div className="space-y-4 px-7 pb-14 pt-5">
         {/* Dashboard trend cards (Shopify-style) */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <TrendCard
@@ -631,18 +631,18 @@ function OrdersPage() {
                 type="button"
                 onClick={() => setStatusTab(t.key)}
                 className={cn(
-                  "-mb-px flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors",
+                  "-mb-px flex items-center gap-2 border-b-2 px-4 py-2.5 font-mono text-xs uppercase tracking-[0.06em] transition-colors",
                   isActive
-                    ? "border-primary text-primary"
+                    ? "border-primary text-foreground"
                     : "border-transparent text-muted-foreground hover:text-foreground",
                 )}
               >
                 {t.label}
                 <span
                   className={cn(
-                    "inline-flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[11px] font-semibold tabular-nums",
+                    "inline-flex h-5 min-w-[20px] items-center justify-center rounded-[3px] px-1.5 text-[11px] font-semibold tabular-nums",
                     isActive
-                      ? "bg-primary/10 text-primary"
+                      ? "bg-primary/10 text-foreground"
                       : "bg-muted text-muted-foreground",
                   )}
                 >
@@ -653,7 +653,7 @@ function OrdersPage() {
           })}
         </div>
 
-        <div className="relative overflow-hidden rounded-lg border border-border bg-card shadow-sm [&>div]:max-h-[calc(100vh-19rem)] [&>div]:overflow-auto">
+        <div className="relative overflow-hidden rounded-md border border-border bg-card [&>div]:max-h-[calc(100vh-19rem)] [&>div]:overflow-auto">
           {/* Floating column-config button pinned over the header's top-right */}
           <Popover open={columnsOpen} onOpenChange={setColumnsOpen}>
             <PopoverTrigger asChild>
@@ -771,10 +771,10 @@ function OrdersPage() {
                       <TableCell>
                         <span
                           className={cn(
-                            "rounded-md border px-1.5 py-0.5 text-[10px] font-bold",
+                            "rounded-[2px] border px-1.5 py-0.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.06em]",
                             o.orderType === "B2B"
-                              ? "border-purple-300 bg-purple-50 text-purple-700"
-                              : "border-cyan-300 bg-cyan-50 text-cyan-700",
+                              ? "border-sys/30 bg-sys-bg text-sys"
+                              : "border-ai-ring bg-ai-bg text-ai",
                           )}
                         >
                           {o.orderType}
@@ -870,9 +870,9 @@ function OrdersPage() {
 }
 
 const TONES: Record<string, { stroke: string; fill: string }> = {
-  blue: { stroke: "#2563eb", fill: "#2563eb" },
-  violet: { stroke: "#7c3aed", fill: "#7c3aed" },
-  amber: { stroke: "#d97706", fill: "#d97706" },
+  blue: { stroke: "#2d5aa8", fill: "#2d5aa8" }, // SRF sys
+  violet: { stroke: "#b8751f", fill: "#b8751f" }, // SRF ai (amber)
+  amber: { stroke: "#a86b1a", fill: "#a86b1a" }, // SRF warn
 };
 
 const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Today"];
@@ -1001,9 +1001,9 @@ function TrendCard({
   const up = delta >= 0;
   const color = TONES[tone].stroke;
   return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-4 shadow-sm">
+    <div className="flex items-center justify-between gap-3 rounded-md border border-border bg-card p-4">
       <div className="min-w-0">
-        <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        <div className="font-mono text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
           {label}
         </div>
         <div className="mt-1 flex items-baseline gap-1.5">
@@ -1038,7 +1038,7 @@ function FilterField({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+      <label className="font-mono text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
         {label}
       </label>
       {children}

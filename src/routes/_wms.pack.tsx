@@ -66,10 +66,10 @@ export const Route = createFileRoute("/_wms/pack")({
 type PackStep = "scan-station" | "scan-tote" | "scan-items" | "scan-packaging";
 
 const channelStyles: Record<string, string> = {
-  Amazon: "bg-orange-50 text-orange-700 border-orange-300",
-  Flipkart: "bg-blue-50 text-blue-700 border-blue-300",
-  Shopify: "bg-green-50 text-green-700 border-green-300",
-  Myntra: "bg-pink-50 text-pink-700 border-pink-300",
+  Amazon: "bg-warn-bg text-warn border-warn/30",
+  Flipkart: "bg-sys-bg text-sys border-sys/30",
+  Shopify: "bg-ok-bg text-ok border-ok/30",
+  Myntra: "bg-ai-bg text-ai border-ai-ring",
 };
 
 function PackStation() {
@@ -315,14 +315,14 @@ function PackStation() {
                   <span
                     tabIndex={0}
                     className={cn(
-                      "cursor-help rounded-md border px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide",
+                      "cursor-help rounded-[2px] border px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.06em]",
                       adherencePct === null
                         ? "border-border bg-muted text-muted-foreground"
                         : adherencePct >= 90
-                          ? "border-green-300 bg-green-50 text-green-700"
+                          ? "border-ok/30 bg-ok-bg text-ok"
                           : adherencePct >= 70
-                            ? "border-amber-300 bg-amber-50 text-amber-700"
-                            : "border-red-300 bg-red-50 text-red-700",
+                            ? "border-warn/30 bg-warn-bg text-warn"
+                            : "border-risk/30 bg-risk-bg text-risk",
                     )}
                   >
                     Adherence{" "}
@@ -350,7 +350,7 @@ function PackStation() {
         {/* ── Scan station ── */}
         {step === "scan-station" && (
           <Card className="space-y-3 p-4">
-            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
               <ScanBarcode className="h-3.5 w-3.5" />
               Scan packing station
             </div>
@@ -367,7 +367,7 @@ function PackStation() {
         {/* ── Scan tote ── */}
         {step === "scan-tote" && (
           <Card className="space-y-3 p-4">
-            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
               <ScanBarcode className="h-3.5 w-3.5" />
               Scan pick tote
             </div>
@@ -390,14 +390,14 @@ function PackStation() {
               {/* Progress */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-medium uppercase tracking-wide text-muted-foreground">
+                  <span className="font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Items
                   </span>
                   <span className="font-mono font-semibold text-foreground">
                     {totalScanned} / {totalItemQty}
                   </span>
                 </div>
-                <div className="h-2 overflow-hidden rounded-full bg-muted">
+                <div className="h-2 overflow-hidden rounded-[2px] bg-muted">
                   <div
                     className="h-full bg-status-picked transition-all"
                     style={{
@@ -410,7 +410,7 @@ function PackStation() {
               {/* QC panel: image + attributes + side actions */}
               <div className="flex gap-3">
                 {/* Image */}
-                <div className="h-28 w-28 shrink-0 overflow-hidden rounded-lg border border-border bg-muted/20">
+                <div className="h-28 w-28 shrink-0 overflow-hidden rounded-md border border-border bg-muted/20">
                   {lastScannedItem ? (
                     <img
                       src={lastScannedItem.image}
@@ -433,7 +433,7 @@ function PackStation() {
                           {lastScannedItem.name}
                         </div>
                         {damagedSkus.has(lastScannedItem.sku) && (
-                          <span className="shrink-0 rounded-full bg-destructive/10 px-1.5 py-0.5 text-[10px] font-medium text-destructive">
+                          <span className="shrink-0 rounded-[2px] border border-risk/30 bg-risk-bg px-1.5 py-0.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.06em] text-risk">
                             Damaged
                           </span>
                         )}
@@ -535,7 +535,7 @@ function PackStation() {
             {/* Packed items table */}
             {packedItems.length > 0 && (
               <Card className="overflow-hidden p-0">
-                <div className="border-b border-border bg-muted/30 px-3 py-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                <div className="border-b border-border bg-muted/30 px-3 py-2 text-[11px] font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   Packed items ({packedItems.length})
                 </div>
                 <div className="[&_th]:px-2 [&_th]:py-1.5 [&_td]:px-2 [&_td]:py-1.5 [&_th]:h-auto [&_th]:text-[10px] [&_td]:text-xs">
@@ -611,7 +611,7 @@ function PackStation() {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-2">
-            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
               Select item
             </label>
             <Select value={nfSelectedSku} onValueChange={setNfSelectedSku}>
@@ -668,7 +668,7 @@ function PackStation() {
           </div>
 
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
               <ScanBarcode className="h-3.5 w-3.5" />
               Scan next tote
             </div>
@@ -716,7 +716,7 @@ function OrderCard({
         </div>
         <span
           className={cn(
-            "shrink-0 rounded-lg border-2 px-3 py-1 text-sm font-bold",
+            "shrink-0 rounded-[4px] border px-3 py-1 font-mono text-xs font-bold uppercase tracking-[0.04em]",
             channelStyles[order.channel] ??
               "border-border bg-muted text-muted-foreground",
           )}
@@ -782,7 +782,7 @@ function ScanRow({
   return (
     <div>
       {label && (
-        <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <label className="mb-1 block text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
           {label}
         </label>
       )}

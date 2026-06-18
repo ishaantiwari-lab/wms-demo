@@ -165,7 +165,7 @@ function KittingScreen() {
             <div className="text-sm font-semibold">Kitting Completed</div>
           </div>
           <div className="space-y-5 p-5">
-            <div className="flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 p-4 text-green-800">
+            <div className="flex items-start gap-3 rounded-md border border-ok/30 bg-ok-bg p-4 text-ok">
               <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
               <div>
                 <div className="text-sm font-semibold">
@@ -181,8 +181,8 @@ function KittingScreen() {
 
             {/* Inventory effect */}
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-lg border border-border p-4">
-                <div className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <div className="rounded-md border border-border p-4">
+                <div className="mb-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   Child SKUs consumed
                 </div>
                 <div className="space-y-1.5">
@@ -197,15 +197,15 @@ function KittingScreen() {
                         </span>{" "}
                         {c.name}
                       </span>
-                      <span className="font-mono font-semibold text-red-600">
+                      <span className="font-mono font-semibold text-risk">
                         −{c.required}
                       </span>
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="rounded-lg border border-border p-4">
-                <div className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <div className="rounded-md border border-border p-4">
+                <div className="mb-2 text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
                   Kit SKU created
                 </div>
                 <div className="flex items-center justify-between">
@@ -215,11 +215,11 @@ function KittingScreen() {
                     </span>{" "}
                     {result.order.kitName}
                   </span>
-                  <span className="font-mono text-lg font-semibold text-green-600">
+                  <span className="font-mono text-lg font-semibold text-ok">
                     +{result.order.kitQty}
                   </span>
                 </div>
-                <div className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-amber-50 px-2.5 py-1 text-xs text-amber-700 ring-1 ring-inset ring-amber-600/20">
+                <div className="mt-3 inline-flex items-center gap-1.5 rounded-md border border-warn/30 bg-warn-bg px-2.5 py-1 text-xs text-warn">
                   <PackageCheck className="h-3.5 w-3.5" />
                   Pending putaway
                 </div>
@@ -282,7 +282,7 @@ function KittingScreen() {
                 {/* LPN confirmed + sequence prompt */}
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="inline-flex items-center gap-2 rounded-md border border-border bg-muted/30 px-3 py-1.5 text-xs">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-green-600" />
+                    <CheckCircle2 className="h-3.5 w-3.5 text-ok" />
                     LPN
                     <span className="font-mono font-semibold">{lpn}</span>
                   </div>
@@ -297,7 +297,7 @@ function KittingScreen() {
                       </span>
                     </div>
                   ) : (
-                    <div className="inline-flex items-center gap-2 rounded-md border border-green-200 bg-green-50 px-3 py-1.5 text-xs text-green-700">
+                    <div className="inline-flex items-center gap-2 rounded-md border border-ok/30 bg-ok-bg px-3 py-1.5 text-xs text-ok">
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       All {totalUnits} units scanned
                     </div>
@@ -314,8 +314,8 @@ function KittingScreen() {
                 )}
 
                 {/* Component checklist */}
-                <div className="overflow-hidden rounded-lg border border-border">
-                  <div className="grid grid-cols-[6rem_1fr_5rem_8rem] gap-3 border-b border-border bg-muted/30 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <div className="overflow-hidden rounded-md border border-border">
+                  <div className="grid grid-cols-[6rem_1fr_5rem_8rem] gap-3 border-b border-border bg-muted/30 px-4 py-2.5 text-[10px] font-semibold font-mono uppercase tracking-[0.08em] text-muted-foreground">
                     <span>SKU</span>
                     <span>Item</span>
                     <span className="text-right">Per Kit</span>
@@ -344,11 +344,11 @@ function KittingScreen() {
                             <div className="truncate text-muted-foreground">
                               {c.name}
                             </div>
-                            <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                            <div className="mt-1 h-1.5 w-full overflow-hidden rounded-[2px] bg-muted">
                               <div
                                 className={cn(
-                                  "h-full rounded-full transition-all",
-                                  done ? "bg-green-500" : "bg-primary",
+                                  "h-full rounded-[2px] transition-all",
+                                  done ? "bg-ok" : "bg-primary",
                                 )}
                                 style={{ width: `${pct}%` }}
                               />
@@ -362,7 +362,7 @@ function KittingScreen() {
                               <span
                                 className={cn(
                                   "font-semibold",
-                                  done ? "text-green-600" : "text-foreground",
+                                  done ? "text-ok" : "text-foreground",
                                 )}
                               >
                                 {c.scanned}
@@ -373,7 +373,7 @@ function KittingScreen() {
                               </span>
                             </span>
                             {done && (
-                              <CheckCircle2 className="h-4 w-4 text-green-600" />
+                              <CheckCircle2 className="h-4 w-4 text-ok" />
                             )}
                           </span>
                         </div>
@@ -417,7 +417,7 @@ function KittingScreen() {
           <div className="flex items-center justify-between border-b border-border px-5 py-3">
             <div className="text-sm font-semibold">
               Kit Orders Ready for Kitting{" "}
-              <span className="ml-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+              <span className="ml-1.5 rounded-[3px] bg-primary/10 px-2 py-0.5 font-mono text-xs font-medium text-primary">
                 {openOrders.length}
               </span>
             </div>
@@ -460,7 +460,7 @@ function KittingScreen() {
                         Created {o.createdAt}
                       </div>
                     </div>
-                    <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-[11px] font-medium text-blue-700 ring-1 ring-inset ring-blue-600/20">
+                    <span className="inline-flex items-center rounded-[2px] border border-sys/30 bg-sys-bg px-2 py-0.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.06em] text-sys">
                       Picked
                     </span>
                     <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -487,9 +487,9 @@ function Stepper({ current }: { current: 1 | 2 }) {
           <div key={label} className="flex items-center gap-2">
             <span
               className={cn(
-                "flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-semibold",
+                "flex h-5 w-5 items-center justify-center rounded-[3px] font-mono text-[10px] font-semibold",
                 done
-                  ? "bg-green-500 text-white"
+                  ? "bg-ok text-white"
                   : active
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-muted-foreground",
@@ -541,7 +541,7 @@ function ScanRow({
     >
       <div className="mb-1.5 flex items-center gap-2">
         <ScanBarcode className="h-3.5 w-3.5 text-muted-foreground" />
-        <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <label className="text-xs font-medium font-mono uppercase tracking-[0.06em] text-muted-foreground">
           {label}
         </label>
       </div>

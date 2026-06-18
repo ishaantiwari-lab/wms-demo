@@ -113,10 +113,10 @@ const FINAL_ACTION_OPTIONS: { value: FinalAction; label: string }[] = [
 ];
 
 const FINAL_ACTION_COLORS: Record<FinalAction, string> = {
-  "flag-review": "border-amber-400/50 bg-amber-50/60 text-amber-700 dark:bg-amber-950/20 dark:text-amber-400",
+  "flag-review": "border-warn/40 bg-warn-bg text-warn",
   "assign-any": "border-border bg-muted/40 text-muted-foreground",
-  "hold-alert": "border-red-400/50 bg-red-50/60 text-red-700 dark:bg-red-950/20 dark:text-red-400",
-  "auto-demote": "border-blue-400/50 bg-blue-50/60 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400",
+  "hold-alert": "border-risk/40 bg-risk-bg text-risk",
+  "auto-demote": "border-sys/40 bg-sys-bg text-sys",
 };
 
 const DEFAULT_STRATEGY_RULES: StrategyRule[] = [
@@ -293,20 +293,31 @@ function SlottingConfig() {
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 px-7 pb-14 pt-5">
       <div>
-        <h1 className="text-xl font-semibold">Slotting Configuration</h1>
-        <p className="mt-0.5 text-sm text-muted-foreground">
-          Configure the rules and thresholds the slotting engine uses to assign optimal storage locations.
+        <h1 className="text-[22px] font-medium tracking-[-0.01em] text-foreground">Slotting Configuration</h1>
+        <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground">
+          Rules &amp; thresholds the slotting engine uses to assign optimal storage locations
         </p>
       </div>
 
       <Tabs defaultValue="global">
-        <TabsList className="mb-2">
-          <TabsTrigger value="global">Global Parameters</TabsTrigger>
-          <TabsTrigger value="expiry" disabled>Expiry &amp; NTE Rules</TabsTrigger>
-          <TabsTrigger value="strategy">Strategy Builder</TabsTrigger>
-          <TabsTrigger value="density" disabled>Density Management</TabsTrigger>
+        <TabsList className="mb-2 h-auto w-full justify-start gap-1 rounded-none border-b border-border bg-transparent p-0">
+          {([
+            ["global", "Global Parameters", false],
+            ["expiry", "Expiry & NTE Rules", true],
+            ["strategy", "Strategy Builder", false],
+            ["density", "Density Management", true],
+          ] as const).map(([value, label, disabled]) => (
+            <TabsTrigger
+              key={value}
+              value={value}
+              disabled={disabled}
+              className="rounded-none border-b-2 border-transparent px-3 py-2 font-mono text-[11px] uppercase tracking-[0.06em] data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
+            >
+              {label}
+            </TabsTrigger>
+          ))}
         </TabsList>
 
         {/* ── Tab 1: Global Parameters ──────────────────────────────────────── */}
@@ -338,7 +349,7 @@ function SlottingConfig() {
                     const active = params.goldenZoneLevels.includes(lvl);
                     return (
                       <button key={lvl} type="button" onClick={() => toggle(lvl)}
-                        className={cn("flex h-10 w-10 items-center justify-center rounded-lg border text-sm font-semibold transition-colors",
+                        className={cn("flex h-10 w-10 items-center justify-center rounded-[4px] border font-mono text-sm font-semibold transition-colors",
                           active ? "border-primary bg-primary text-primary-foreground" : "border-border bg-muted/40 text-muted-foreground hover:border-primary/50 hover:bg-muted")}
                         aria-pressed={active} title={`Level ${lvl}`}>
                         {lvl}
@@ -346,7 +357,7 @@ function SlottingConfig() {
                     );
                   })}
                 </div>
-                {params.goldenZoneLevels.length === 0 && <p className="mt-2 text-xs text-amber-600">Select at least one level as golden zone.</p>}
+                {params.goldenZoneLevels.length === 0 && <p className="mt-2 text-xs text-warn">Select at least one level as golden zone.</p>}
               </Field>
             </div>
           </Card>
@@ -377,7 +388,7 @@ function SlottingConfig() {
           <div className="flex items-center justify-between">
             <Button variant="outline" onClick={handleReset}>Reset to defaults</Button>
             <div className="flex items-center gap-3">
-              {saved && <span className="flex items-center gap-1.5 text-sm text-green-600"><CheckCircle2 className="h-4 w-4" />Saved</span>}
+              {saved && <span className="flex items-center gap-1.5 text-sm text-ok"><CheckCircle2 className="h-4 w-4" />Saved</span>}
               <Button onClick={handleSave} disabled={params.goldenZoneLevels.length === 0}>
                 <Settings2 className="mr-2 h-4 w-4" />Save Parameters
               </Button>
@@ -442,7 +453,7 @@ function SlottingConfig() {
           </Card>
 
           {/* Summary */}
-          <div className="rounded-lg border border-border bg-muted/20 px-5 py-3 text-xs text-muted-foreground">
+          <div className="rounded-md border-l-2 border-ai border-y border-r border-y-border border-r-border bg-ai-bg/40 px-5 py-3 text-xs text-muted-foreground">
             {buildStrategySummary(strategyRules)}
           </div>
 
@@ -451,7 +462,7 @@ function SlottingConfig() {
             <Button variant="outline" onClick={handleStrategyReset}>Reset to defaults</Button>
             <div className="flex items-center gap-3">
               {strategySaved && (
-                <span className="flex items-center gap-1.5 text-sm text-green-600">
+                <span className="flex items-center gap-1.5 text-sm text-ok">
                   <CheckCircle2 className="h-4 w-4" />Saved
                 </span>
               )}
@@ -527,7 +538,7 @@ function RuleRow({
             ? <ChevronDown className="h-4 w-4" />
             : <ChevronRight className="h-4 w-4" />}
         </div>
-        <div className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border text-[11px] font-semibold">
+        <div className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-[4px] border font-mono text-[11px] font-semibold">
           {stepNumber !== null
             ? <span className="text-primary">{stepNumber}</span>
             : <span className="text-muted-foreground/40">—</span>}
@@ -547,10 +558,10 @@ function RuleRow({
             type="button"
             onClick={onToggle}
             className={cn(
-              "ml-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
+              "ml-1 rounded-[2px] border px-2 py-1 font-mono text-[9.5px] font-medium uppercase tracking-[0.06em] transition-colors",
               rule.enabled
-                ? "bg-primary/10 text-primary hover:bg-primary/20"
-                : "bg-muted text-muted-foreground hover:bg-muted/80",
+                ? "border-ok/30 bg-ok-bg text-ok hover:bg-ok-bg/70"
+                : "border-border bg-muted text-muted-foreground hover:bg-muted/80",
             )}
           >
             {rule.enabled ? "Active" : "Inactive"}
@@ -572,7 +583,7 @@ function RuleRow({
 
             {/* Step row */}
             <div className="flex items-center gap-1.5">
-              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded border bg-muted/40 text-[10px] font-medium text-muted-foreground">
+              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-[2px] border bg-muted/40 font-mono text-[10px] font-medium text-muted-foreground">
                 {i + 1}
               </div>
               <Select value={step.value} onValueChange={(v) => onUpdateCascadeStep(step.id, v)}>
@@ -640,7 +651,7 @@ function DecisionFlow({ rules }: { rules: StrategyRule[] }) {
 
   if (active.length === 0) {
     return (
-      <div className="flex h-20 items-center justify-center rounded-lg border border-dashed border-border text-sm text-muted-foreground">
+      <div className="flex h-20 items-center justify-center rounded-md border border-dashed border-border text-sm text-muted-foreground">
         Enable at least one rule to see the decision flow.
       </div>
     );
@@ -659,10 +670,10 @@ function DecisionFlow({ rules }: { rules: StrategyRule[] }) {
               {/* ── Column ── */}
               <div className="flex min-w-[148px] flex-col items-center">
                 {/* Rule chip */}
-                <div className="flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/5 px-3 py-1.5">
+                <div className="flex items-center gap-1.5 rounded-[4px] border border-primary/25 bg-primary/5 px-3 py-1.5">
                   <rule.Icon className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-[11px] font-semibold">{rule.shortLabel}</span>
-                  <span className="rounded-full bg-primary/10 px-1.5 text-[9px] font-bold text-primary">
+                  <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.04em]">{rule.shortLabel}</span>
+                  <span className="rounded-[2px] bg-primary/10 px-1.5 font-mono text-[9px] font-bold text-primary">
                     {ruleIndex + 1}
                   </span>
                 </div>
@@ -708,7 +719,7 @@ function Connector({ label, dashed }: { label: string; dashed?: boolean }) {
   return (
     <div className="flex flex-col items-center gap-0 py-0.5">
       <div className={cn("h-3 w-px", dashed ? "border-l border-dashed border-border" : "bg-border")} />
-      <span className="text-[9px] font-medium uppercase tracking-wide text-muted-foreground">{label}</span>
+      <span className="font-mono text-[9px] font-medium uppercase tracking-[0.08em] text-muted-foreground">{label}</span>
     </div>
   );
 }
@@ -746,9 +757,9 @@ function IconBtn({
 
 function SectionHeader({ title, description }: { title: string; description: string }) {
   return (
-    <div className="border-b border-border px-5 py-3">
-      <div className="text-sm font-semibold">{title}</div>
-      <div className="mt-0.5 text-xs text-muted-foreground">{description}</div>
+    <div className="border-b border-border bg-muted/30 px-5 py-3">
+      <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-foreground">{title}</div>
+      <div className="mt-1 text-xs text-muted-foreground">{description}</div>
     </div>
   );
 }
@@ -756,7 +767,7 @@ function SectionHeader({ title, description }: { title: string; description: str
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
-      <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</div>
+      <div className="font-mono text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground">{label}</div>
       {children}
       {hint && <p className="text-[11px] text-muted-foreground">{hint}</p>}
     </div>
