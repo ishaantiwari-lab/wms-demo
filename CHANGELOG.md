@@ -54,3 +54,4 @@
 - 2026-06-17: Added Bin Density Heatmap (/slotting) — zone tabs, density chips, 4 KPI cards, interactive grid with golden-zone markers, bin detail panel
 - 2026-06-17: Added Wave Creation (/wave-creation) — schedule-based picklist batching with order/seller/courier/channel/SLA/qty/amount filters, time + day picker, mandatory Picklist Type, activate/edit/delete
 - 2026-06-17: Created DESIGN_MIGRATION.md — SRF 2.0 migration task file (5 phases, 40+ items)
+- 2026-06-19: SPA migration complete — removed TanStack Start/Nitro SSR layer; app now builds to dist/ as static files served by nginx:alpine in Docker; Node.js server eliminated; Dockerfile, docker-compose, and k8s manifests updated for port 80
