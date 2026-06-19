@@ -1,7 +1,13 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
+  Activity,
+  AlertTriangle,
+  ArrowDownToLine,
   ArrowLeftRight,
+  ArrowUpFromLine,
   BadgeCheck,
+  Bell,
+  Bot,
   Boxes,
   ChevronRight,
   ClipboardCheck,
@@ -11,18 +17,40 @@ import {
   FilePlus2,
   Hand,
   Layers,
+  LayoutDashboard,
   LayoutGrid,
+  LifeBuoy,
+  MessagesSquare,
   MoveDown,
+  Network,
   Package,
+  Siren,
   PackageCheck,
   PackageOpen,
   PackagePlus,
   Settings2,
   ShuffleIcon,
   SquarePen,
+  TrendingUp,
+  Users,
+  Waypoints,
   Truck,
+  Undo2,
+  RotateCcw,
+  Building2,
+  UserRoundCheck,
+  ScanLine,
   Warehouse,
   Waves,
+  SlidersHorizontal,
+  Database,
+  ScrollText,
+  ServerCog,
+  Receipt,
+  Gauge,
+  Star,
+  LogIn,
+  Smartphone,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -68,6 +96,67 @@ interface NavSection {
 }
 
 const sections: NavSection[] = [
+  {
+    label: "Command Center",
+    items: [
+      { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+      { title: "Control Tower", url: "/control-tower", icon: Network },
+      { title: "Stuck Orders", url: "/stuck-orders", icon: AlertTriangle },
+      { title: "Site Performance", url: "/site-performance", icon: Activity },
+      { title: "Trends", url: "/trends", icon: TrendingUp },
+      { title: "Alerts", url: "/alerts", icon: Bell },
+    ],
+  },
+  {
+    label: "AI Agents",
+    items: [
+      { title: "Agent Health", url: "/agent-health", icon: Bot },
+      { title: "Agent Directory", url: "/agent-directory", icon: Users },
+      { title: "Drift & Feedback", url: "/drift-feedback", icon: Waypoints },
+    ],
+  },
+  {
+    label: "Exceptions",
+    items: [
+      { title: "Inbound Exceptions", url: "/inbound-exceptions", icon: ArrowDownToLine },
+      { title: "Outbound Exceptions", url: "/outbound-exceptions", icon: ArrowUpFromLine },
+      { title: "Incidents", url: "/incidents", icon: Siren },
+      { title: "Recovery Queue", url: "/recovery-queue", icon: LifeBuoy },
+      { title: "Customer Disputes", url: "/customer-disputes", icon: MessagesSquare },
+    ],
+  },
+  {
+    label: "Reverse & QC",
+    items: [
+      { title: "Returns Intake", url: "/returns-intake", icon: Undo2 },
+      { title: "Returns Evaluation", url: "/returns-evaluation", icon: UserRoundCheck },
+      { title: "RTO · Origin", url: "/returns-rto", icon: RotateCcw },
+      { title: "RTV · Vendor", url: "/returns-rtv", icon: Building2 },
+      { title: "CIR · Customer", url: "/returns-cir", icon: MessagesSquare },
+      { title: "QC Station", url: "/qc-station", icon: ScanLine },
+      { title: "Cycle Count", url: "/cycle-count", icon: ClipboardCheck },
+    ],
+  },
+  {
+    label: "Admin & Governance",
+    items: [
+      { title: "Users & Roles", url: "/users-roles", icon: UserRoundCheck },
+      { title: "Policies", url: "/policies", icon: SlidersHorizontal },
+      { title: "Master Data", url: "/master-data", icon: Database },
+      { title: "Audit Log", url: "/audit-log", icon: ScrollText },
+      { title: "Platform Health", url: "/admin", icon: ServerCog },
+      { title: "Billing Leakage", url: "/billing-leakage", icon: Receipt },
+      { title: "Carrier Scorecards", url: "/carrier-scorecards", icon: Gauge },
+      { title: "Vendor Scorecards", url: "/vendor-scorecards", icon: Star },
+      { title: "Gatepass Log", url: "/gatepass-log", icon: LogIn },
+    ],
+  },
+  {
+    label: "Devices",
+    items: [
+      { title: "Floor Handhelds", url: "/floor-handhelds", icon: Smartphone },
+    ],
+  },
   {
     label: "Outbound",
     items: [
