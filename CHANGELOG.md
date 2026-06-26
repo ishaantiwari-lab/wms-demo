@@ -1,5 +1,9 @@
 # Changelog
 
+- 2026-06-25: Merged `local-srf-work` (SRF 2.0 screen imports + SCREENS.md + orders/wave UI tweaks) into `main` on top of the bfrs deployment baseline — bfrs prioritized for all config/deploy files (Docker, k8s, vite, package manifests) and for the conflicting orders/wave-creation/pick screens; sidebar manually unioned so both bfrs's new screens and the SRF imports are reachable; routeTree regenerated to register all routes
+
+- 2026-06-19: Added SCREENS.md — quick reference mapping every screen/module to its route file and mock-data source, grouped by sidebar section, flagging native screens vs SRF design mocks
+
 - 2026-06-19: Zone Insights — extended the lane heatmap (`/lane-congestion`) into a multi-lens screen via a single "View" switcher (one metric at a time to avoid overload): Congestion, Pending Lines (unpicked allocated lines, green→red), SKU Hits (A-mover pick-request density), Replen Risk (faces near zero-scan / below the 25% min, inverted ramp), and Pickers (per-zone operator count, neutral blue ramp). Refactored cell/legend/KPI/filter-chip/detail-panel rendering to read from a `VIEWS` registry so the same zone×lane grid powers every view; tier filter chips, zone summaries, and recommendations relabel per view. Renamed sidebar entry "Lane Congestion" → "Zone Insights". Mock data only. tsc clean
 
 - 2026-06-19: Lane Congestion — added a new zone-wise pick-traffic heatmap (`/lane-congestion`, Outbound → Picking) that visualises live picker footfall per lane across Zones A/B/C, colour-banded clear→busy→congested→blocked, with KPI bar (active pickers, likely-blocked/congested lanes, peak dwell), band filter chips, cross-aisle chokepoint markers, per-zone summaries, and a click-through lane detail panel (pickers in lane, throughput, dwell, re-route recommendation). Mock data only. New "Lane Congestion" sidebar entry (Footprints icon). tsc clean
