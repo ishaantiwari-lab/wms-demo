@@ -438,10 +438,6 @@ function AdHocItemFlow({ onComplete }: { onComplete: () => void }) {
 
   return (
     <div className="space-y-3">
-      <div className="text-right text-[11px] text-muted-foreground">
-        Step {stageNum[stage]} of 4
-      </div>
-
       {/* Step 1 — From bin */}
       {stage === "from-bin" && (
         <Card className="space-y-3 p-4">
@@ -464,15 +460,7 @@ function AdHocItemFlow({ onComplete }: { onComplete: () => void }) {
       {/* Step 2 — Scan item */}
       {stage === "item" && (
         <Card className="space-y-3 p-4">
-          <ConfirmedStrip
-            label="From"
-            value={fromBin}
-            onClear={() => {
-              setFromBin("");
-              setScannedSku("");
-              setStage("from-bin");
-            }}
-          />
+          <ConfirmedStrip label="From" value={fromBin} />
 
           {!scannedSku ? (
             <>
@@ -494,12 +482,14 @@ function AdHocItemFlow({ onComplete }: { onComplete: () => void }) {
             <div className="space-y-3">
               {itemInfo ? (
                 <div className="overflow-hidden rounded-md border border-border bg-muted/30">
-                  <img
-                    src={itemInfo.image}
-                    alt={itemInfo.name}
-                    className="h-28 w-full object-cover"
-                    loading="lazy"
-                  />
+                  <div className="flex h-56 w-full items-center justify-center bg-white p-3">
+                    <img
+                      src={itemInfo.image}
+                      alt={itemInfo.name}
+                      className="max-h-full max-w-full object-contain"
+                      loading="lazy"
+                    />
+                  </div>
                   <div className="space-y-0.5 p-3">
                     <div className="text-sm font-semibold leading-snug">
                       {itemInfo.name}
@@ -678,10 +668,6 @@ function AdHocBinFlow({ onComplete }: { onComplete: () => void }) {
 
   return (
     <div className="space-y-3">
-      <div className="text-right text-[11px] text-muted-foreground">
-        Step {stageNum[stage]} of 3
-      </div>
-
       {/* Step 1 — Source location */}
       {stage === "source-location" && (
         <Card className="space-y-3 p-4">
@@ -857,9 +843,6 @@ function MovementFlow({
           </button>
           <div className="text-right">
             <div className="text-sm font-semibold">{task.id}</div>
-            <div className="text-[11px] text-muted-foreground">
-              Step {stageIdx + 1} of {stages.length}
-            </div>
           </div>
         </div>
 
@@ -926,12 +909,14 @@ function MovementFlow({
           {stage === "item" && (
             <Card className="space-y-3 p-4">
               <div className="overflow-hidden rounded-md border border-border bg-muted/30">
-                <img
-                  src={task.image}
-                  alt={task.name}
-                  className="h-32 w-full object-cover"
-                  loading="lazy"
-                />
+                <div className="flex h-56 w-full items-center justify-center bg-white p-3">
+                  <img
+                    src={task.image}
+                    alt={task.name}
+                    className="max-h-full max-w-full object-contain"
+                    loading="lazy"
+                  />
+                </div>
                 <div className="space-y-1 p-3">
                   <div className="text-sm font-semibold leading-snug">
                     {task.name}
@@ -1076,9 +1061,6 @@ function BinMovementFlow({
           </button>
           <div className="text-right">
             <div className="text-sm font-semibold">{task.id}</div>
-            <div className="text-[11px] text-muted-foreground">
-              Step {stageNum[stage]} of 3
-            </div>
           </div>
         </div>
 

@@ -48,6 +48,7 @@ import { Route as WmsKitOrderRouteImport } from './routes/_wms.kit-order'
 import { Route as WmsKitMappingRouteImport } from './routes/_wms.kit-mapping'
 import { Route as WmsItemMovementRouteImport } from './routes/_wms.item-movement'
 import { Route as WmsItemInfoUpdateRouteImport } from './routes/_wms.item-info-update'
+import { Route as WmsInventoryViewRouteImport } from './routes/_wms.inventory-view'
 import { Route as WmsIncidentsRouteImport } from './routes/_wms.incidents'
 import { Route as WmsInboundExceptionsRouteImport } from './routes/_wms.inbound-exceptions'
 import { Route as WmsGrnRouteImport } from './routes/_wms.grn'
@@ -279,6 +280,11 @@ const WmsItemInfoUpdateRoute = WmsItemInfoUpdateRouteImport.update({
   path: '/item-info-update',
   getParentRoute: () => WmsRoute,
 } as any)
+const WmsInventoryViewRoute = WmsInventoryViewRouteImport.update({
+  id: '/inventory-view',
+  path: '/inventory-view',
+  getParentRoute: () => WmsRoute,
+} as any)
 const WmsIncidentsRoute = WmsIncidentsRouteImport.update({
   id: '/incidents',
   path: '/incidents',
@@ -486,6 +492,7 @@ export interface FileRoutesByFullPath {
   '/grn': typeof WmsGrnRoute
   '/inbound-exceptions': typeof WmsInboundExceptionsRoute
   '/incidents': typeof WmsIncidentsRoute
+  '/inventory-view': typeof WmsInventoryViewRoute
   '/item-info-update': typeof WmsItemInfoUpdateRoute
   '/item-movement': typeof WmsItemMovementRoute
   '/kit-mapping': typeof WmsKitMappingRoute
@@ -562,6 +569,7 @@ export interface FileRoutesByTo {
   '/grn': typeof WmsGrnRoute
   '/inbound-exceptions': typeof WmsInboundExceptionsRoute
   '/incidents': typeof WmsIncidentsRoute
+  '/inventory-view': typeof WmsInventoryViewRoute
   '/item-info-update': typeof WmsItemInfoUpdateRoute
   '/item-movement': typeof WmsItemMovementRoute
   '/kit-mapping': typeof WmsKitMappingRoute
@@ -640,6 +648,7 @@ export interface FileRoutesById {
   '/_wms/grn': typeof WmsGrnRoute
   '/_wms/inbound-exceptions': typeof WmsInboundExceptionsRoute
   '/_wms/incidents': typeof WmsIncidentsRoute
+  '/_wms/inventory-view': typeof WmsInventoryViewRoute
   '/_wms/item-info-update': typeof WmsItemInfoUpdateRoute
   '/_wms/item-movement': typeof WmsItemMovementRoute
   '/_wms/kit-mapping': typeof WmsKitMappingRoute
@@ -718,6 +727,7 @@ export interface FileRouteTypes {
     | '/grn'
     | '/inbound-exceptions'
     | '/incidents'
+    | '/inventory-view'
     | '/item-info-update'
     | '/item-movement'
     | '/kit-mapping'
@@ -794,6 +804,7 @@ export interface FileRouteTypes {
     | '/grn'
     | '/inbound-exceptions'
     | '/incidents'
+    | '/inventory-view'
     | '/item-info-update'
     | '/item-movement'
     | '/kit-mapping'
@@ -871,6 +882,7 @@ export interface FileRouteTypes {
     | '/_wms/grn'
     | '/_wms/inbound-exceptions'
     | '/_wms/incidents'
+    | '/_wms/inventory-view'
     | '/_wms/item-info-update'
     | '/_wms/item-movement'
     | '/_wms/kit-mapping'
@@ -1204,6 +1216,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WmsItemInfoUpdateRouteImport
       parentRoute: typeof WmsRoute
     }
+    '/_wms/inventory-view': {
+      id: '/_wms/inventory-view'
+      path: '/inventory-view'
+      fullPath: '/inventory-view'
+      preLoaderRoute: typeof WmsInventoryViewRouteImport
+      parentRoute: typeof WmsRoute
+    }
     '/_wms/incidents': {
       id: '/_wms/incidents'
       path: '/incidents'
@@ -1482,6 +1501,7 @@ interface WmsRouteChildren {
   WmsGrnRoute: typeof WmsGrnRoute
   WmsInboundExceptionsRoute: typeof WmsInboundExceptionsRoute
   WmsIncidentsRoute: typeof WmsIncidentsRoute
+  WmsInventoryViewRoute: typeof WmsInventoryViewRoute
   WmsItemInfoUpdateRoute: typeof WmsItemInfoUpdateRoute
   WmsItemMovementRoute: typeof WmsItemMovementRoute
   WmsKitMappingRoute: typeof WmsKitMappingRoute
@@ -1558,6 +1578,7 @@ const WmsRouteChildren: WmsRouteChildren = {
   WmsGrnRoute: WmsGrnRoute,
   WmsInboundExceptionsRoute: WmsInboundExceptionsRoute,
   WmsIncidentsRoute: WmsIncidentsRoute,
+  WmsInventoryViewRoute: WmsInventoryViewRoute,
   WmsItemInfoUpdateRoute: WmsItemInfoUpdateRoute,
   WmsItemMovementRoute: WmsItemMovementRoute,
   WmsKitMappingRoute: WmsKitMappingRoute,

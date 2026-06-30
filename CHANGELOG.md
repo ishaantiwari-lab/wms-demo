@@ -1,5 +1,15 @@
 # Changelog
 
+- 2026-06-30: Sidebar (Inventory section) — moved "Inventory View" above "Detailed Inventory View".
+
+- 2026-06-30: Inventory View + Detailed Inventory View — recolored the scoped `.iv-` palette from blue (navy text/#1e40af accents) to the app's warm theme: cream surfaces (#f5f3ee), brown-black text (#1f1d17), warm borders, amber accent (#b8751f) for active filters/tab and dark primary button. No structural/markup changes.
+
+- 2026-06-30: Added "Inventory View" screen (`/inventory-view`, Inventory section, after Detailed Inventory View) — single consolidated table with columns WH Name, SKU, Description, Product Category, Storage Type (Sellable/Quarantine/Virtual), Inventory Tab (Good/Bad/Missing/Cancel), Total/Available/Blocked Quantity; searchable + filterable (WH Name, Product Category, Storage Type, Inventory Tab) with CSV download. Plain-text cells, numeric cols right-aligned. Reuses the Detailed Inventory View scoped `.iv-` styling. New sidebar entry (Boxes). Mock data only. routeTree regenerated. tsc clean (only pre-existing orders.$orderNo errors).
+
+- 2026-06-30: Item Movement — removed the "Step X of Y" indicator from all flows (Item task, Bin task, and both ad-hoc flows); also removed the "Change" undo link on the confirmed From-bin strip in the ad-hoc item flow. tsc clean.
+
+- 2026-06-30: Item Movement — applied the same un-squished image treatment as Picking to both image views (item-info lookup and the in-task scan view); now h-56 white-padded `object-contain` boxes so products show undistorted at a consistent size.
+
 - 2026-06-30: Picking — fixed the squished item image; swapped the cropping `h-32 object-cover` thumbnail for a taller (h-56) white-padded box using `object-contain` so the whole product is shown undistorted and easily recognizable by the picker.
 
 - 2026-06-30: Putaway detail — Storage Address now uses the compact code format (Z1-A12-R03-B2) instead of the "Zone A · Aisle 12 · …" text; rendered mono to match the bin columns.

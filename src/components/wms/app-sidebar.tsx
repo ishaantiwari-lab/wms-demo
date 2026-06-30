@@ -213,20 +213,33 @@ const sections: NavSection[] = [
     items: [
       { title: "Gate Entry", url: "/gate-entry", icon: DoorOpen },
       { title: "Unloading", url: "/unloading", icon: PackageOpen },
-      { title: "GRN", url: "/grn", icon: ClipboardCheck },
-      { title: "View GRNs", url: "/view-grn", icon: ClipboardList },
+      {
+        title: "GRN",
+        icon: ClipboardCheck,
+        children: [
+          { title: "GRN", url: "/grn", icon: ClipboardCheck },
+          { title: "View GRNs", url: "/view-grn", icon: ClipboardList },
+        ],
+      },
       {
         title: "Sales Return GRN",
         url: "/sales-return-grn",
         icon: ClipboardCheck,
       },
-      { title: "Putaway", url: "/putaway", icon: MoveDown },
-      { title: "View Putaway", url: "/view-putaway", icon: ClipboardList },
+      {
+        title: "Putaway",
+        icon: MoveDown,
+        children: [
+          { title: "Putaway", url: "/putaway", icon: MoveDown },
+          { title: "View Putaway", url: "/view-putaway", icon: ClipboardList },
+        ],
+      },
     ],
   },
   {
     label: "Inventory",
     items: [
+      { title: "Inventory View", url: "/inventory-view", icon: Boxes },
       {
         title: "Detailed Inventory View",
         url: "/detailed-inventory-view",
