@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-06-30: Picking — fixed the squished item image; swapped the cropping `h-32 object-cover` thumbnail for a taller (h-56) white-padded box using `object-contain` so the whole product is shown undistorted and easily recognizable by the picker.
+
 - 2026-06-30: Putaway detail — Storage Address now uses the compact code format (Z1-A12-R03-B2) instead of the "Zone A · Aisle 12 · …" text; rendered mono to match the bin columns.
 
 - 2026-06-30: Built out Putaway detail screen (`/view-putaway/$putawayId`, replacing the placeholder) — line-item table with SKU Number, Description, Category, From Bin, To Bin, Storage Address, Quantity, Pack Size, Document Number (GRN/Sales Return No), Box Number; back-link + search + item/units summary. Mock data only. tsc clean (only pre-existing orders.$orderNo errors)
