@@ -1,5 +1,21 @@
 # Changelog
 
+- 2026-07-01: Masters — Table ID Master: replaced the Channel Mapping column with a display-only Mapped User column (shows an operator name when the table is Active, "—" otherwise); dropped the channel picker from the Create modal (new active tables get an auto-assigned name). Removed the "QC / Packing" metric card, leaving Total / Active / Inactive (3-up grid).
+
+- 2026-07-01: Masters — removed user/session mapping from Table ID Master. Dropped the Mapped User column, Shift Session Mapping panel, per-row Logout, the session audit trail, worker directory and all mapping validations (RBAC / occupancy / user-table conflict). Page is now a plain table register (Table ID / Type / Zone ID / Status / Channel Mapping / Last Active) with Type & Status filters, metric tiles (Total / Active / Inactive / QC-Packing split) and the Create New modal. tsc clean (only pre-existing orders.$orderNo errors).
+
+- 2026-07-01: Masters — added a functional Table ID Master page (`/table-id-master`, in the Masters sidebar section under Dock Management). Table register with columns Table ID / Type (QC/Packing) / Zone ID / Status (active-inactive) / Channel Mapping / Mapped User / Last Active, plus Type & Status filter chips and metric tiles. Shift Session Mapping panel scans a Table ID + selects a user and enforces validations: RBAC (QC Inspector→QC, Packer→Packing), table-occupancy conflict (block User B while User A active), and user-table conflict (block if user active elsewhere); success writes an immutable LOGIN audit event. Logout auto-clears Mapped User and writes a LOGOUT event. Session audit trail table shows event_id/event/actor_id/table_id/timestamp. Create New modal adds tables (ID/type/zone/status/channels) with dup + required-field validation. Warm amber theme; tsc clean (only pre-existing orders.$orderNo errors).
+
+- 2026-07-01: Reports — aligned the Manifest Report definition with the demo's manifest model: added a Status field (Created / Part Shipped / Shipped), richer description (seller, channel, shipment counts, creator, shipping status) and an MNFST-#### objectHint example.
+
+- 2026-06-30: Reports — removed the "Standard Reports" parent folder; its sub-folders (Inbound, Outbound, Inventory, Billing, Audit) are now top-level tree nodes alongside Custom Reports.
+
+- 2026-06-30: Reports — removed the redundant decorative Calendar icon on From/To Date fields; the native datetime-local input already renders its own picker indicator. Date inputs now use a plain `.rx-date` style (dropped the `.rx-input-wrap`/overlay icon and unused Calendar import).
+
+- 2026-06-30: Reports — added reports to the tree: Inbound (Putaway, Gate Entry, Unloading), Outbound (Pack, Dispatch), Inventory (Item Movement, Replenishment, Near to Expiry). Replaced the Audit folder's Audit Trail Report with Item Ledger + Bin Ledger. tsc clean (only pre-existing orders.$orderNo errors).
+
+- 2026-06-30: Reports — made the Report Explorer functional (was a static mockup). Working report tree (expand/collapse folders + search + select) across Standard Reports (Inbound/Outbound/Inventory/Billing/Audit) and an empty Custom Reports; each report drives its own title/description and field set. Live form: multi-select Fulfillment Locations dropdown (required, with inline validation), Status select, From/To datetime-local inputs, Object ID text. Generate Report validates locations then creates a REQ-#### request; Request Status view lists requests with Queued/Processing/Completed/Failed badges (seeded with 3). Reset Filters clears form; Quick Filter chips (Last 24 Hours / North Region Only / Critical Audit Trail) apply and highlight. Recolored the blue `.rx-` accents (#2d5aa8 etc.) to the warm theme amber (#b8751f). tsc clean (only pre-existing orders.$orderNo errors).
+
 - 2026-06-30: Sidebar (Inventory section) — moved "Inventory View" above "Detailed Inventory View".
 
 - 2026-06-30: Inventory View + Detailed Inventory View — recolored the scoped `.iv-` palette from blue (navy text/#1e40af accents) to the app's warm theme: cream surfaces (#f5f3ee), brown-black text (#1f1d17), warm borders, amber accent (#b8751f) for active filters/tab and dark primary button. No structural/markup changes.

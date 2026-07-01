@@ -19,6 +19,7 @@ import { Route as WmsVendorScorecardsRouteImport } from './routes/_wms.vendor-sc
 import { Route as WmsUsersRolesRouteImport } from './routes/_wms.users-roles'
 import { Route as WmsUnloadingRouteImport } from './routes/_wms.unloading'
 import { Route as WmsTrendsRouteImport } from './routes/_wms.trends'
+import { Route as WmsTableIdMasterRouteImport } from './routes/_wms.table-id-master'
 import { Route as WmsStuckOrdersRouteImport } from './routes/_wms.stuck-orders'
 import { Route as WmsSlottingConfigRouteImport } from './routes/_wms.slotting-config'
 import { Route as WmsSlottingRouteImport } from './routes/_wms.slotting'
@@ -133,6 +134,11 @@ const WmsUnloadingRoute = WmsUnloadingRouteImport.update({
 const WmsTrendsRoute = WmsTrendsRouteImport.update({
   id: '/trends',
   path: '/trends',
+  getParentRoute: () => WmsRoute,
+} as any)
+const WmsTableIdMasterRoute = WmsTableIdMasterRouteImport.update({
+  id: '/table-id-master',
+  path: '/table-id-master',
   getParentRoute: () => WmsRoute,
 } as any)
 const WmsStuckOrdersRoute = WmsStuckOrdersRouteImport.update({
@@ -522,6 +528,7 @@ export interface FileRoutesByFullPath {
   '/slotting': typeof WmsSlottingRoute
   '/slotting-config': typeof WmsSlottingConfigRoute
   '/stuck-orders': typeof WmsStuckOrdersRoute
+  '/table-id-master': typeof WmsTableIdMasterRoute
   '/trends': typeof WmsTrendsRoute
   '/unloading': typeof WmsUnloadingRoute
   '/users-roles': typeof WmsUsersRolesRoute
@@ -599,6 +606,7 @@ export interface FileRoutesByTo {
   '/slotting': typeof WmsSlottingRoute
   '/slotting-config': typeof WmsSlottingConfigRoute
   '/stuck-orders': typeof WmsStuckOrdersRoute
+  '/table-id-master': typeof WmsTableIdMasterRoute
   '/trends': typeof WmsTrendsRoute
   '/unloading': typeof WmsUnloadingRoute
   '/users-roles': typeof WmsUsersRolesRoute
@@ -678,6 +686,7 @@ export interface FileRoutesById {
   '/_wms/slotting': typeof WmsSlottingRoute
   '/_wms/slotting-config': typeof WmsSlottingConfigRoute
   '/_wms/stuck-orders': typeof WmsStuckOrdersRoute
+  '/_wms/table-id-master': typeof WmsTableIdMasterRoute
   '/_wms/trends': typeof WmsTrendsRoute
   '/_wms/unloading': typeof WmsUnloadingRoute
   '/_wms/users-roles': typeof WmsUsersRolesRoute
@@ -757,6 +766,7 @@ export interface FileRouteTypes {
     | '/slotting'
     | '/slotting-config'
     | '/stuck-orders'
+    | '/table-id-master'
     | '/trends'
     | '/unloading'
     | '/users-roles'
@@ -834,6 +844,7 @@ export interface FileRouteTypes {
     | '/slotting'
     | '/slotting-config'
     | '/stuck-orders'
+    | '/table-id-master'
     | '/trends'
     | '/unloading'
     | '/users-roles'
@@ -912,6 +923,7 @@ export interface FileRouteTypes {
     | '/_wms/slotting'
     | '/_wms/slotting-config'
     | '/_wms/stuck-orders'
+    | '/_wms/table-id-master'
     | '/_wms/trends'
     | '/_wms/unloading'
     | '/_wms/users-roles'
@@ -1011,6 +1023,13 @@ declare module '@tanstack/react-router' {
       path: '/trends'
       fullPath: '/trends'
       preLoaderRoute: typeof WmsTrendsRouteImport
+      parentRoute: typeof WmsRoute
+    }
+    '/_wms/table-id-master': {
+      id: '/_wms/table-id-master'
+      path: '/table-id-master'
+      fullPath: '/table-id-master'
+      preLoaderRoute: typeof WmsTableIdMasterRouteImport
       parentRoute: typeof WmsRoute
     }
     '/_wms/stuck-orders': {
@@ -1531,6 +1550,7 @@ interface WmsRouteChildren {
   WmsSlottingRoute: typeof WmsSlottingRoute
   WmsSlottingConfigRoute: typeof WmsSlottingConfigRoute
   WmsStuckOrdersRoute: typeof WmsStuckOrdersRoute
+  WmsTableIdMasterRoute: typeof WmsTableIdMasterRoute
   WmsTrendsRoute: typeof WmsTrendsRoute
   WmsUnloadingRoute: typeof WmsUnloadingRoute
   WmsUsersRolesRoute: typeof WmsUsersRolesRoute
@@ -1608,6 +1628,7 @@ const WmsRouteChildren: WmsRouteChildren = {
   WmsSlottingRoute: WmsSlottingRoute,
   WmsSlottingConfigRoute: WmsSlottingConfigRoute,
   WmsStuckOrdersRoute: WmsStuckOrdersRoute,
+  WmsTableIdMasterRoute: WmsTableIdMasterRoute,
   WmsTrendsRoute: WmsTrendsRoute,
   WmsUnloadingRoute: WmsUnloadingRoute,
   WmsUsersRolesRoute: WmsUsersRolesRoute,

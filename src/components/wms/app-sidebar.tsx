@@ -32,6 +32,7 @@ import {
   Settings2,
   ShuffleIcon,
   SquarePen,
+  Table2,
   TrendingUp,
   Users,
   Waypoints,
@@ -273,6 +274,7 @@ const sections: NavSection[] = [
     label: "Masters",
     items: [
       { title: "Dock Management", url: "/dock-management", icon: Warehouse },
+      { title: "Table ID Master", url: "/table-id-master", icon: Table2 },
     ],
   },
   {
